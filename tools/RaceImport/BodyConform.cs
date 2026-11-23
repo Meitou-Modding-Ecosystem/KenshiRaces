@@ -42,9 +42,9 @@ public sealed class BodyConform
     const float Keep = 0.2f;
 
     /// <summary>
-    /// A vertex further out than this many times the limit is an appendage and is not pulled in.
+    /// Between these multiples of the limit the correction fades out: a vertex further out is an appendage and is not pulled in.
     /// </summary>
-    const float Appendage = 2.5f;
+    const float FadeFrom = 1.5f, Appendage = 2.5f;
 
     /// <summary>
     /// Each measured bone's axis and the human body's extent around it, by bone handle.
@@ -68,23 +68,72 @@ public sealed class BodyConform
     }
 
     /// <summary>
-    /// The positions pulled in, each vertex moved by the weighted sum of its bones' corrections, scaled by <paramref name="strength"/> (0 none,
-    /// 1 full).
+    /// Rounds of smoothing of the corrections over the surface, so neighbouring vertices move alike (no creases where bones or the fade change).
     /// </summary>
-    public Vector3[] Apply(Vector3[] positions, Dictionary<ushort, float>[] weights, float strength)
+    const int SmoothingRounds = 12;
+
+    /// <summary>
+    /// The positions pulled in, each vertex moved by the weighted sum of its bones' corrections, smoothed over the mesh's surface
+    /// (<paramref name="indices"/>) and scaled by <paramref name="strength"/> (0 none, 1 full).
+    /// </summary>
+    public Vector3[] Apply(Vector3[] positions, Dictionary<ushort, float>[] weights, int[] indices, float strength)
     {
-        var result = new Vector3[positions.Length];
+        var offsets = new Vector3[positions.Length];
         for (int v = 0; v < positions.Length; v++)
         {
-            var offset = Vector3.Zero;
             foreach (var (handle, weight) in weights[v])
-                if (_bones.TryGetValue(handle, out var bone)) offset += weight * Correction(positions[v], bone.Axis, bone.Extent);
-
-            result[v] = positions[v] + strength * offset;
+                if (_bones.TryGetValue(handle, out var bone)) offsets[v] += weight * Correction(positions[v], bone.Axis, bone.Extent);
         }
 
-        return result;
+        offsets = Smoothed(offsets, positions, indices);
+        return [.. positions.Select((p, v) => p + strength * offsets[v])];
     }
+
+    /// <summary>
+    /// The offsets averaged with their neighbours' <see cref="SmoothingRounds"/> times; vertices at one position (uv seams) are welded first, so
+    /// a seam moves as one.
+    /// </summary>
+    static Vector3[] Smoothed(Vector3[] offsets, Vector3[] positions, int[] indices)
+    {
+        var weld = Weld(positions);
+        int count = weld.Max() + 1;
+        var neighbours = Enumerable.Range(0, count).Select(_ => new HashSet<int>()).ToArray();
+        for (int t = 0; t < indices.Length; t += 3)
+            for (int k = 0; k < 3; k++)
+            {
+                int a = weld[indices[t + k]], b = weld[indices[t + (k + 1) % 3]];
+                neighbours[a].Add(b);
+                neighbours[b].Add(a);
+            }
+
+        var welded = new Vector3[count];
+        var members = new int[count];
+        for (int v = 0; v < offsets.Length; v++)
+        {
+            welded[weld[v]] += offsets[v];
+            members[weld[v]]++;
+        }
+
+        for (int w = 0; w < count; w++) welded[w] /= members[w];
+        for (int round = 0; round < SmoothingRounds; round++)
+            welded = [.. Enumerable.Range(0, count).Select(w => (welded[w] + neighbours[w].Aggregate(Vector3.Zero, (s, n) => s + welded[n])) / (1 + neighbours[w].Count))];
+
+        return [.. weld.Select(w => welded[w])];
+    }
+
+    /// <summary>
+    /// For each vertex, the index of its position among the distinct positions (to 1e-4 units).
+    /// </summary>
+    static int[] Weld(Vector3[] positions)
+    {
+        var ids = new Dictionary<(int, int, int), int>();
+        return [.. positions.Select(p => Key(p)).Select(k => ids.TryGetValue(k, out int id) ? id : ids[k] = ids.Count)];
+    }
+
+    /// <summary>
+    /// A position rounded to 1e-4 units.
+    /// </summary>
+    static (int, int, int) Key(Vector3 p) => ((int)MathF.Round(p.X * 1e4f), (int)MathF.Round(p.Y * 1e4f), (int)MathF.Round(p.Z * 1e4f));
 
     /// <summary>
     /// The human vertices carried mostly by the bone: their furthest distance from its axis per slice and direction, empty cells filled from
@@ -98,6 +147,8 @@ public sealed class BodyConform
             if (human.Bones[v] != handle) continue;
 
             var (slice, sector, radius, _) = axis.Locate(human.Positions[v], Slices, Sectors);
+            if (slice < 0) continue;
+
             extent[slice, sector] = MathF.Max(extent[slice, sector], radius);
         }
 
@@ -120,17 +171,20 @@ public sealed class BodyConform
     }
 
     /// <summary>
-    /// How far one bone moves a vertex: back towards the axis when it lies beyond the human extent plus the margin, but not past an appendage's
-    /// distance.
+    /// How far one bone moves a vertex: back towards the axis when it lies beyond the human extent plus the margin, fading out towards an
+    /// appendage's distance; nothing for a vertex beside the bone's slices (a tail hanging past the pelvis).
     /// </summary>
     static Vector3 Correction(Vector3 position, BoneAxis axis, float[,] extent)
     {
         var (slice, sector, radius, outward) = axis.Locate(position, Slices, Sectors);
-        float limit = extent[slice, sector] + Margin;
-        if (radius <= limit || radius > Appendage * limit) return Vector3.Zero;
+        if (slice < 0) return Vector3.Zero;
 
+        float limit = extent[slice, sector] + Margin;
+        if (radius <= limit || radius >= Appendage * limit) return Vector3.Zero;
+
+        float fade = Math.Clamp((Appendage * limit - radius) / ((Appendage - FadeFrom) * limit), 0, 1);
         float target = limit + (radius - limit) * Keep;
-        return (target - radius) * outward;
+        return fade * (target - radius) * outward;
     }
 
     /// <summary>
@@ -169,7 +223,8 @@ public sealed class BodyConform
         }
 
         /// <summary>
-        /// Where a point lies around the axis: its slice along it, its direction sector, its distance from it and the unit direction out.
+        /// Where a point lies around the axis: its slice along it (-1 beyond the slices), its direction sector, its distance from it and the unit
+        /// direction out.
         /// </summary>
         public (int Slice, int Sector, float Radius, Vector3 Outward) Locate(Vector3 point, int slices, int sectors)
         {
@@ -178,7 +233,8 @@ public sealed class BodyConform
             float radius = radial.Length();
             float angle = MathF.Atan2(Vector3.Dot(radial, _front), Vector3.Dot(radial, _side));
 
-            int slice = Math.Clamp((int)MathF.Floor((t + 0.25f) / 1.5f * slices), 0, slices - 1);
+            int slice = (int)MathF.Floor((t + 0.25f) / 1.5f * slices);
+            if (slice < 0 || slice >= slices) slice = -1;
             int sector = ((int)MathF.Floor((angle + MathF.PI) / (2 * MathF.PI) * sectors) % sectors + sectors) % sectors;
             return (slice, sector, radius, radius > 1e-6f ? radial / radius : Vector3.Zero);
         }

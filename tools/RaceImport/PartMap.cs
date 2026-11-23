@@ -9,7 +9,8 @@ namespace RaceImport;
 /// <summary>
 /// A body's part map (engine docs/characters.md "Hidden body parts"): a PNG in the body's own uv layout whose colour at each vertex's uv names
 /// the body part the vertex belongs to, so worn items' <c>hide parts</c> stop drawing the skin under them. Each fitted vertex takes the part of
-/// the nearest human body vertex carried by the same bone, read from the game's human part map (docs/race-import.md "Part map").
+/// the nearest human body vertex carried by the same bone, read from the game's human part map and grown by <see cref="Grow"/> (a bulkier body
+/// clips over a wider band than the human's; docs/race-import.md "Part map").
 /// </summary>
 public static class PartMap
 {
@@ -24,6 +25,12 @@ public static class PartMap
     const int Side = 1024;
 
     /// <summary>
+    /// How far each human part reaches beyond its own vertices, in game units (0.1 m): a human vertex without a part takes the part of the nearest
+    /// vertex with one within this distance.
+    /// </summary>
+    const float Grow = 0.8f;
+
+    /// <summary>
     /// The colours the game reads as parts; any other texel is no part.
     /// </summary>
     static readonly HashSet<uint> PartColours = [0xFFFFFF, 0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF, 0xFF8000, 0x8000FF, 0x008080];
@@ -34,13 +41,14 @@ public static class PartMap
     public static int Write(string path, Vector3[] positions, Vector2[] uvs, ushort[] bones, HumanBody human, Rgba humanMap)
     {
         var map = new Rgba(Side, Side);
+        var parts = Grown(human, humanMap);
         var byBone = Enumerable.Range(0, human.Positions.Length).GroupBy(v => human.Bones[v]).ToDictionary(g => g.Key, g => g.ToArray());
         var all = Enumerable.Range(0, human.Positions.Length).ToArray();
         int marked = 0;
         for (int v = 0; v < positions.Length; v++)
         {
             int nearest = Nearest(positions[v], byBone.GetValueOrDefault(bones[v]) ?? all, human.Positions);
-            if (Colour(humanMap, human.Uvs[nearest]) is not { } colour) continue;
+            if (parts[nearest] is not { } colour) continue;
 
             Set(map, uvs[v], colour);
             marked++;
@@ -48,6 +56,29 @@ public static class PartMap
 
         WritePng(path, map);
         return marked;
+    }
+
+    /// <summary>
+    /// Each human vertex's part: its own from the map, else that of the nearest vertex with one within <see cref="Grow"/>.
+    /// </summary>
+    static uint?[] Grown(HumanBody human, Rgba humanMap)
+    {
+        var own = human.Uvs.Select(uv => Colour(humanMap, uv)).ToArray();
+        var marked = Enumerable.Range(0, own.Length).Where(i => own[i] is not null).ToArray();
+        var grown = new uint?[own.Length];
+        for (int v = 0; v < own.Length; v++)
+        {
+            if (own[v] is not null || marked.Length == 0)
+            {
+                grown[v] = own[v];
+                continue;
+            }
+
+            int nearest = Nearest(human.Positions[v], marked, human.Positions);
+            if (Vector3.Distance(human.Positions[v], human.Positions[nearest]) <= Grow) grown[v] = own[nearest];
+        }
+
+        return grown;
     }
 
     /// <summary>

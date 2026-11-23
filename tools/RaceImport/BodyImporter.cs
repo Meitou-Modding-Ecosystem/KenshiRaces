@@ -25,7 +25,7 @@ public static class BodyImporter
         var human = HumanBody.Load(kenshiFolder);
         var fit = new BodyFit(body, kenshi);
         var (fitted, normals, weights) = fit.Repose();
-        var positions = new BodyConform(kenshi, human).Apply(fitted, weights, slim);
+        var positions = new BodyConform(kenshi, human).Apply(fitted, weights, body.Indices, slim);
         var mesh = new SkinnedMesh(positions, normals, body.Uvs, Tangents(positions, normals, body.Uvs, body.Indices), body.Indices, weights);
 
         Directory.CreateDirectory(outFolder);

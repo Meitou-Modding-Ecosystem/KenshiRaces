@@ -44,15 +44,22 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 The game's clothing is modelled around `human_male.mesh`, so a body bulkier than it shows through. Around each torso and limb bone (pelvis,
 spines, clavicles, upper and lower arms and legs) the tool measures the human body's furthest extent per sixth of the bone and per twelfth of a
 turn around it; a fitted vertex beyond that extent plus 0.15 units (1.5 cm of cloth) keeps a fifth of its excess, its correction blended by its
-bone weights. A vertex more than 2.5 times beyond the limit is an appendage (tail, claw) and stays.
+bone weights. The correction fades out between 1.5 and 2.5 times the limit (beyond: an appendage such as a claw, left alone), is zero for a
+vertex outside the bone's slices (a tail hanging below the pelvis), and is smoothed over the surface (12 rounds of neighbour averaging, uv
+seams welded) so neighbouring vertices move alike. **Observed** (Leonid): 39% of vertices move, by 1.3 cm on average and 9.5 cm at most.
 
 ## Part map
 
 The race's `part map male`/`female` PNG marks which body part each vertex belongs to; worn items' `hide parts` stop drawing those parts
-(engine docs/characters.md "Hidden body parts": white chest, red shoulders and upper arms, green hips; coats hide 0x3, robes 0x5, plate
-jackets 0x7, Drifter's Leather Jacket 0x1). The tool gives each fitted vertex the part of the nearest `human_male.mesh` vertex carried by the
-same bone, read from the game's `MaleMask_Default.png` at that vertex's uv, and writes it at the fitted vertex's own uv (1024 × 1024, other
-texels transparent). Items with `hide parts` 0 (pants, most rags and hoods) hide nothing; slimming covers those.
+(engine docs/characters.md "Hidden body parts"). The tool gives each fitted vertex the part of the nearest `human_male.mesh` vertex carried by
+the same bone, read from the game's `MaleMask_Default.png` at that vertex's uv, and writes it at the fitted vertex's own uv (1024 × 1024,
+other texels transparent). Each human part is first grown by 0.8 units (a vertex without a part takes that of the nearest marked vertex
+within that distance), since a bulkier body clips over a wider band.
+
+**Observed** (`MaleMask_Default.png`, 256², sampled at `human_male.mesh` uvs as the game samples them): 642 of 15,504 vertices have a part:
+red the upper chest and shoulder tops, white bands round the upper arms, green the belly front. `hide parts` in the base data (rebirth.mod):
+Drifter's and Padded Leather Jacket 1, Sleeveless Longcoat and Dustcoat 2, Longcoat and Dustcoat 3, Ninja Gi and Rags 4, robes 5, plate
+jackets, skin suits and Crab Armour 7; Holy Servant Rags, Monk Pants and hoods 0. Items with 0 hide nothing; slimming covers those.
 
 ## Textures
 
