@@ -1,10 +1,11 @@
 <Solution>
   <Project Path="Play/Play.csproj" />
-  <Folder Name="/ExampleMod/">
-    <Project Path="ExampleMod/ExampleMod.csproj" />
-    <Project Path="ExampleMod.Tests/ExampleMod.Tests.csproj" />
+  <Folder Name="/KenshiRaces/">
+    <Project Path="KenshiRaces/KenshiRaces.csproj" />
+    <Project Path="KenshiRaces.Tests/KenshiRaces.Tests.csproj" />
   </Folder>
   <Folder Name="/tools/">
+    <Project Path="tools/RaceImport/RaceImport.csproj" />
     <Project Path="tools/StructureImport/StructureImport.csproj" />
   </Folder>
   <Folder Name="/engine/">
