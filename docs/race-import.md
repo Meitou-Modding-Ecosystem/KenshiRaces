@@ -7,7 +7,7 @@ map. It reads the rig's skeleton, human body and part map from the game install,
 ## Run it
 
 ```powershell
-dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim]
+dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>]
 ```
 
 - `<Kenshi folder>`: the game folder (`data/` inside it), e.g. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
@@ -16,6 +16,9 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
   `FemaleMask_Default.png` (female animations and voice in game, the editor's bust sliders); a male one to `male_skeleton`, `human_male.mesh`
   and `MaleMask_Default.png`.
 - `slim`: 0 to 1, default 1 ([Slimming](#slimming)); lower it for a race meant to be bulkier than its clothes.
+- `bust=female`: raise the bust to the female human's height on a male fit (a single-gender woman such as the Crab Queen); default the rig's
+  own human ([Bust](#bust)).
+- `neck=<share>`: the neck's length as a share of the fitted one, default 1 (the Crabman uses 0.7).
 - Writes `<stem>.mesh`, `<stem>_d.dds`, `<stem>_n.dds` (only when the model has a normal map) and `<stem>_parts.png`; the log line gives the
   vertex count, scale, bounds and how many vertices fall in hideable parts.
 - Keep the `.glb` outside the repo (tens of MB); commit the four outputs. `.gitignore` lets `*/items/races/*.mesh` and `*.dds` through.
@@ -38,11 +41,13 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 4. Pelvis, spines, neck and clavicles are fitted as one rigid piece (least squares onto the game's neck, shoulder and hip joints), so the chest
    keeps its shape; per-bone fits shear it where spine and clavicle weights blend. The pelvis and spine joints are left out of that fit: the
    game's pelvis is level with its hips and a Biped export's sits above them, which dropped the chest about a unit.
-5. The head lands half way from where the torso carries it to the game's head joint, so its mesh sits below its bone. The game's neck rises
+5. The head lands half way from where the torso carries it to the game's head joint, so its mesh sits below its bone; with `neck` below 1 it
+   then moves that share of the way from the carried neck joint. The game's neck rises
    about a unit above its shoulders and these models' barely does: placing the head on the joint stretched their necks to about three times
    their length (**Observed** on the male Leoma, Crabman and the Crab Queen: fitted neck 2.4 units, the models' own 0.8, the game's 1.4).
 6. Feet keep upright and are squashed so the soles land on the ground (paws and crab feet are taller than the game's foot).
-7. Each vertex is the weighted sum of its joints' fits; its weights go to the game bones its joints follow, the heaviest four kept.
+7. Each vertex is the weighted sum of its joints' fits; its weights go to the game bones its joints follow, the heaviest four kept (then
+   [Human weights](#human-weights) replaces those of the torso).
 
 **Verified**: the C# tool's meshes match the original Python prototype's (positions within 1e-5 units, identical bone weights) on Crabman.
 
@@ -57,20 +62,31 @@ seams welded) so neighbouring vertices move alike. **Observed** (male Leoma): 39
 
 ## Bust
 
-A female body's bust is raised to the female human's (**Observed**: the Leoma and Crevan women sat theirs 2.0 and 1.75 units lower, under the
-clothing's chest and the part map's bust). The bust is the middle of the quarter-unit slice, between `Spine1` and the shoulders and 0.3 to
-1.8 units beside the middle line, whose frontmost vertex is furthest forward. Each vertex rises by the difference times its torso-bone weight,
-times exp(-(dy / 1.5)²) of its height from the bust, times a smoothstep from the spine's depth (0) to the bust's (1), so the back, arms and
-legs stay. Then slimming runs.
+Every body's bust (a man's chest) is raised to its rig's human's, or the female human's with `bust=female` (**Observed**: the Leoma and
+Crevan women sat theirs 2.0 and 1.75 units lower, the male Leoma 1.0, the Crab Queen 1.5 below the female human's, under the clothing's chest
+and the part map's bust). The bust is the middle of the quarter-unit slice, between `Spine1` and the shoulders and 0.3 to 1.8 units beside
+the middle line, whose frontmost vertex is furthest forward. The front of the torso from 0.8 below it to 0.2 above rises by the whole
+difference, so the bust keeps its shape; above and below, the rise falls off by a smoothstep over twice the lift (at least 1.5 units), and
+it is scaled by the vertex's torso-bone weight and a smoothstep from the spine's depth (0) to the bust's (1), so the back, arms and legs stay.
+A narrow Gaussian instead folded the chest above a 2-unit lift and stretched the bust into a cone. Then slimming runs.
 
-## Human-only bones
+## Human weights
 
-The female skeleton has `L Boob` and `R Boob` (the editor's Breast size, height and spacing scale and move them, engine docs/animation.md),
-which a Biped rig lacks. After slimming, each vertex whose heaviest bone is `Spine1` or `Spine2` takes the human-only weights of the nearest
-human vertex that has some, within 1 unit, scaled by 1 - distance; its own weights shrink to make room. **Observed** (`human_female.mesh`): the
-bust vertices are carried by the two bones (892 of the 994 front-chest vertices). The bones (`L Boob` 28, `R Boob` 29) and the female rig's
-other handles differ from the male's (`R Clavicle` 23 against 25; the male has `Bip01 Jaw`), so meshes are always written against their own
-rig's handles.
+The editor's body sliders scale the game's bones (engine docs/animation.md "Body shape sliders"): Chest scales `Spine2`, Stomach and Waist
+`Spine1`, Neck `Neck`, the bust sliders the female rig's `L Boob` and `R Boob`. **Observed** (all four Meshy Leoma and Crevan bodies): the
+models' weights leave `Spine2` and `Neck` empty, carrying the chest on `Spine1` and the clavicles and the neck on the head, so Stomach and
+Waist dragged the chest and Chest did nothing; the Leoma tails are bound to a thigh or a toe. After slimming, on the surface with uv seams
+welded:
+
+1. Tails: a vertex carried by a leg bone, behind depth -0.6 and over 0.8 units from every human vertex, goes to `Bip01 Pelvis`; so do its
+   neighbours carried by the same bone, behind -0.6 and over 0.3 units from the human (the tail's root).
+2. Each vertex carried by the pelvis, spines, neck, clavicles, upper arms, thighs or the bust bones, or by the head below the game's head
+   joint, blends to the human's weights there (the six nearest human torso, neck, head, upper-limb vertices' weights by inverse distance):
+   fully within 0.5 units of the human, not at all beyond 1.2.
+3. The changed vertices and two rings around them are smoothed: four rounds, each halfway to the neighbours' mean.
+
+The bones (`L Boob` 28, `R Boob` 29) and the female rig's other handles differ from the male's (`R Clavicle` 23 against 25; the male has
+`Bip01 Jaw`), so meshes are always written against their own rig's handles.
 
 ## Part map
 

@@ -100,6 +100,11 @@ public sealed class BodyFit
     readonly Dictionary<string, Vector3> _source;
 
     /// <summary>
+    /// The neck's length as a share of the fitted one (1 keeps it): the head moves that share of the way from the neck joint.
+    /// </summary>
+    readonly float _neck;
+
+    /// <summary>
     /// The model's scale to the game's units: the game's head height over the model's (head joint above its lowest vertex).
     /// </summary>
     public float Scale { get; }
@@ -110,12 +115,14 @@ public sealed class BodyFit
     public IReadOnlyDictionary<string, BoneFit> Fits { get; }
 
     /// <summary>
-    /// Works out the fits of <paramref name="body"/> onto <paramref name="kenshi"/>. Throws when the model lacks a Biped joint the fit needs.
+    /// Works out the fits of <paramref name="body"/> onto <paramref name="kenshi"/>, the neck <paramref name="neck"/> times its fitted length.
+    /// Throws when the model lacks a Biped joint the fit needs.
     /// </summary>
-    public BodyFit(SourceBody body, KenshiSkeleton kenshi)
+    public BodyFit(SourceBody body, KenshiSkeleton kenshi, float neck = 1)
     {
         _body = body;
         _kenshi = kenshi;
+        _neck = neck;
         _source = body.JointNames.Select((n, i) => (Name: Short(n) ?? n, i)).GroupBy(p => p.Name).ToDictionary(g => g.Key, g => body.JointPositions[g.First().i]);
         Scale = HeadHeight(kenshi) / (Source("Head").Y - body.Positions.Min(p => p.Y));
         Fits = BuildFits();
@@ -176,14 +183,17 @@ public sealed class BodyFit
     }
 
     /// <summary>
-    /// The head placed <see cref="HeadReach"/> of the way from where the rigid torso carries it to the game's head joint.
+    /// The head placed <see cref="HeadReach"/> of the way from where the rigid torso carries it to the game's head joint, then drawn towards the
+    /// carried neck joint so the neck is <see cref="_neck"/> times as long.
     /// </summary>
     void LowerHead(Dictionary<string, BoneFit> fits, (Matrix4x4 Rotation, Vector3 Translation) torso)
     {
         if (!fits.TryGetValue("Head", out var head)) return;
 
         var carried = Vector3.TransformNormal(Scale * Source("Head"), torso.Rotation) + torso.Translation;
-        fits["Head"] = head with { Target = Vector3.Lerp(carried, head.Target, HeadReach) };
+        var neck = Vector3.TransformNormal(Scale * Source("Neck"), torso.Rotation) + torso.Translation;
+        var placed = Vector3.Lerp(carried, head.Target, HeadReach);
+        fits["Head"] = head with { Target = neck + (placed - neck) * _neck };
     }
 
     /// <summary>

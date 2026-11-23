@@ -19,8 +19,8 @@ The editor lists each RACE_GROUP as a race and its RACEs as subraces (engine doc
 Ids end in `KenshiRaces.mod`. Subrace and CHARACTER names are one lowercase word, so the console's `spawn` takes them without quotes. Each body's
 files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leoma and Crevan). Male bodies are fitted to `male_skeleton`,
 female ones to `female_skeleton`; the crab bodies are male fits, so a crab queen is single gender with the male animations and voice. Source
-models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman and crabqueen "... - 3ds Max Biped.glb", the others
-`leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`.
+models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
+Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`.
 
 ## Records
 

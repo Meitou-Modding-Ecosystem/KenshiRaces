@@ -25,8 +25,8 @@ with its helper; it never copies its records or files. Read `docs/depending-on-k
 3. **Use a race**: link a subrace RACE (`Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`) in your CHARACTER's `race` list; set
    `female chance` for leoma and crevan, which have both genders.
 4. **New subrace**: per body `dotnet run --project <KenshiRaces>/tools/RaceImport -c Release -- <model.glb> <Kenshi> <Mod>/items/races <stem>
-   [male|female] [slim]`; check the log line (scale near 10 to 13 for a human-sized model, hideable vertices above 0, a female body's bust
-   lift and human-only vertices above 0). Then `RaceRecords.Add(c, new Subrace(...))` and `RaceRecords.JoinGroup(c, Races.CrabfolkGroup, id)`
+   [male|female] [slim] [bust=female] [neck=<share>]`; check the log line (scale near 10 to 13 for a human-sized model, hideable vertices
+   above 0, human weights on hundreds of vertices, a tail's vertices on the pelvis for a tailed body). Then `RaceRecords.Add(c, new Subrace(...))` and `RaceRecords.JoinGroup(c, Races.CrabfolkGroup, id)`
    (or `AddGroup` for a race of your own).
 5. **Animations**: pick a clip from `docs/animations.md`, get its technique with `AnimationRecords.Technique(c.Data, RaceAnimations.X)` in
    `Initialize`, and answer `c.AddCombatMove` with `new CombatMove(technique, progress)` (progress 0 to 1, your own state, thread-safe).

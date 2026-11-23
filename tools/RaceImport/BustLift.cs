@@ -3,8 +3,8 @@ using System.Numerics;
 namespace RaceImport;
 
 /// <summary>
-/// Raises a female body's bust to the game's female human's height (docs/race-import.md "Bust"): the models sit it well below the human's, so
-/// the clothing's chest and the part map's bust region ride above it. The bust is the most forward point of the chest between the waist
+/// Raises a body's bust or chest to a human's height (docs/race-import.md "Bust"): the models sit it well below the human's, so the clothing's
+/// chest and the part map's bust region ride above it. The bust is the most forward point of the chest between the waist
 /// (<c>Spine1</c>) and the shoulders; the front of the torso moves up by the difference, fading out above, below and towards the back.
 /// </summary>
 public static class BustLift
@@ -25,12 +25,20 @@ public static class BustLift
     const float Slice = 0.25f;
 
     /// <summary>
-    /// How far above and below the bust the lift reaches (the Gaussian's width): wide enough that no vertex overtakes the one above it.
+    /// The band that moves by the whole lift: from this far below the bust (its underside) to this far above it.
     /// </summary>
-    const float Reach = 1.5f;
+    const float Under = 0.8f, Over = 0.2f;
 
     /// <summary>
-    /// The fitted positions with the bust raised to <paramref name="human"/>'s; returns them and the lift (0 when the bust is already as high).
+    /// The fades above and below the band are this many times the lift long, and at least <see cref="MinFade"/>: a smoothstep that steep
+    /// stretches the chest below by at most 1.75 and squashes the chest above to no less than a quarter, never folding it (a narrow Gaussian
+    /// did: Matthew saw a crease above and a cone below the bust, 2026-11-23).
+    /// </summary>
+    const float FadePerLift = 2, MinFade = 1.5f;
+
+    /// <summary>
+    /// The fitted positions with the bust raised to <paramref name="human"/>'s (the rig's own human, or the female's for a woman fitted to the male
+    /// rig); returns them and the lift (0 when the bust is already as high).
     /// </summary>
     public static (Vector3[] Positions, float Lift) Apply(Vector3[] positions, Dictionary<ushort, float>[] weights, KenshiSkeleton kenshi,
         HumanBody human)
@@ -47,7 +55,7 @@ public static class BustLift
         {
             var p = positions[v];
             float share = weights[v].Where(w => torso.Contains(w.Key)).Sum(w => w.Value);
-            float around = MathF.Exp(-Square((p.Y - bust.Height) / Reach));
+            float around = Band(p.Y - bust.Height, MathF.Max(MinFade, FadePerLift * lift));
             float front = SmoothStep(back, bust.Depth, p.Z);
             lifted[v] = p with { Y = p.Y + lift * share * around * front };
         }
@@ -86,7 +94,14 @@ public static class BustLift
     }
 
     /// <summary>
-    /// The square.
+    /// The share of the lift at <paramref name="dy"/> from the bust: 1 in the band, falling smoothly to 0 over <paramref name="fade"/> on
+    /// either side.
     /// </summary>
-    static float Square(float x) => x * x;
+    static float Band(float dy, float fade)
+    {
+        if (dy > Over) return 1 - SmoothStep(Over, Over + fade, dy);
+        if (dy < -Under) return SmoothStep(-Under - fade, -Under, dy);
+
+        return 1;
+    }
 }
