@@ -2,7 +2,7 @@ using System.Globalization;
 using RaceImport;
 
 // Fits a Biped .glb body onto the game's human skeleton (docs/race-import.md). Arguments: the model, the game folder (its
-// skeleton, human body and part map are read), the output folder, the files' stem (e.g. kenshiraces_leonid) and optionally the slimming
+// skeleton, human body and part map are read), the output folder, the files' stem (e.g. kenshiraces_leonidmale) and optionally the slimming
 // strength (0 to 1, default 1).
 if (args.Length is not (4 or 5) || (args.Length == 5 && !float.TryParse(args[4], CultureInfo.InvariantCulture, out _)))
 {
