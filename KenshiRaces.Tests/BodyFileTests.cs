@@ -37,6 +37,20 @@ public sealed class BodyFileTests
     }
 
     [Theory]
+    [MemberData(nameof(Stems))]
+    public void The_chest_and_neck_ride_the_bones_the_editor_sliders_scale(string stem)
+    {
+        bool female = Bodies().Single(b => b.Body.Stem == stem).Female;
+        var mesh = OgreMeshReader.Read(File.ReadAllBytes(Path.Combine(Folder(), stem + ".mesh")));
+        var weights = Assert.Single(mesh.SubMeshes).BoneAssignments.GroupBy(a => a.BoneIndex).ToDictionary(g => g.Key, g => g.Sum(a => a.Weight));
+
+        // Handles of both rigs: Bip01 Spine2 14 and Neck 20; the female rig's L Boob 28 and R Boob 29 (docs/race-import.md "Human weights").
+        Assert.True(weights.GetValueOrDefault((ushort)14) > 50, "Spine2 carries the chest");
+        Assert.True(weights.GetValueOrDefault((ushort)20) > 5, "Neck carries the neck");
+        if (female) Assert.True(weights.GetValueOrDefault((ushort)28) + weights.GetValueOrDefault((ushort)29) > 20, "the Boob bones carry the bust");
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public void The_editor_limits_hold_only_bone_sliders_and_the_bust_ones_for_women(bool female)

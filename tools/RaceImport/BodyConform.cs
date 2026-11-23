@@ -95,16 +95,9 @@ public sealed class BodyConform
     /// </summary>
     static Vector3[] Smoothed(Vector3[] offsets, Vector3[] positions, int[] indices)
     {
-        var weld = Weld(positions);
+        var weld = Surface.Weld(positions);
         int count = weld.Max() + 1;
-        var neighbours = Enumerable.Range(0, count).Select(_ => new HashSet<int>()).ToArray();
-        for (int t = 0; t < indices.Length; t += 3)
-            for (int k = 0; k < 3; k++)
-            {
-                int a = weld[indices[t + k]], b = weld[indices[t + (k + 1) % 3]];
-                neighbours[a].Add(b);
-                neighbours[b].Add(a);
-            }
+        var neighbours = Surface.Neighbours(weld, indices);
 
         var welded = new Vector3[count];
         var members = new int[count];
@@ -120,20 +113,6 @@ public sealed class BodyConform
 
         return [.. weld.Select(w => welded[w])];
     }
-
-    /// <summary>
-    /// For each vertex, the index of its position among the distinct positions (to 1e-4 units).
-    /// </summary>
-    static int[] Weld(Vector3[] positions)
-    {
-        var ids = new Dictionary<(int, int, int), int>();
-        return [.. positions.Select(p => Key(p)).Select(k => ids.TryGetValue(k, out int id) ? id : ids[k] = ids.Count)];
-    }
-
-    /// <summary>
-    /// A position rounded to 1e-4 units.
-    /// </summary>
-    static (int, int, int) Key(Vector3 p) => ((int)MathF.Round(p.X * 1e4f), (int)MathF.Round(p.Y * 1e4f), (int)MathF.Round(p.Z * 1e4f));
 
     /// <summary>
     /// The human vertices carried mostly by the bone: their furthest distance from its axis per slice and direction, empty cells filled from

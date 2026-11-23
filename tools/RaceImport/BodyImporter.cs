@@ -15,19 +15,20 @@ public static class BodyImporter
 
     /// <summary>
     /// Imports <paramref name="model"/> as <c>&lt;stem&gt;.mesh</c>, <c>&lt;stem&gt;_d.dds</c>, (with a normal map) <c>&lt;stem&gt;_n.dds</c> and the
-    /// part map <c>&lt;stem&gt;_parts.png</c> in <paramref name="outFolder"/>, fitted to <paramref name="rig"/> and slimmed by <paramref name="slim"/>
-    /// (0 none, 1 full); returns a line for the log.
+    /// part map <c>&lt;stem&gt;_parts.png</c> in <paramref name="outFolder"/>, as <paramref name="options"/> say; returns a line for the log.
     /// </summary>
-    public static string Import(string model, string kenshiFolder, string outFolder, string stem, HumanRig rig, float slim)
+    public static string Import(string model, string kenshiFolder, string outFolder, string stem, ImportOptions options)
     {
+        var rig = options.Rig;
         var body = SourceBody.Load(model);
         var kenshi = KenshiSkeleton.Load(kenshiFolder, rig);
         var human = HumanBody.Load(kenshiFolder, rig);
-        var fit = new BodyFit(body, kenshi);
+        var bustHuman = options.Bust is { } bust && bust != rig ? HumanBody.Load(kenshiFolder, bust) : human;
+        var fit = new BodyFit(body, kenshi, options.Neck);
         var (fitted, normals, weights) = fit.Repose();
-        var (lifted, lift) = rig == HumanRig.Female ? BustLift.Apply(fitted, weights, kenshi, human) : (fitted, 0);
-        var positions = new BodyConform(kenshi, human).Apply(lifted, weights, body.Indices, slim);
-        int humanOnly = HumanOnlyBones.Apply(positions, weights, kenshi, human);
+        var (lifted, lift) = BustLift.Apply(fitted, weights, kenshi, bustHuman);
+        var positions = new BodyConform(kenshi, human).Apply(lifted, weights, body.Indices, options.Slim);
+        var (copied, tail) = HumanWeights.Apply(positions, body.Indices, weights, kenshi, human);
         var mesh = new SkinnedMesh(positions, normals, body.Uvs, Tangents(positions, normals, body.Uvs, body.Indices), body.Indices, weights);
 
         Directory.CreateDirectory(outFolder);
@@ -37,8 +38,8 @@ public static class BodyImporter
 
         var min = positions.Aggregate(Vector3.Min);
         var max = positions.Aggregate(Vector3.Max);
-        return $"Race body {stem} ({rig.Skeleton}): {positions.Length} vertices, {body.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
-            $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {humanOnly} vertices on human-only bones, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts";
+        return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {positions.Length} vertices, {body.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
+            $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, human weights on {copied} and tail on the pelvis for {tail} welded vertices, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts";
     }
 
     /// <summary>

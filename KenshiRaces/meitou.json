@@ -1,6 +1,6 @@
 {
   "id": "kenshi.races",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "apiVersion": 2,
   "gameVersion": ">=0.22.2",
   "assemblies": ["KenshiRaces.dll"],
