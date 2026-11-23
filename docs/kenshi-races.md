@@ -7,11 +7,18 @@ fitted by the [race import](race-import.md). Mods use them or add their own: [de
 
 | Race | RACE | CHARACTER | Files (`KenshiRaces/items/races/`) | Normal map |
 | --- | --- | --- | --- | --- |
-| Leonid | `10-KenshiRaces.mod` | `11-KenshiRaces.mod` | `kenshiraces_leonid*` | yes |
-| Crabman | `12-KenshiRaces.mod` | `13-KenshiRaces.mod` | `kenshiraces_crabman*` | no |
-| Crab Queen | `14-KenshiRaces.mod` | `15-KenshiRaces.mod` | `kenshiraces_crabqueen*` | no |
+| leonidmale | `10-KenshiRaces.mod` | `11-KenshiRaces.mod` | `kenshiraces_leonidmale*` | yes |
+| crabman | `12-KenshiRaces.mod` | `13-KenshiRaces.mod` | `kenshiraces_crabman*` | no |
+| crabqueen | `14-KenshiRaces.mod` | `15-KenshiRaces.mod` | `kenshiraces_crabqueen*` | no |
+| leonidfemale | `16-KenshiRaces.mod` | `17-KenshiRaces.mod` | `kenshiraces_leonidfemale*` | yes |
+| corvidmale | `18-KenshiRaces.mod` | `19-KenshiRaces.mod` | `kenshiraces_corvidmale*` | yes |
+| corvidfemale | `20-KenshiRaces.mod` | `21-KenshiRaces.mod` | `kenshiraces_corvidfemale*` | yes |
 
-Source models: Leonid "Leonid Bare - 3ds Max Biped.glb" (slim 1), Crabman and Crab Queen "... - 3ds Max Biped.glb" (slim 1), Meshy exports.
+Names are one lower-case word (`<species><gender>` where both exist), so the console takes them unquoted; the files' stem is `kenshiraces_`
+and the name. Ids stay with a race when it is renamed.
+
+Source models (Meshy exports, slim 1): leonidmale "Leonid Bare - 3ds Max Biped.glb", crabman "Crabman - 3ds Max Biped.glb", crabqueen
+"Crabqueen - 3ds Max Biped.glb", the others `<name>.glb`.
 
 ## Records
 
@@ -32,7 +39,7 @@ action 18 (join squad) adds the character to the player's squad.
 ## Testing in game
 
 1. Enable Kenshi Races in the launcher (or `data/mods.cfg`).
-2. Console: `spawn "Leonid"` (or `"Crabman"`, `"Crab Queen"`) spawns at the cursor; talk to recruit, or F10 debug Recruit.
+2. Console: `spawn leonidmale` (or any name above) spawns at the cursor; talk to recruit, or F10 debug Recruit.
 3. F10 **Kenshi Races: races** lists every fitted race loaded (this mod's and dependents').
 
 ## Clothing

@@ -44,13 +44,13 @@ Refer to the ids in `Races` from your records, e.g. in your data phase:
 ```csharp
 public void EditData(ModDataContext c)
 {
-    var guard = c.Add("20-MyMod.mod", FcsRecordType.Character, "Leonid Guard");
+    var guard = c.Add("20-MyMod.mod", FcsRecordType.Character, "leonidguard");
     // ... fields ...
-    guard.References["race"] = [new FcsReference(Races.LeonidRace, 100, 0, 0)];
+    guard.References["race"] = [new FcsReference(Races.LeonidMaleRace, 100, 0, 0)];
 }
 ```
 
-`Races.LeonidRace`, `CrabmanRace`, `CrabQueenRace` (RACE), `...Character` (a kitless recruitable CHARACTER), `Races.Recruit` (the "Join
+`Races.LeonidMaleRace`, `LeonidFemaleRace`, `CrabmanRace`, `CrabQueenRace`, `CorvidMaleRace`, `CorvidFemaleRace` (RACE), `...Character` (a kitless recruitable CHARACTER), `Races.Recruit` (the "Join
 us." talk). Table: [kenshi-races.md "Races"](kenshi-races.md#races).
 
 ## 4. Add your own race

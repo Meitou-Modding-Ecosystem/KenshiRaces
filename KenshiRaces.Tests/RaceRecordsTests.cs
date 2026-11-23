@@ -12,17 +12,17 @@ public sealed class RaceRecordsTests
     [Fact]
     public void A_race_is_Greenlander_with_the_body_files_for_both_genders()
     {
-        var race = new FcsRecord { StringId = Races.LeonidRace, RecordType = FcsRecordType.Race, Name = "Leonid" };
+        var race = new FcsRecord { StringId = Races.LeonidMaleRace, RecordType = FcsRecordType.Race, Name = "leonidmale" };
 
-        RaceRecords.FillRace(race, Game(), Races.Leonid);
+        RaceRecords.FillRace(race, Game(), Races.LeonidMale);
 
         Assert.Equal(1.25f, race.Floats["walk speed"]);
         foreach (string gender in new[] { "male", "female" })
         {
-            Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_leonid.mesh", race.Filenames[$"{gender} mesh"]);
-            Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_leonid_d.dds", race.Filenames[$"body texture {gender}"]);
-            Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_leonid_n.dds", race.Filenames[$"nm {gender}"]);
-            Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_leonid_parts.png", race.Filenames[$"part map {gender}"]);
+            Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_leonidmale.mesh", race.Filenames[$"{gender} mesh"]);
+            Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_leonidmale_d.dds", race.Filenames[$"body texture {gender}"]);
+            Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_leonidmale_n.dds", race.Filenames[$"nm {gender}"]);
+            Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_leonidmale_parts.png", race.Filenames[$"part map {gender}"]);
             Assert.Empty(race.References[$"heads {gender}"]);
         }
 
@@ -34,7 +34,7 @@ public sealed class RaceRecordsTests
     [Fact]
     public void A_body_without_a_normal_map_names_none()
     {
-        var race = new FcsRecord { StringId = Races.CrabmanRace, RecordType = FcsRecordType.Race, Name = "Crabman" };
+        var race = new FcsRecord { StringId = Races.CrabmanRace, RecordType = FcsRecordType.Race, Name = "crabman" };
 
         RaceRecords.FillRace(race, Game(), Races.Crabman);
 
@@ -44,14 +44,14 @@ public sealed class RaceRecordsTests
     [Fact]
     public void A_character_is_a_kitless_male_Drifter_of_the_race_with_the_recruit_talk()
     {
-        var character = new FcsRecord { StringId = Races.LeonidCharacter, RecordType = FcsRecordType.Character, Name = "Leonid" };
+        var character = new FcsRecord { StringId = Races.LeonidMaleCharacter, RecordType = FcsRecordType.Character, Name = "leonidmale" };
 
-        RaceRecords.FillCharacter(character, Game(), Races.Leonid);
+        RaceRecords.FillCharacter(character, Game(), Races.LeonidMale);
 
         Assert.Equal(7, character.Ints["strength"]);
         Assert.Equal(0, character.Ints["female chance"]);
         Assert.Empty(character.References["weapons"]);
-        Assert.Equal(Races.LeonidRace, Assert.Single(character.References["race"]).TargetStringId);
+        Assert.Equal(Races.LeonidMaleRace, Assert.Single(character.References["race"]).TargetStringId);
         Assert.Equal(Races.Recruit, Assert.Single(character.References["dialogue"]).TargetStringId);
     }
 

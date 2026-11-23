@@ -24,7 +24,7 @@ public sealed class KenshiRacesMod : IMod, IModDataPhase
     public void Initialize(ModContext c)
     {
         c.AddDebugCommand("Kenshi Races: races", _ => Describe(c));
-        if (c.Data.Find(Races.LeonidRace) is null) c.LogError("Kenshi Races' records are missing: the data phase did not add them (see the log).");
+        if (c.Data.Find(Races.LeonidMaleRace) is null) c.LogError("Kenshi Races' records are missing: the data phase did not add them (see the log).");
     }
 
     /// <summary>

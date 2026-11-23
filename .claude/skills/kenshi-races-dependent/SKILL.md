@@ -1,6 +1,6 @@
 ---
 name: kenshi-races-dependent
-description: Use when making a Meitou code mod depend on Kenshi Races, using the Leonid, Crabman or Crab Queen races, or fitting a new rigged .glb body as a race.
+description: Use when making a Meitou code mod depend on Kenshi Races, using its races (leonidmale, leonidfemale, crabman, crabqueen, corvidmale, corvidfemale), or fitting a new rigged .glb body as a race.
 ---
 
 # Build on Kenshi Races
@@ -22,7 +22,7 @@ with its helper; it never copies its records or files. Read `docs/depending-on-k
    minor), `gameVersion` floor at least 0.22.2 (data phase).
 2. **Project**: add a `kenshi.races` entry to `meitou.lock.json` from the release notes of `kenshi-races-v<version>`, and move `engine/` to its
    engine commit.
-3. **Use a race**: link `Races.LeonidRace` (or `CrabmanRace`, `CrabQueenRace`) in your CHARACTER's `race` list.
+3. **Use a race**: link `Races.LeonidMaleRace` (or `LeonidFemaleRace`, `CrabmanRace`, `CrabQueenRace`, `CorvidMaleRace`, `CorvidFemaleRace`) in your CHARACTER's `race` list.
 4. **New race**: `dotnet run --project <KenshiRaces>/tools/RaceImport -c Release -- <model.glb> <Kenshi> <Mod>/items/races <stem> [slim]`; check
    the log line (scale near 10 to 13 for a human-sized model, hideable vertices above 0). Then `RaceRecords.Add(c, new RaceBody(...))`.
 5. **Docs**: list the mod's races in its own docs; a change to `RaceBody`, `RaceRecords` or `Races` updates
