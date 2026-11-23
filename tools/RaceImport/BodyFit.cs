@@ -72,6 +72,12 @@ public sealed class BodyFit
     /// </summary>
     const float MinStretch = 0.6f, MaxStretch = 1.6f;
 
+    /// <summary>
+    /// Where the head is carried, as a share of the way from the fitted torso's neck joint to the game's head bone. The torso sits lower than
+    /// the game's (the models' torsos are shorter), so a head on the game's head bone stretches the neck to about three times its length.
+    /// </summary>
+    const float NeckShare = 0.5f;
+
     #endregion
 
     #region Fit
@@ -120,6 +126,7 @@ public sealed class BodyFit
     {
         var fits = LimbFits();
         AddTorso(fits);
+        AddHead(fits);
         AddFeet(fits);
         return fits;
     }
@@ -162,6 +169,16 @@ public sealed class BodyFit
             var target = Vector3.TransformNormal(Scale * Source(bone), rotation) + translation;
             fits[bone] = new BoneFit(Source(bone), target, rotation, null, 1);
         }
+    }
+
+    /// <summary>
+    /// The head moved down to <see cref="NeckShare"/> of the way from the fitted neck joint to the game's head bone, its turn and stretch kept.
+    /// </summary>
+    void AddHead(Dictionary<string, BoneFit> fits)
+    {
+        if (!fits.TryGetValue("Head", out var head) || !fits.TryGetValue("Neck", out var neck)) return;
+
+        fits["Head"] = head with { Target = Vector3.Lerp(neck.Target, head.Target, NeckShare) };
     }
 
     /// <summary>

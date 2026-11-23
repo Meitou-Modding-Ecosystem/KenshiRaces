@@ -34,10 +34,14 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
    (0.6 to 1.6 times).
 4. Pelvis, spines, neck and clavicles are fitted as one rigid piece (least squares onto the game's torso, shoulder and hip joints), so the chest
    keeps its shape; per-bone fits shear it where spine and clavicle weights blend.
-5. Feet keep upright and are squashed so the soles land on the ground (paws and crab feet are taller than the game's foot).
-6. Each vertex is the weighted sum of its joints' fits; its weights go to the game bones its joints follow, the heaviest four kept.
+5. The head is carried halfway from the fitted neck joint to the game's head bone. **Observed** (Crabman, Leonid, Crab Queen): the fitted
+   neck joint lands about 1.1 units below the game's, so a head on the head bone stretched the neck from about 0.8 to 2.4 units; halfway it
+   is 1.2 and the body's top is about 1.2 units lower (19.7 to 18.5).
+6. Feet keep upright and are squashed so the soles land on the ground (paws and crab feet are taller than the game's foot).
+7. Each vertex is the weighted sum of its joints' fits; its weights go to the game bones its joints follow, the heaviest four kept.
 
-**Verified**: the C# tool's meshes match the original Python prototype's (positions within 1e-5 units, identical bone weights) on Crabman.
+**Verified**: without step 5, the C# tool's meshes match the original Python prototype's (positions within 1e-5 units, identical bone weights)
+on Crabman.
 
 ## Slimming
 
