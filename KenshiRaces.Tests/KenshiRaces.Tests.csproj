@@ -6,7 +6,7 @@
     <OutputType>Exe</OutputType>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>ExampleMod.Tests</RootNamespace>
+    <RootNamespace>KenshiRaces.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,7 +21,8 @@
 
   <ItemGroup>
     <ProjectReference Include="$(MeitouEngineDir)src/Meitou.Game/Meitou.Game.csproj" />
-    <ProjectReference Include="../ExampleMod/ExampleMod.csproj" />
+    <ProjectReference Include="../KenshiRaces/KenshiRaces.csproj" />
+    <ProjectReference Include="../tools/RaceImport/RaceImport.csproj" />
   </ItemGroup>
 
 </Project>

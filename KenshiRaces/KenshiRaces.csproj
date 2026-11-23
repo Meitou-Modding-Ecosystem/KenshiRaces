@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <!--
-    The template's mod: rename the folder, this file, the assembly and the namespace to your mod's name (README "Use this template").
-    Built against the game's assemblies, never copied: the game loads them.
+    Kenshi Races (docs/kenshi-races.md): the races' records, added in the data phase, and the helper dependents add their own races with.
+    Built against the game's assemblies, never copied: the game loads them. The fitted bodies in items/races are copied by Play and the release.
   -->
 
   <PropertyGroup>
-    <AssemblyName>ExampleMod</AssemblyName>
-    <RootNamespace>ExampleMod</RootNamespace>
+    <AssemblyName>KenshiRaces</AssemblyName>
+    <RootNamespace>KenshiRaces</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
