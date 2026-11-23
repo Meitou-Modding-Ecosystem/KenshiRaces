@@ -32,6 +32,7 @@ public sealed class RaceRecordsTests
         Assert.True(race.Bools["playable"]);
         Assert.Equal(RaceRecords.EditorLimits, race.Filenames["editor limits"]);
         Assert.Empty(race.References["hairs"]);
+        Assert.Contains(race.References["animation files"], f => f.TargetStringId == AnimationRecords.File);
     }
 
     [Fact]
@@ -70,6 +71,8 @@ public sealed class RaceRecordsTests
             .. Races.Groups.Select(g => g.Id),
             .. Races.All.Select(s => s.RaceId),
             .. Races.All.SelectMany(s => s.Characters).Select(c => c.Id),
+            AnimationRecords.File,
+            .. RaceAnimations.All.Select(a => a.TechniqueId),
         ];
 
         Assert.Equal(ids.Length, ids.Distinct().Count());

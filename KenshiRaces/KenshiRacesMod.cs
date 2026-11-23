@@ -18,6 +18,7 @@ public sealed class KenshiRacesMod : IMod, IModDataPhase
     public void EditData(ModDataContext c)
     {
         RecruitTalk.Add(c);
+        AnimationRecords.Add(c);
         foreach (var group in Races.Groups) RaceRecords.AddGroup(c, group);
     }
 

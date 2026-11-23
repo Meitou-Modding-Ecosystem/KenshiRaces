@@ -67,8 +67,8 @@ public static class RaceRecords
 
     /// <summary>
     /// Fills a new RACE: Greenlander's fields and lists, then each gender's body files (a single-gender race wears its one body for both), no
-    /// heads or hair (the body has its own), no body morphs, no shirts (they paint the human body's uv layout), and playable in the character
-    /// editor with <see cref="EditorLimits"/>.
+    /// heads or hair (the body has its own), no body morphs, no shirts (they paint the human body's uv layout), playable in the character
+    /// editor with <see cref="EditorLimits"/>, and the animation library linked (<see cref="AnimationRecords"/>).
     /// </summary>
     public static void FillRace(FcsRecord race, GameDatabase game, Subrace subrace)
     {
@@ -82,6 +82,7 @@ public static class RaceRecords
         SetBody(race, "female", subrace.Body(female: true));
 
         race.References["hairs"] = [];
+        AnimationRecords.Link(race);
     }
 
     /// <summary>
