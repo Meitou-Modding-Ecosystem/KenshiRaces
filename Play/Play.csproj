@@ -105,6 +105,21 @@
     </ItemGroup>
   </Target>
 
+  <!--
+    A mod's game assets that are not code (its items/ folder: fitted race bodies the records name as .\mods\<Mod>\items\races\...), copied with their
+    subfolders into its deployed folder.
+  -->
+  <Target Name="PlayDeployAssets" AfterTargets="PlayDeploy" DependsOnTargets="PlayFindMods" Condition="'$(PlayDeploy)' == 'true'">
+    <ItemGroup>
+      <_PlayAssetRoot Include="@(PlayMod->'%(RootDir)%(Directory)items')" />
+      <_PlayAssetRoot Remove="@(_PlayAssetRoot)" Condition="!Exists('%(Identity)')" />
+      <_PlayAsset Include="%(_PlayAssetRoot.Identity)/**/*" ModName="%(_PlayAssetRoot.ModName)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_PlayAsset)" DestinationFiles="@(_PlayAsset->'$(KenshiModsDir)%(ModName)/items/%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" Condition="'@(_PlayAsset)' != ''" />
+    <Message Importance="high" Text="Deployed @(_PlayAsset->Count()) asset file(s) from items/" Condition="'@(_PlayAsset)' != ''" />
+  </Target>
+
   <!-- A mod with a generator gets its .mod generated from the installed game; a failure is a warning and the mod is deployed without it. -->
   <Target Name="PlayGenerateData" AfterTargets="PlayDeploy" Condition="'$(PlayDeploy)' == 'true' and '@(PlayGenerator)' != ''">
     <ItemGroup>
