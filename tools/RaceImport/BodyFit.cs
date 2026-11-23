@@ -63,9 +63,17 @@ public sealed class BodyFit
     static readonly string[] Torso = ["Pelvis", "Spine", "Spine1", "Spine2", "Neck", "L Clavicle", "R Clavicle"];
 
     /// <summary>
-    /// The joints the torso is fitted to: its own, the shoulders and the hips.
+    /// The joints the torso is fitted to: where the head, arms and legs attach. Pelvis and spine joints sit differently in each rig (the
+    /// game's pelvis is level with its hips, a Biped export's above them), and fitting to them dropped the chest about a unit.
     /// </summary>
-    static readonly string[] TorsoAnchors = [.. Torso, "L UpperArm", "R UpperArm", "L Thigh", "R Thigh"];
+    static readonly string[] TorsoAnchors = ["Neck", "L UpperArm", "R UpperArm", "L Thigh", "R Thigh"];
+
+    /// <summary>
+    /// How far the head moves from where the torso carries it towards the game's head joint (0 none, 1 all the way). The game's neck rises
+    /// about a unit above its shoulders and the fitted models' barely does, so moving it all the way stretched their necks to about three
+    /// times their length; half way keeps the neck near the game's length, the head mesh sitting below its bone.
+    /// </summary>
+    const float HeadReach = 0.5f;
 
     /// <summary>
     /// The least and most a bone is stretched.
@@ -119,7 +127,8 @@ public sealed class BodyFit
     Dictionary<string, BoneFit> BuildFits()
     {
         var fits = LimbFits();
-        AddTorso(fits);
+        var torso = AddTorso(fits);
+        LowerHead(fits, torso);
         AddFeet(fits);
         return fits;
     }
@@ -153,7 +162,7 @@ public sealed class BodyFit
     /// <summary>
     /// One rigid fit (rotation and translation, scale fixed) for the torso bones, onto the game's torso, shoulder and hip joints.
     /// </summary>
-    void AddTorso(Dictionary<string, BoneFit> fits)
+    (Matrix4x4 Rotation, Vector3 Translation) AddTorso(Dictionary<string, BoneFit> fits)
     {
         var anchors = TorsoAnchors.Where(b => _source.ContainsKey(b) && _kenshi.Has(KenshiPrefix + b)).ToArray();
         var (rotation, translation) = RigidFit.Fit([.. anchors.Select(b => Scale * Source(b))], [.. anchors.Select(Kenshi)]);
@@ -162,6 +171,19 @@ public sealed class BodyFit
             var target = Vector3.TransformNormal(Scale * Source(bone), rotation) + translation;
             fits[bone] = new BoneFit(Source(bone), target, rotation, null, 1);
         }
+
+        return (rotation, translation);
+    }
+
+    /// <summary>
+    /// The head placed <see cref="HeadReach"/> of the way from where the rigid torso carries it to the game's head joint.
+    /// </summary>
+    void LowerHead(Dictionary<string, BoneFit> fits, (Matrix4x4 Rotation, Vector3 Translation) torso)
+    {
+        if (!fits.TryGetValue("Head", out var head)) return;
+
+        var carried = Vector3.TransformNormal(Scale * Source("Head"), torso.Rotation) + torso.Translation;
+        fits["Head"] = head with { Target = Vector3.Lerp(carried, head.Target, HeadReach) };
     }
 
     /// <summary>

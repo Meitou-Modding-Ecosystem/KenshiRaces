@@ -32,10 +32,14 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 2. Scale: the game's head bone height over the model's head joint above its lowest vertex.
 3. Each spine, arm and leg bone is turned so it points from its joint to its child as the game's does, and stretched to the game's length
    (0.6 to 1.6 times).
-4. Pelvis, spines, neck and clavicles are fitted as one rigid piece (least squares onto the game's torso, shoulder and hip joints), so the chest
-   keeps its shape; per-bone fits shear it where spine and clavicle weights blend.
-5. Feet keep upright and are squashed so the soles land on the ground (paws and crab feet are taller than the game's foot).
-6. Each vertex is the weighted sum of its joints' fits; its weights go to the game bones its joints follow, the heaviest four kept.
+4. Pelvis, spines, neck and clavicles are fitted as one rigid piece (least squares onto the game's neck, shoulder and hip joints), so the chest
+   keeps its shape; per-bone fits shear it where spine and clavicle weights blend. The pelvis and spine joints are left out of that fit: the
+   game's pelvis is level with its hips and a Biped export's sits above them, which dropped the chest about a unit.
+5. The head lands half way from where the torso carries it to the game's head joint, so its mesh sits below its bone. The game's neck rises
+   about a unit above its shoulders and these models' barely does: placing the head on the joint stretched their necks to about three times
+   their length (**Observed** on Leonid, Crabman and the Crab Queen: fitted neck 2.4 units, the models' own 0.8, the game's 1.4).
+6. Feet keep upright and are squashed so the soles land on the ground (paws and crab feet are taller than the game's foot).
+7. Each vertex is the weighted sum of its joints' fits; its weights go to the game bones its joints follow, the heaviest four kept.
 
 **Verified**: the C# tool's meshes match the original Python prototype's (positions within 1e-5 units, identical bone weights) on Crabman.
 
