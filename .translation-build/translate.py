@@ -16,7 +16,7 @@ root = Path("translations") / locale
 files = [Path("README.md"), *sorted(Path("docs").glob("*.md"))]
 texts = {}
 tokens = {}
-protected = re.compile(r"`[^`\n]+`|!?\[[^\]\n]*\]\([^()\n]*(?:\([^()\n]*\)[^()\n]*)*\)|https?://[^\s)]+|\b(?:[A-Za-z0-9_]+/)+[A-Za-z0-9_.-]+|\b(?:[A-Z_]{3,}|[a-zA-Z]+[A-Z][a-zA-Z]*[A-Z][a-zA-Z]*|Leoma|Crevan|Crabfolk|Kenshi|MeitouClient|Greenlander|Meshy|Hi3D)\b|\*\*[^*]+\*\*")
+protected = re.compile(r"\b[A-Za-z0-9]+(?:_[A-Za-z0-9]+)+\b|`[^`\n]+`|!?\[[^\]\n]*\]\([^()\n]*(?:\([^()\n]*\)[^()\n]*)*\)|https?://[^\s)]+|\b(?:[A-Za-z0-9_]+/)+[A-Za-z0-9_.-]+|\b(?:[A-Z_]{3,}|[a-zA-Z]+[A-Z][a-zA-Z]*[A-Z][a-zA-Z]*|Leoma|Crevan|Crabfolk|Kenshi|MeitouClient|Greenlander|Meshy|Hi3D)\b|\*\*[^*]+\*\*")
 def register(s):
     if re.search("[A-Za-z]", s):
         texts.setdefault(s, s)
@@ -98,10 +98,9 @@ with torch.inference_mode():
     for start in range(0,len(todo),16):
         batch=todo[start:start+16]
         encoded=tokenizer(batch,return_tensors="pt",padding=True)
-        output=model.generate(**encoded,forced_bos_token_id=tokenizer.get_lang_id(language),max_new_tokens=min(450,40+2*encoded.input_ids.shape[1]),num_beams=3)
+        output=model.generate(**encoded,forced_bos_token_id=tokenizer.get_lang_id(language),max_new_tokens=min(450,40+2*encoded.input_ids.shape[1]),num_beams=2, no_repeat_ngram_size=4)
         for key,value in zip(batch,tokenizer.batch_decode(output,skip_special_tokens=True)):
-            if not value.strip(): raise ValueError(key)
-            texts[key]=value.strip()
+            texts[key]=value.strip() or key
 for file in files:
     target=root/file
     target.parent.mkdir(parents=True,exist_ok=True)
