@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Kenshi Races character editor limits (docs/kenshi-races.md "Character editor"): the bone-driven sliders only. Face: the
+     head and neck sliders (the fitted heads have no face poses). Body: the human body sliders, the bust ones for women. -->
+<Editor>
+ <Config gender="Male">
+  <Category name="Face">
+   <Range max="110" min="90" name="Head size" random_variation="10"/>
+   <Range max="110" min="90" name="Head shape"/>
+   <Range max="150" min="65" mid="100" name="Neck"/>
+   <Range max="150" min="70" mid="100" name="Neck width"/>
+   <Range max="110" min="90" name="Neck length"/>
+  </Category>
+  <Category name="Body">
+   <Range max="120" min="80" name="Height" random_group="0"/>
+   <Range max="120" min="80" name="Frame"/>
+   <Range max="70" min="0" name="Posture"/>
+   <Range max="90" min="45" name="Shoulder set"/>
+   <Range max="80" min="25" name="Neck position"/>
+   <Range max="115" min="85" name="Leg length" random_group="0"/>
+   <Range max="110" min="90" name="Shoulders" random_group="1"/>
+   <Range max="145" min="70" name="Arm bulk"/>
+   <Range max="120" min="80" name="Hands" random_group="0"/>
+   <Range max="180" min="55" mid="100" name="Chest" random_group="1"/>
+   <Range max="200" min="70" mid="100" name="Stomach"/>
+   <Range max="155" min="35" mid="100" name="Waist" random_group="1"/>
+   <Range max="145" min="75" mid="100" name="Hips" random_group="1"/>
+   <Range max="140" min="70" mid="100" name="Legs bulk"/>
+   <Range max="115" min="85" mid="100" name="Legs shape"/>
+   <Range max="120" min="80" name="Feet"/>
+   <ColourRange name="Skin Tone">
+    <Colour r="255" g="255" b="255" />
+    <Colour r="251" g="219" b="219" />
+    <Colour r="201" g="190" b="180" />
+    <Colour r="137" g="119" b="102" />
+    <Colour r="97" g="73" b="61" />
+    <Colour r="67" g="64" b="69" />
+   </ColourRange>
+  </Category>
+ </Config>
+ <Config gender="Female">
+  <Category name="Face">
+   <Range max="110" min="90" name="Head size"/>
+   <Range max="110" min="90" name="Head shape"/>
+   <Range max="150" min="50" name="Neck"/>
+   <Range max="200" min="50" mid="100" name="Neck width"/>
+   <Range max="115" min="85" name="Neck length"/>
+  </Category>
+  <Category name="Body">
+   <Range max="120" min="80" name="Height"/>
+   <Range max="120" min="80" name="Frame"/>
+   <Range max="70" min="0" name="Posture"/>
+   <Range max="90" min="45" name="Shoulder set"/>
+   <Range max="80" min="25" name="Neck position"/>
+   <Range max="120" min="80" mid="100" name="Leg length"/>
+   <Range max="110" min="90" name="Shoulders"/>
+   <Range max="145" min="70" mid="100" name="Arm bulk"/>
+   <Range max="120" min="80" name="Hands"/>
+   <Range max="180" min="55" mid="100" name="Chest"/>
+   <Range max="150" min="25" mid="85" name="Breast size"/>
+   <Range max="140" min="0" mid="100" name="Breast height"/>
+   <Range max="125" min="50" mid="100" name="Breast spacing"/>
+   <Range max="200" min="70" mid="100" name="Stomach"/>
+   <Range max="155" min="15" mid="100" name="Waist"/>
+   <Range max="145" min="75" mid="100" name="Hips"/>
+   <Range max="140" min="70" mid="100" name="Legs bulk"/>
+   <Range max="115" min="85" mid="100" name="Legs shape"/>
+   <Range max="120" min="80" name="Feet"/>
+   <ColourRange name="Skin Tone">
+    <Colour r="255" g="255" b="255" />
+    <Colour r="251" g="219" b="219" />
+    <Colour r="201" g="190" b="180" />
+    <Colour r="137" g="119" b="102" />
+    <Colour r="97" g="73" b="61" />
+    <Colour r="67" g="64" b="69" />
+   </ColourRange>
+  </Category>
+ </Config>
+</Editor>

@@ -18,13 +18,13 @@ public sealed class KenshiRacesMod : IMod, IModDataPhase
     public void EditData(ModDataContext c)
     {
         RecruitTalk.Add(c);
-        foreach (var body in Races.All) RaceRecords.Add(c, body);
+        foreach (var group in Races.Groups) RaceRecords.AddGroup(c, group);
     }
 
     public void Initialize(ModContext c)
     {
         c.AddDebugCommand("Kenshi Races: races", _ => Describe(c));
-        if (c.Data.Find(Races.LeonidMaleRace) is null) c.LogError("Kenshi Races' records are missing: the data phase did not add them (see the log).");
+        if (c.Data.Find(Races.LeomaRace) is null) c.LogError("Kenshi Races' records are missing: the data phase did not add them (see the log).");
     }
 
     /// <summary>

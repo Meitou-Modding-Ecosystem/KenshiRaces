@@ -15,11 +15,6 @@ namespace RaceImport;
 public static class PartMap
 {
     /// <summary>
-    /// The game's human male part map, the source of the parts.
-    /// </summary>
-    public const string HumanFile = "MaleMask_Default.png";
-
-    /// <summary>
     /// Side of the written map in pixels: large enough that neighbouring vertices of different parts rarely share a texel.
     /// </summary>
     const int Side = 1024;

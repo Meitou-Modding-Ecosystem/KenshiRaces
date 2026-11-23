@@ -5,9 +5,10 @@ using Meitou.Modding;
 namespace KenshiRaces;
 
 /// <summary>
-/// Builds a fitted race's records in the data phase (docs/kenshi-races.md "Records"): a RACE copied from the game's Greenlander with the fitted
-/// body's files, and a CHARACTER copied from the game's Drifter, of that race, with no kit and the recruit talk. Copies of the loaded game's own
-/// records, so no game content ships with a mod. Dependents call <see cref="Add"/> from their own <c>EditData</c> for their own races.
+/// Builds a fitted race's records in the data phase (docs/kenshi-races.md "Records"): a RACE per subrace copied from the game's Greenlander with
+/// the fitted bodies' files, a CHARACTER per character copied from the game's Drifter with no kit and the recruit talk, and a RACE_GROUP per race
+/// so the character editor lists it. Copies of the loaded game's own records, so no game content ships with a mod. Dependents call these from
+/// their own <c>EditData</c> for their own races and subraces.
 /// </summary>
 public static class RaceRecords
 {
@@ -22,51 +23,82 @@ public static class RaceRecords
     public const string Drifter = "2205-gamedata.base", DrifterName = "Drifter";
 
     /// <summary>
+    /// The character editor's limits for fitted bodies (docs/kenshi-races.md "Character editor"): the human body sliders, no face sliders.
+    /// Dependents' subraces may use it too.
+    /// </summary>
+    public const string EditorLimits = $@".\mods\{Races.Folder}\items\races\kenshiraces_editor.xml";
+
+    /// <summary>
     /// The CHARACTER's lists emptied: no kit, no money to spend.
     /// </summary>
     static readonly string[] KitLists = ["backpack", "clothing", "inventory", "shopping", "weapons"];
 
     /// <summary>
-    /// Adds <paramref name="body"/>'s RACE and (when it names one) its CHARACTER to the data, the CHARACTER with <paramref name="talk"/> as its
-    /// dialogue (default: Kenshi Races' recruit talk; null for none). Throws when the game lacks Greenlander or Drifter.
+    /// Adds <paramref name="group"/>'s RACE_GROUP and each of its subraces (<see cref="Add"/>).
     /// </summary>
-    public static void Add(ModDataContext c, RaceBody body, string? talk = Races.Recruit)
+    public static void AddGroup(ModDataContext c, RaceGroup group, string? talk = Races.Recruit)
     {
-        FillRace(c.Add(body.RaceId, FcsRecordType.Race, body.Name), c.Data, body);
-        if (body.CharacterId is { } character) FillCharacter(c.Add(character, FcsRecordType.Character, body.Name), c.Data, body, talk);
+        var record = c.Add(group.Id, FcsRecordType.RaceGroup, group.Name);
+        record.References["races"] = [.. group.Subraces.Select(s => new FcsReference(s.RaceId, 0, 0, 0))];
+        foreach (var subrace in group.Subraces) Add(c, subrace, talk);
     }
 
     /// <summary>
-    /// Fills a new RACE: Greenlander's fields and lists, then the body's mesh, textures and part map for both genders, no heads or hair (the body
-    /// has its own), no body morphs, no shirts (they paint the human body's uv layout) and not offered at character creation.
+    /// Adds <paramref name="subrace"/>'s RACE and its CHARACTERs to the data, each CHARACTER with <paramref name="talk"/> as its dialogue
+    /// (default: Kenshi Races' recruit talk; null for none). The RACE is listed by the editor only once a RACE_GROUP holds it
+    /// (<see cref="AddGroup"/>, <see cref="JoinGroup"/>). Throws when the game lacks Greenlander or Drifter.
     /// </summary>
-    public static void FillRace(FcsRecord race, GameDatabase game, RaceBody body)
+    public static void Add(ModDataContext c, Subrace subrace, string? talk = Races.Recruit)
+    {
+        FillRace(c.Add(subrace.RaceId, FcsRecordType.Race, subrace.Name), c.Data, subrace);
+        foreach (var character in subrace.Characters)
+            FillCharacter(c.Add(character.Id, FcsRecordType.Character, character.Name), c.Data, subrace, character, talk);
+    }
+
+    /// <summary>
+    /// Adds a RACE (another mod's subrace, e.g. a ghost crab) to a race's RACE_GROUP, e.g. <see cref="Races.CrabfolkGroup"/>, so the editor lists
+    /// it as one of that race's subraces (an edit adds the entry to the group's list). The group must be in the data: Kenshi Races' groups are,
+    /// for a dependent's data phase.
+    /// </summary>
+    public static void JoinGroup(ModDataContext c, string groupId, string raceId)
+    {
+        c.Edit(groupId).References["races"] = [new FcsReference(raceId, 0, 0, 0)];
+    }
+
+    /// <summary>
+    /// Fills a new RACE: Greenlander's fields and lists, then each gender's body files (a single-gender race wears its one body for both), no
+    /// heads or hair (the body has its own), no body morphs, no shirts (they paint the human body's uv layout), and playable in the character
+    /// editor with <see cref="EditorLimits"/>.
+    /// </summary>
+    public static void FillRace(FcsRecord race, GameDatabase game, Subrace subrace)
     {
         CopyFrom(Model(game, FcsRecordType.Race, Greenlander, GreenlanderName), race);
-        race.Bools["single gender"] = true;
+        race.Bools["single gender"] = subrace.SingleGender;
         race.Bools["no shirts"] = true;
-        race.Bools["playable"] = false;
+        race.Bools["playable"] = true;
+        race.Filenames["editor limits"] = EditorLimits;
         race.Ints["morph num"] = 0;
-        foreach (string gender in new[] { "male", "female" }) SetBody(race, gender, body);
+        SetBody(race, "male", subrace.Body(female: false));
+        SetBody(race, "female", subrace.Body(female: true));
 
         race.References["hairs"] = [];
     }
 
     /// <summary>
-    /// Fills a new CHARACTER: Drifter's fields and lists, always male (the bodies are fitted to the male skeleton), no kit, money or bounty, of
-    /// the race, with <paramref name="talk"/> as its dialogue when given.
+    /// Fills a new CHARACTER: Drifter's fields and lists, of the character's gender, no kit, money or bounty, of the subrace, with
+    /// <paramref name="talk"/> as its dialogue when given.
     /// </summary>
-    public static void FillCharacter(FcsRecord character, GameDatabase game, RaceBody body, string? talk = Races.Recruit)
+    public static void FillCharacter(FcsRecord record, GameDatabase game, Subrace subrace, RaceCharacter character, string? talk = Races.Recruit)
     {
-        CopyFrom(Model(game, FcsRecordType.Character, Drifter, DrifterName), character);
-        character.Ints["female chance"] = 0;
-        character.Ints["money min"] = 0;
-        character.Ints["money max"] = 0;
-        character.Ints["bounty chance"] = 0;
-        foreach (string list in KitLists) character.References[list] = [];
+        CopyFrom(Model(game, FcsRecordType.Character, Drifter, DrifterName), record);
+        record.Ints["female chance"] = character.Female && !subrace.SingleGender ? 100 : 0;
+        record.Ints["money min"] = 0;
+        record.Ints["money max"] = 0;
+        record.Ints["bounty chance"] = 0;
+        foreach (string list in KitLists) record.References[list] = [];
 
-        character.References["race"] = [new FcsReference(body.RaceId, 100, 0, 0)];
-        character.References["dialogue"] = talk is null ? [] : [new FcsReference(talk, 0, 0, 0)];
+        record.References["race"] = [new FcsReference(subrace.RaceId, 100, 0, 0)];
+        record.References["dialogue"] = talk is null ? [] : [new FcsReference(talk, 0, 0, 0)];
     }
 
     /// <summary>
