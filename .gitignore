@@ -505,6 +505,8 @@ meitou.user.json
 # Fitted race bodies (docs/race-import.md): our own meshes and textures, committed because their import needs the game.
 !/KenshiRaces/items/races/*.mesh
 !/KenshiRaces/items/races/*.dds
+# The animation library (docs/animations.md): our own clips retargeted onto the game's skeletons, committed because their export needs the game.
+!/KenshiRaces/items/animations/*.skeleton
 *.zone
 *.level
 *.path

@@ -1,6 +1,6 @@
 # Depending on Kenshi Races
 
-How a code mod uses Kenshi Races' races or adds its own fitted races (`kenshi.races`). Loader rules: engine
+How a code mod uses Kenshi Races' races and animations, adds subraces to them or adds its own races (`kenshi.races`). Loader rules: engine
 [modding-dependencies.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md). An agent skill
 walks through the same steps: [.claude/skills/kenshi-races-dependent](../.claude/skills/kenshi-races-dependent/SKILL.md).
 
@@ -14,8 +14,8 @@ In a repo made from [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosys
 {
   "id": "kenshi.races",
   "repo": "Meitou-Modding-Ecosystem/KenshiRaces",
-  "tag": "kenshi-races-v0.3.0",
-  "asset": "KenshiRaces-0.3.0.zip",
+  "tag": "kenshi-races-v0.4.0",
+  "asset": "KenshiRaces-0.4.0.zip",
   "sha256": "<Zip SHA-256 from the notes>",
   "folder": "KenshiRaces",
   "engine": "<Submodule engine commit from the notes>"
@@ -31,7 +31,7 @@ In a repo made from [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosys
 ```json
 "apiVersion": 2,
 "gameVersion": ">=0.22.2",
-"dependencies": [{ "id": "kenshi.races", "version": ">=0.3.0 <0.4.0" }]
+"dependencies": [{ "id": "kenshi.races", "version": ">=0.4.0 <0.5.0" }]
 ```
 
 - Before 1.0 a minor version may break the API, so cap the range at the next minor.
@@ -83,6 +83,26 @@ public void EditData(ModDataContext c)
 - Subraces are `playable` with Kenshi Races' editor limits (`RaceRecords.EditorLimits`); `FillRace` / `FillCharacter` fill records you add
   yourself (`c.Add`) when you want to change more fields after.
 - The ids are yours: records of your own `.mod` file name.
+
+## 6. Play its animations
+
+Every clip of [animations.md](animations.md) is linked to every race on the game's human skeletons (a subrace added with `RaceRecords` too),
+so a mod only plays it. A mod combat move is animation only, asked whenever the game plays nothing of its own (engine docs/modding.md,
+"Combat moves"):
+
+```csharp
+CombatTechnique? _wave;
+
+public void Initialize(ModContext c)
+{
+    _wave = AnimationRecords.Technique(c.Data, RaceAnimations.WaveForHelp3);
+    c.AddCombatMove((world, id, tick) => Waving(world, id, tick) is { } progress && _wave is { } wave ? new CombatMove(wave, progress) : null);
+}
+```
+
+- `Waving` is yours: a cheap, thread-safe, read-only answer from your own state, the clip's progress 0 to 1 (seconds / `clip.Length`).
+- Clips play in place and face forward; a clip shorter than your move holds its last frame unless you wrap the progress.
+- Animations need only the dependency (sections 1 and 2), no records of your own.
 
 ## 5. Check it
 
