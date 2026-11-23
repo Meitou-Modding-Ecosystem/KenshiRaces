@@ -1,7 +1,7 @@
 # Kenshi Races
 
-New races for [MeitouClient](https://github.com/Meitou-Modding-Ecosystem/MeitouClient) on the game's human skeleton: Leonid, Crabman and the
-Crab Queen, and the framework other mods add their own races with. GPL-3.0-or-later.
+New races for [MeitouClient](https://github.com/Meitou-Modding-Ecosystem/MeitouClient) on the game's human skeleton: Leonid (male and female), Corvid
+(male and female), Crabman and the Crab Queen, and the framework other mods add their own races with. GPL-3.0-or-later.
 
 - The races, their records and testing them in game: [docs/kenshi-races.md](docs/kenshi-races.md).
 - Using these races or adding your own from another mod: [docs/depending-on-kenshi-races.md](docs/depending-on-kenshi-races.md) (agent skill
