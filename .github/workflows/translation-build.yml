@@ -1,0 +1,59 @@
+name: Translate Kenshi Races documentation
+on:
+  push:
+    branches: [codex-translation-build]
+    paths: ['.github/workflows/translation-build.yml', '.translation-build/**']
+permissions:
+  contents: read
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    strategy:
+      fail-fast: false
+      matrix:
+        locale: [fr, de, es, it, pt-BR, ru, ja, ko, zh-CN]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          pip install 'torch==2.6.0' --index-url https://download.pytorch.org/whl/cpu
+          pip install 'transformers==4.49.0' 'sentencepiece==0.2.0' sacremoses
+      - env:
+          HF_HUB_DISABLE_XET: '1'
+        run: python .translation-build/translate.py ${{ matrix.locale }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docs-${{ matrix.locale }}
+          path: translations/${{ matrix.locale }}/
+  collect:
+    needs: translate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex-docs-translations
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: docs-*
+          path: ${{ runner.temp }}/docs-build
+      - shell: bash
+        run: |
+          set -eu
+          mkdir -p translations
+          for locale in fr de es it pt-BR ru ja ko zh-CN; do
+            test -f "$RUNNER_TEMP/docs-build/docs-$locale/README.md"
+            cp -r "$RUNNER_TEMP/docs-build/docs-$locale" "translations/$locale"
+          done
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- translations
+          git commit -m 'Add nine translations of the README and twelve documentation guides'
+          git push origin HEAD:codex-docs-translations
