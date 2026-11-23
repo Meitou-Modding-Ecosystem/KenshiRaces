@@ -4,16 +4,11 @@ using Meitou.Data.Ogre;
 namespace RaceImport;
 
 /// <summary>
-/// The bind pose of the game's human skeleton (<c>male_skeleton.skeleton</c>, 3ds Max Biped bone names <c>Bip01 ...</c>): each bone's handle
-/// and rest position, in file units (0.1 m, Y up), by name.
+/// The bind pose of one of the game's human skeletons (<see cref="HumanRig.Skeleton"/>, 3ds Max Biped bone names <c>Bip01 ...</c>): each bone's
+/// handle and rest position, in file units (0.1 m, Y up), by name.
 /// </summary>
 public sealed class KenshiSkeleton
 {
-    /// <summary>
-    /// The skeleton every human body links; the race import's meshes link it too.
-    /// </summary>
-    public const string FileName = "male_skeleton.skeleton";
-
     /// <summary>
     /// Bone name to handle and rest position.
     /// </summary>
@@ -54,9 +49,10 @@ public sealed class KenshiSkeleton
     public Vector3 Position(string name) => _bones[name].Position;
 
     /// <summary>
-    /// The skeleton of the game in <paramref name="kenshiFolder"/> (<see cref="GameFile"/>).
+    /// The skeleton of <paramref name="rig"/> in the game in <paramref name="kenshiFolder"/> (<see cref="GameFile"/>).
     /// </summary>
-    public static KenshiSkeleton Load(string kenshiFolder) => Read(OgreSkeletonReader.Read(File.ReadAllBytes(GameFile(kenshiFolder, FileName))));
+    public static KenshiSkeleton Load(string kenshiFolder, HumanRig rig) =>
+        Read(OgreSkeletonReader.Read(File.ReadAllBytes(GameFile(kenshiFolder, rig.Skeleton))));
 
     /// <summary>
     /// The first file of that name under the game's <c>data</c> folder (letter case ignored). Throws when there is none.

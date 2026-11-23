@@ -14,8 +14,8 @@ In a repo made from [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosys
 {
   "id": "kenshi.races",
   "repo": "Meitou-Modding-Ecosystem/KenshiRaces",
-  "tag": "kenshi-races-v0.1.0",
-  "asset": "KenshiRaces-0.1.0.zip",
+  "tag": "kenshi-races-v0.3.0",
+  "asset": "KenshiRaces-0.3.0.zip",
   "sha256": "<Zip SHA-256 from the notes>",
   "folder": "KenshiRaces",
   "engine": "<Submodule engine commit from the notes>"
@@ -31,7 +31,7 @@ In a repo made from [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosys
 ```json
 "apiVersion": 2,
 "gameVersion": ">=0.22.2",
-"dependencies": [{ "id": "kenshi.races", "version": ">=0.1.0 <0.2.0" }]
+"dependencies": [{ "id": "kenshi.races", "version": ">=0.3.0 <0.4.0" }]
 ```
 
 - Before 1.0 a minor version may break the API, so cap the range at the next minor.
@@ -44,31 +44,46 @@ Refer to the ids in `Races` from your records, e.g. in your data phase:
 ```csharp
 public void EditData(ModDataContext c)
 {
-    var guard = c.Add("20-MyMod.mod", FcsRecordType.Character, "leonidguard");
+    var guard = c.Add("20-MyMod.mod", FcsRecordType.Character, "leomaguard");
     // ... fields ...
-    guard.References["race"] = [new FcsReference(Races.LeonidMaleRace, 100, 0, 0)];
+    guard.References["race"] = [new FcsReference(Races.LeomaRace, 100, 0, 0)];
+    guard.Ints["female chance"] = 50;                                   // leoma and crevan have both genders
 }
 ```
 
-`Races.LeonidMaleRace`, `LeonidFemaleRace`, `CorvidMaleRace`, `CorvidFemaleRace`, `CrabmanRace`, `CrabQueenRace` (RACE), `...Character` (a kitless recruitable CHARACTER), `Races.Recruit` (the "Join
-us." talk). Table: [kenshi-races.md "Races"](kenshi-races.md#races).
+- RACEs (subraces): `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`.
+- CHARACTERs (kitless, recruitable): `LeomaMaleCharacter`, `LeomaFemaleCharacter`, `CrevanMaleCharacter`, `CrevanFemaleCharacter`,
+  `CrabmanCharacter`, `CrabQueenCharacter`.
+- RACE_GROUPs (the editor's races): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`. `Races.Recruit` is the "Join us." talk.
+- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen` (`Subrace`) and `Races.Groups` describe them. Table:
+  [kenshi-races.md "Races"](kenshi-races.md#races).
 
-## 4. Add your own race
+## 4. Add a subrace or a race
 
-1. Fit the body with the [race import](race-import.md) from a KenshiRaces clone, into your mod's `items/races` with your own stem
-   (`mymod_<race>`), and commit the four files. Add `!/<Mod>/items/races/*.mesh` and `!/<Mod>/items/races/*.dds` to `.gitignore`.
+1. Fit each body with the [race import](race-import.md) from a KenshiRaces clone, into your mod's `items/races` with your own stem
+   (`mymod_<character>`; `female` as the rig for a female body), and commit the files. Add `!/<Mod>/items/races/*.mesh` and
+   `!/<Mod>/items/races/*.dds` to `.gitignore`.
 2. Describe it and add its records in your mod's data phase (the entry implements `IModDataPhase`):
 
 ```csharp
-static readonly RaceBody Naga = new("Naga", "30-MyMod.mod", "31-MyMod.mod", "MyMod", "mymod_naga", NormalMap: true);
+static readonly Subrace GhostCrab = new("ghostcrab", "30-MyMod.mod",
+    Male: new RaceBody("MyMod", "mymod_ghostcrab", NormalMap: true), Female: null,
+    Characters: [new RaceCharacter("ghostcrab", "31-MyMod.mod", Female: false)]);
 
-public void EditData(ModDataContext c) => RaceRecords.Add(c, Naga);              // the recruit talk by default
+public void EditData(ModDataContext c)
+{
+    RaceRecords.Add(c, GhostCrab);                                       // RACE + CHARACTERs, the recruit talk by default
+    RaceRecords.JoinGroup(c, Races.CrabfolkGroup, GhostCrab.RaceId);    // the editor lists it under Crabfolk
+}
 ```
 
-- `RaceRecords.Add(c, body, talk)`: `talk` is a DIALOGUE id for the character, `null` for none. `CharacterId` null adds only the RACE.
-- `FillRace` / `FillCharacter` fill records you add yourself (`c.Add`) when you want to change more fields after.
+- A subrace with a `Male` and a `Female` body gets the editor's gender arrow; with one it is single gender and every character wears it.
+- `RaceRecords.Add(c, subrace, talk)`: `talk` is a DIALOGUE id for the characters, `null` for none.
+- A race of your own: `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` adds the RACE_GROUP and every subrace.
+- Subraces are `playable` with Kenshi Races' editor limits (`RaceRecords.EditorLimits`); `FillRace` / `FillCharacter` fill records you add
+  yourself (`c.Add`) when you want to change more fields after.
 - The ids are yours: records of your own `.mod` file name.
 
 ## 5. Check it
 
-`dotnet build`, your tests, then in game F10 **Kenshi Races: races** lists your race with its mesh, and `spawn <name>` spawns it. Name a race (and its CHARACTER) one lowercase word, e.g. `leonidmale`, so the console takes it without quotes.
+`dotnet build`, your tests, then in game F10 **Kenshi Races: races** lists your race with its mesh, and `spawn <name>` spawns it. Name subraces and CHARACTERs one lowercase word, e.g. `ghostcrab`, so the console takes them without quotes; a new game's editor lists your subrace.

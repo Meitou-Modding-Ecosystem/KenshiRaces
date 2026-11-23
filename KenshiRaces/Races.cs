@@ -1,8 +1,9 @@
 namespace KenshiRaces;
 
 /// <summary>
-/// The races Kenshi Races adds (docs/kenshi-races.md "Races"). Dependents use their ids in their own records: a CHARACTER's <c>race</c>, a
-/// squad's members. Names are one lowercase word, so the console's <c>spawn</c> takes them unquoted.
+/// The races Kenshi Races adds (docs/kenshi-races.md "Races"): three races of the character editor, Leoma, Crevan and Crabfolk, with their
+/// subraces. Dependents use the ids in their own records (a CHARACTER's <c>race</c>, a squad's members) and add subraces with
+/// <see cref="RaceRecords.JoinGroup"/>. Subrace and character names are one lowercase word, so the console's <c>spawn</c> takes them unquoted.
 /// </summary>
 public static class Races
 {
@@ -17,51 +18,63 @@ public static class Races
     public const string Recruit = "1-" + FileName;
 
     /// <summary>
-    /// The record ids: each race's RACE and its CHARACTER.
+    /// The RACE ids (one per subrace).
     /// </summary>
-    public const string LeonidMaleRace = "10-" + FileName, LeonidMaleCharacter = "11-" + FileName, CrabmanRace = "12-" + FileName,
-        CrabmanCharacter = "13-" + FileName, CrabQueenRace = "14-" + FileName, CrabQueenCharacter = "15-" + FileName,
-        LeonidFemaleRace = "16-" + FileName, LeonidFemaleCharacter = "17-" + FileName, CorvidMaleRace = "18-" + FileName,
-        CorvidMaleCharacter = "19-" + FileName, CorvidFemaleRace = "20-" + FileName, CorvidFemaleCharacter = "21-" + FileName;
+    public const string LeomaRace = "10-" + FileName, CrabmanRace = "12-" + FileName, CrabQueenRace = "14-" + FileName,
+        CrevanRace = "18-" + FileName;
 
     /// <summary>
-    /// A lion-man with a mane and a tail.
+    /// The CHARACTER ids.
     /// </summary>
-    public static readonly RaceBody LeonidMale = Race("leonidmale", LeonidMaleRace, LeonidMaleCharacter, normalMap: true);
+    public const string LeomaMaleCharacter = "11-" + FileName, CrabmanCharacter = "13-" + FileName, CrabQueenCharacter = "15-" + FileName,
+        LeomaFemaleCharacter = "17-" + FileName, CrevanMaleCharacter = "19-" + FileName, CrevanFemaleCharacter = "21-" + FileName;
 
     /// <summary>
-    /// A crab-shelled man.
+    /// The RACE_GROUP ids: the races the character editor lists.
     /// </summary>
-    public static readonly RaceBody Crabman = Race("crabman", CrabmanRace, CrabmanCharacter, normalMap: false);
+    public const string LeomaGroup = "30-" + FileName, CrevanGroup = "31-" + FileName, CrabfolkGroup = "32-" + FileName;
 
     /// <summary>
-    /// The crab people's queen.
+    /// Lion people with manes and tails.
     /// </summary>
-    public static readonly RaceBody CrabQueen = Race("crabqueen", CrabQueenRace, CrabQueenCharacter, normalMap: false);
+    public static readonly Subrace Leoma = new("leoma", LeomaRace, Body("leomamale", true), Body("leomafemale", true),
+        [new("leomamale", LeomaMaleCharacter, false), new("leomafemale", LeomaFemaleCharacter, true)]);
 
     /// <summary>
-    /// A lioness with a tail.
+    /// Feathered crow people.
     /// </summary>
-    public static readonly RaceBody LeonidFemale = Race("leonidfemale", LeonidFemaleRace, LeonidFemaleCharacter, normalMap: true);
+    public static readonly Subrace Crevan = new("crevan", CrevanRace, Body("crevanmale", true), Body("crevanfemale", true),
+        [new("crevanmale", CrevanMaleCharacter, false), new("crevanfemale", CrevanFemaleCharacter, true)]);
 
     /// <summary>
-    /// A feathered crow-man.
+    /// Crab-shelled men.
     /// </summary>
-    public static readonly RaceBody CorvidMale = Race("corvidmale", CorvidMaleRace, CorvidMaleCharacter, normalMap: true);
+    public static readonly Subrace Crabman = new("crabman", CrabmanRace, Body("crabman", false), null, [new("crabman", CrabmanCharacter, false)]);
 
     /// <summary>
-    /// A feathered crow-woman.
+    /// The crab people's queens (fitted to the male skeleton, so single gender as the crabmen).
     /// </summary>
-    public static readonly RaceBody CorvidFemale = Race("corvidfemale", CorvidFemaleRace, CorvidFemaleCharacter, normalMap: true);
+    public static readonly Subrace CrabQueen = new("crabqueen", CrabQueenRace, Body("crabqueen", false), null,
+        [new("crabqueen", CrabQueenCharacter, false)]);
 
     /// <summary>
-    /// Every race of the mod, in id order.
+    /// The character editor's races.
     /// </summary>
-    public static IReadOnlyList<RaceBody> All { get; } = [LeonidMale, Crabman, CrabQueen, LeonidFemale, CorvidMale, CorvidFemale];
+    public static readonly RaceGroup LeomaRaces = new("Leoma", LeomaGroup, [Leoma]), CrevanRaces = new("Crevan", CrevanGroup, [Crevan]),
+        Crabfolk = new("Crabfolk", CrabfolkGroup, [Crabman, CrabQueen]);
 
     /// <summary>
-    /// One of the mod's races: its files are <c>kenshiraces_&lt;name&gt;*</c> in the mod's folder.
+    /// Every race of the mod, in the editor's order.
     /// </summary>
-    static RaceBody Race(string name, string race, string character, bool normalMap) =>
-        new(name, race, character, Folder, "kenshiraces_" + name, normalMap);
+    public static IReadOnlyList<RaceGroup> Groups { get; } = [LeomaRaces, CrevanRaces, Crabfolk];
+
+    /// <summary>
+    /// Every subrace of the mod.
+    /// </summary>
+    public static IReadOnlyList<Subrace> All { get; } = [.. Groups.SelectMany(g => g.Subraces)];
+
+    /// <summary>
+    /// One of the mod's bodies: its files are <c>kenshiraces_&lt;name&gt;*</c> in the mod's folder.
+    /// </summary>
+    static RaceBody Body(string name, bool normalMap) => new(Folder, "kenshiraces_" + name, normalMap);
 }

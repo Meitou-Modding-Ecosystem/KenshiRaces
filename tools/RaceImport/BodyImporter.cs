@@ -15,36 +15,38 @@ public static class BodyImporter
 
     /// <summary>
     /// Imports <paramref name="model"/> as <c>&lt;stem&gt;.mesh</c>, <c>&lt;stem&gt;_d.dds</c>, (with a normal map) <c>&lt;stem&gt;_n.dds</c> and the
-    /// part map <c>&lt;stem&gt;_parts.png</c> in <paramref name="outFolder"/>, slimmed by <paramref name="slim"/> (0 none, 1 full); returns a line
-    /// for the log.
+    /// part map <c>&lt;stem&gt;_parts.png</c> in <paramref name="outFolder"/>, fitted to <paramref name="rig"/> and slimmed by <paramref name="slim"/>
+    /// (0 none, 1 full); returns a line for the log.
     /// </summary>
-    public static string Import(string model, string kenshiFolder, string outFolder, string stem, float slim)
+    public static string Import(string model, string kenshiFolder, string outFolder, string stem, HumanRig rig, float slim)
     {
         var body = SourceBody.Load(model);
-        var kenshi = KenshiSkeleton.Load(kenshiFolder);
-        var human = HumanBody.Load(kenshiFolder);
+        var kenshi = KenshiSkeleton.Load(kenshiFolder, rig);
+        var human = HumanBody.Load(kenshiFolder, rig);
         var fit = new BodyFit(body, kenshi);
         var (fitted, normals, weights) = fit.Repose();
-        var positions = new BodyConform(kenshi, human).Apply(fitted, weights, body.Indices, slim);
+        var (lifted, lift) = rig == HumanRig.Female ? BustLift.Apply(fitted, weights, kenshi, human) : (fitted, 0);
+        var positions = new BodyConform(kenshi, human).Apply(lifted, weights, body.Indices, slim);
+        int humanOnly = HumanOnlyBones.Apply(positions, weights, kenshi, human);
         var mesh = new SkinnedMesh(positions, normals, body.Uvs, Tangents(positions, normals, body.Uvs, body.Indices), body.Indices, weights);
 
         Directory.CreateDirectory(outFolder);
-        SkinnedMeshWriter.Write(Path.Combine(outFolder, stem + ".mesh"), mesh, stem, KenshiSkeleton.FileName);
+        SkinnedMeshWriter.Write(Path.Combine(outFolder, stem + ".mesh"), mesh, stem, rig.Skeleton);
         bool normalMap = BodyTextures.Write(body, outFolder, stem, TextureSide);
-        int parts = WritePartMap(kenshiFolder, Path.Combine(outFolder, stem + "_parts.png"), mesh, human);
+        int parts = WritePartMap(kenshiFolder, rig, Path.Combine(outFolder, stem + "_parts.png"), mesh, human);
 
         var min = positions.Aggregate(Vector3.Min);
         var max = positions.Aggregate(Vector3.Max);
-        return $"Race body {stem}: {positions.Length} vertices, {body.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
-            $"bounds {min:0.0} to {max:0.0}, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts";
+        return $"Race body {stem} ({rig.Skeleton}): {positions.Length} vertices, {body.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
+            $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {humanOnly} vertices on human-only bones, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts";
     }
 
     /// <summary>
-    /// The part map of the fitted mesh from the game's human one; returns how many vertices got a part.
+    /// The part map of the fitted mesh from the rig's human one; returns how many vertices got a part.
     /// </summary>
-    static int WritePartMap(string kenshiFolder, string path, SkinnedMesh mesh, HumanBody human)
+    static int WritePartMap(string kenshiFolder, HumanRig rig, string path, SkinnedMesh mesh, HumanBody human)
     {
-        var humanMap = Rgba.Decode(File.ReadAllBytes(KenshiSkeleton.GameFile(kenshiFolder, PartMap.HumanFile)));
+        var humanMap = Rgba.Decode(File.ReadAllBytes(KenshiSkeleton.GameFile(kenshiFolder, rig.Mask)));
         var heaviest = mesh.Weights.Select(w => w.MaxBy(p => p.Value).Key).ToArray();
         return PartMap.Write(path, mesh.Positions, mesh.Uvs, heaviest, human, humanMap);
     }
