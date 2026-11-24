@@ -14,8 +14,8 @@ In a repo made from [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosys
 {
   "id": "kenshi.races",
   "repo": "Meitou-Modding-Ecosystem/KenshiRaces",
-  "tag": "kenshi-races-v0.4.0",
-  "asset": "KenshiRaces-0.4.0.zip",
+  "tag": "kenshi-races-v0.5.0",
+  "asset": "KenshiRaces-0.5.0.zip",
   "sha256": "<Zip SHA-256 from the notes>",
   "folder": "KenshiRaces",
   "engine": "<Submodule engine commit from the notes>"
@@ -31,7 +31,7 @@ In a repo made from [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosys
 ```json
 "apiVersion": 2,
 "gameVersion": ">=0.22.2",
-"dependencies": [{ "id": "kenshi.races", "version": ">=0.4.0 <0.5.0" }]
+"dependencies": [{ "id": "kenshi.races", "version": ">=0.5.0 <0.6.0" }]
 ```
 
 - Before 1.0 a minor version may break the API, so cap the range at the next minor.
