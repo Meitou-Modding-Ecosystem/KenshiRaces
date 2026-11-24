@@ -6,8 +6,9 @@ namespace RaceImport;
 /// Gives a fitted body the human body's weights around the torso (docs/race-import.md "Human weights"), so the editor's body sliders, which
 /// scale the game's bones, shape it as they shape a human. The models' rigs leave the chest on <c>Spine1</c> and the clavicles and the neck on
 /// the head (their <c>Spine2</c> and <c>Neck</c> joints carry no vertices), so Stomach and Waist dragged the chest and Chest did nothing; and
-/// Meshy binds a tail to a leg, foot or toe. Steps, on the surface with its uv seams welded: tails go to the pelvis; each torso, neck, shoulder
-/// and hip vertex near the human takes the human's weights there; then those weights are smoothed.
+/// Meshy binds a tail to a leg, foot or toe. Steps, on the surface with its uv seams welded: tails go to the pelvis (<see cref="MoveTails"/>,
+/// before slimming); each torso, neck, shoulder and hip vertex near the human takes the human's weights there; then those weights are smoothed
+/// (<see cref="Apply"/>).
 /// </summary>
 public static class HumanWeights
 {
@@ -66,25 +67,55 @@ public static class HumanWeights
     #region Transfer
 
     /// <summary>
-    /// Replaces <paramref name="weights"/> as described above; returns how many vertices took human weights and how many were a tail's.
+    /// Finds the tail's vertices and puts them on the pelvis (before slimming, which then leaves them and their surroundings alone); returns
+    /// them.
     /// </summary>
-    public static (int Human, int Tail) Apply(Vector3[] positions, int[] indices, Dictionary<ushort, float>[] weights, KenshiSkeleton kenshi,
+    public static bool[] MoveTails(Vector3[] positions, int[] indices, Dictionary<ushort, float>[] weights, KenshiSkeleton kenshi, HumanBody human)
+    {
+        var weld = Surface.Weld(positions);
+        var points = Welded(positions, weld);
+        var tail = Tail(points, Welded(weights, weld), Gaps(points, human), Surface.Neighbours(weld, indices), kenshi);
+        ushort pelvis = kenshi.Handle("Bip01 Pelvis");
+
+        var result = new bool[positions.Length];
+        for (int v = 0; v < positions.Length; v++)
+        {
+            if (!tail.Contains(weld[v])) continue;
+
+            result[v] = true;
+            weights[v] = new Dictionary<ushort, float> { [pelvis] = 1 };
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Gives the torso the human's weights and smooths them (with the <paramref name="tail"/>'s edge); returns how many welded vertices took
+    /// human weights.
+    /// </summary>
+    public static int Apply(Vector3[] positions, int[] indices, Dictionary<ushort, float>[] weights, bool[] tail, KenshiSkeleton kenshi,
         HumanBody human)
     {
         var weld = Surface.Weld(positions);
         var neighbours = Surface.Neighbours(weld, indices);
         var points = Welded(positions, weld);
         var own = Welded(weights, weld);
-        var gaps = points.Select(p => Nearest(p, human.Positions, Enumerable.Range(0, human.Positions.Length).ToArray(), 1)[0].Distance).ToArray();
+        var tails = Enumerable.Range(0, positions.Length).Where(v => tail[v]).Select(v => weld[v]).ToHashSet();
 
-        var tail = Tail(points, own, gaps, neighbours, kenshi);
-        foreach (int v in tail) own[v] = new Dictionary<ushort, float> { [kenshi.Handle("Bip01 Pelvis")] = 1 };
-
-        var changed = Copy(points, own, gaps, tail, kenshi, human);
-        var smoothed = Smooth(own, neighbours, Grow([.. changed, .. tail], neighbours));
+        var changed = Copy(points, own, Gaps(points, human), tails, kenshi, human);
+        var smoothed = Smooth(own, neighbours, Grow([.. changed, .. tails], neighbours));
         for (int v = 0; v < weights.Length; v++) weights[v] = new Dictionary<ushort, float>(smoothed[weld[v]]);
 
-        return (changed.Count, tail.Count);
+        return changed.Count;
+    }
+
+    /// <summary>
+    /// Each point's distance to the nearest human vertex.
+    /// </summary>
+    static float[] Gaps(Vector3[] points, HumanBody human)
+    {
+        int[] all = [.. Enumerable.Range(0, human.Positions.Length)];
+        return [.. points.Select(p => Nearest(p, human.Positions, all, 1)[0].Distance)];
     }
 
     /// <summary>
