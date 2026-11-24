@@ -1,7 +1,7 @@
 # Kenshi Races
 
 Three new races for the character editor, each with subraces, on the game's human skeletons (`kenshi.races`, no dependencies): every record
-added at load, the bodies fitted by the [race import](race-import.md). It also ships an [animation library](animations.md) of 72 clips for
+added at load, the bodies fitted by the [race import](race-import.md). It also ships an [animation library](animations.md) of 88 clips for
 every race on those skeletons. Mods use the races and clips, add subraces or add their own races:
 [depending-on-kenshi-races.md](depending-on-kenshi-races.md).
 

@@ -1,6 +1,6 @@
 # Animations
 
-Kenshi Races ships an animation library: every clip of the races' source models (Meshy's animation library, 72 clips), retargeted onto the
+Kenshi Races ships an animation library: every clip of the races' source models (Meshy's animation library, 88 clips), retargeted onto the
 game's male and female skeletons, so any character on those skeletons can play it, humans, shek, hivers and skeletons as well as the fitted
 races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations)).
 
@@ -11,7 +11,7 @@ races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](
 - ANIMATION_FILE `40-KenshiRaces.mod` (`AnimationRecords.File`) names both. The data phase links it into the `animation files` of every race
   whose `male mesh` is under `data/character/meshes/` (except the Hive Queen's, which has its own skeleton) or is a fitted body
   (`/items/races/`), and `RaceRecords.FillRace` links it into new subraces, a dependent's too.
-- A disabled COMBAT_TECHNIQUE per clip (`100-` to `171-KenshiRaces.mod`: the first models' clips in name order, then the spidercrab's), `anim name` = the clip: disabled, so no fight picks it;
+- A disabled COMBAT_TECHNIQUE per clip (`100-` to `187-KenshiRaces.mod`: the first models' clips in name order, then the spidercrab's, then the ghostcrab's), `anim name` = the clip: disabled, so no fight picks it;
   a mod plays it as a mod combat move (engine docs/modding.md, "Combat moves").
 
 ## Making them
@@ -22,9 +22,9 @@ races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](
 1. `python tools/AnimationExport/split.py <model.glb> <clips folder>` per source model: one reference per clip, `Bip001` joints renamed to
    the Mixamo roles the Motion Lab reads. A later model overwrites a clip an earlier one gave; the male Leoma's goes last.
    Source models: male Leoma ("Leonid Bare" and "Leonid" glbs), `leonidfemale`, `corvidmale`, `corvidfemale`, crabman, crabqueen and
-   `spidercrab` (its Running and Walking duplicate the Leoma's and are not taken).
+   `spidercrab` and `ghostcrab` (their Running and Walking duplicate the Leoma's and are not taken).
 2. Per gender, `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference
-   <clip>.glb ...` (every clip): retargets them onto the game's body (a few minutes for 72).
+   <clip>.glb ...` (every clip): retargets them onto the game's body (a few minutes for 88).
 3. `python tools/AnimationExport/export.py <out>/human_<gender>_rigged.glb <gender>_skeleton.skeleton
    KenshiRaces/items/animations/kenshiraces_anims_<gender>.skeleton <clips>.json`: names them `kr_<clip lower case>` and writes the file.
 
@@ -108,3 +108,19 @@ line, sway and bob kept. All face the game's forward: the root's yaw matches the
 | `kr_mage_soell_cast_6` | `MageSoellCast6` | `169-` | mage_soell_cast_6 | 2.27 |  |
 | `kr_reaping_swing` | `ReapingSwing` | `170-` | Reaping_Swing | 5.90 | 0.4 |
 | `kr_right_hand_sword_slash` | `RightHandSwordSlash` | `171-` | Right_Hand_Sword_Slash | 1.50 |  |
+| `kr_left_short_hook_from_guard` | `LeftShortHookFromGuard` | `172-` | Left_Short_Hook_from_Guard | 1.27 |  |
+| `kr_left_slash` | `LeftSlash` | `173-` | Left_Slash | 3.17 |  |
+| `kr_left_uppercut_from_guard` | `LeftUppercutFromGuard` | `174-` | Left_Uppercut_from_Guard | 1.30 |  |
+| `kr_right_upper_hook_from_guard` | `RightUpperHookFromGuard` | `175-` | Right_Upper_Hook_from_Guard | 1.70 |  |
+| `kr_right_uppercut_from_guard` | `RightUppercutFromGuard` | `176-` | Right_Uppercut_from_Guard | 1.00 |  |
+| `kr_walk_backward_inplace` | `WalkBackwardInplace` | `177-` | Walk_Backward_inplace | 0.87 |  |
+| `kr_walk_backward_with_grenade_inplace` | `WalkBackwardWithGrenadeInplace` | `178-` | Walk_Backward_with_Grenade_inplace | 1.20 |  |
+| `kr_walk_fight_forward` | `WalkFightForward` | `179-` | Walk_Fight_Forward | 1.70 |  |
+| `kr_walk_forward_while_shooting` | `WalkForwardWhileShooting` | `180-` | Walk_Forward_While_Shooting | 3.27 |  |
+| `kr_walk_forward_with_bow_aimed` | `WalkForwardWithBowAimed` | `181-` | Walk_Forward_with_Bow_Aimed | 1.20 |  |
+| `kr_walk_left_with_gun` | `WalkLeftWithGun` | `182-` | Walk_Left_with_Gun | 1.20 | 1.0 |
+| `kr_walk_with_umbrella` | `WalkWithUmbrella` | `183-` | Walk_with_Umbrella | 1.30 | 1.0 |
+| `kr_walk_with_umbrella_inplace` | `WalkWithUmbrellaInplace` | `184-` | Walk_with_Umbrella_inplace | 1.30 |  |
+| `kr_weapon_combo` | `WeaponCombo` | `185-` | Weapon_Combo | 3.67 | 1.2 |
+| `kr_weapon_combo_1` | `WeaponCombo1` | `186-` | Weapon_Combo_1 | 3.50 | 2.1 |
+| `kr_weapon_combo_2` | `WeaponCombo2` | `187-` | Weapon_Combo_2 | 4.50 | 1.0 |
