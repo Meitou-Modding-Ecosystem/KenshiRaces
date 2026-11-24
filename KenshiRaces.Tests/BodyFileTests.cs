@@ -53,14 +53,15 @@ public sealed class BodyFileTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void The_editor_limits_hold_only_bone_sliders_and_the_bust_ones_for_women(bool female)
+    public void The_editor_limits_hold_only_bone_sliders_that_leave_the_torso_shape(bool female)
     {
         var limits = AppearanceLimits.Read(Path.Combine(Folder(), "kenshiraces_editor.xml"), female, 0.2f);
 
         Assert.NotNull(limits);
         Assert.All(limits.Ranges, r => Assert.Null(r.Target));
         Assert.Contains(limits.Ranges, r => r.Name == "Height" && r.Category == AppearanceCategory.Body);
-        Assert.Equal(female, limits.Ranges.Any(r => r.Name == "Breast size"));
+        string[] torso = ["Chest", "Stomach", "Waist", "Hips", "Legs bulk", "Legs shape", "Breast size", "Breast height", "Breast spacing"];
+        Assert.DoesNotContain(limits.Ranges, r => torso.Contains(r.Name));
     }
 
     /// <summary>
