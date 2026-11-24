@@ -3,7 +3,7 @@ using Meitou.Data.Gameplay.Bodies;
 namespace KenshiRaces;
 
 /// <summary>
-/// The races Kenshi Races adds (docs/kenshi-races.md "Races"): three races of the character editor, Leoma, Crevan and Crabfolk, with their
+/// The races Kenshi Races adds (docs/kenshi-races.md "Races"): four races of the character editor, Leoma, Crevan, Crabfolk and Tiefling, with their
 /// subraces. Dependents use the ids in their own records (a CHARACTER's <c>race</c>, a squad's members) and add subraces with
 /// <see cref="RaceRecords.JoinGroup"/>. Subrace and character names are one lowercase word, so the console's <c>spawn</c> takes them unquoted.
 /// </summary>
@@ -23,18 +23,19 @@ public static class Races
     /// The RACE ids (one per subrace).
     /// </summary>
     public const string LeomaRace = "10-" + FileName, CrabmanRace = "12-" + FileName, CrabQueenRace = "14-" + FileName,
-        CrevanRace = "18-" + FileName;
+        CrevanRace = "18-" + FileName, SpidercrabRace = "22-" + FileName, GhostcrabRace = "24-" + FileName, TieflingRace = "26-" + FileName;
 
     /// <summary>
     /// The CHARACTER ids.
     /// </summary>
     public const string LeomaMaleCharacter = "11-" + FileName, CrabmanCharacter = "13-" + FileName, CrabQueenCharacter = "15-" + FileName,
-        LeomaFemaleCharacter = "17-" + FileName, CrevanMaleCharacter = "19-" + FileName, CrevanFemaleCharacter = "21-" + FileName;
+        LeomaFemaleCharacter = "17-" + FileName, CrevanMaleCharacter = "19-" + FileName, CrevanFemaleCharacter = "21-" + FileName,
+        SpidercrabCharacter = "23-" + FileName, GhostcrabCharacter = "25-" + FileName, TieflingCharacter = "27-" + FileName;
 
     /// <summary>
     /// The RACE_GROUP ids: the races the character editor lists.
     /// </summary>
-    public const string LeomaGroup = "30-" + FileName, CrevanGroup = "31-" + FileName, CrabfolkGroup = "32-" + FileName;
+    public const string LeomaGroup = "30-" + FileName, CrevanGroup = "31-" + FileName, CrabfolkGroup = "32-" + FileName, TieflingGroup = "33-" + FileName;
 
     /// <summary>
     /// The WEAPON the Crabfolk punch with (<see cref="RaceFists"/>).
@@ -116,15 +117,34 @@ public static class Races
         [new("crabqueen", CrabQueenCharacter, false)], CrabfolkTraits);
 
     /// <summary>
+    /// The spider crabs (male fit, single gender), with the Crabfolk's traits until their own are settled.
+    /// </summary>
+    public static readonly Subrace Spidercrab = new("spidercrab", SpidercrabRace, Body("spidercrab", true), null,
+        [new("spidercrab", SpidercrabCharacter, false)], CrabfolkTraits);
+
+    /// <summary>
+    /// The ghost crabs (male fit, single gender), with the Crabfolk's traits until their own are settled.
+    /// </summary>
+    public static readonly Subrace Ghostcrab = new("ghostcrab", GhostcrabRace, Body("ghostcrab", true), null,
+        [new("ghostcrab", GhostcrabCharacter, false)], CrabfolkTraits);
+
+    /// <summary>
+    /// The tieflings: a woman's body fitted to the male skeleton with a woman's bust (single gender, like the crab queen), a Greenlander's traits.
+    /// </summary>
+    public static readonly Subrace Tiefling = new("tiefling", TieflingRace, Body("tiefling", false), null,
+        [new("tiefling", TieflingCharacter, false)]);
+
+    /// <summary>
     /// The character editor's races.
     /// </summary>
     public static readonly RaceGroup LeomaRaces = new("Leoma", LeomaGroup, [Leoma]), CrevanRaces = new("Crevan", CrevanGroup, [Crevan]),
-        Crabfolk = new("Crabfolk", CrabfolkGroup, [Crabman, CrabQueen]);
+        Crabfolk = new("Crabfolk", CrabfolkGroup, [Crabman, CrabQueen, Spidercrab, Ghostcrab]),
+        TieflingRaces = new("Tiefling", TieflingGroup, [Tiefling]);
 
     /// <summary>
     /// Every race of the mod, in the editor's order.
     /// </summary>
-    public static IReadOnlyList<RaceGroup> Groups { get; } = [LeomaRaces, CrevanRaces, Crabfolk];
+    public static IReadOnlyList<RaceGroup> Groups { get; } = [LeomaRaces, CrevanRaces, Crabfolk, TieflingRaces];
 
     /// <summary>
     /// Every subrace of the mod.

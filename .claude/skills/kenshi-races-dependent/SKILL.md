@@ -1,6 +1,6 @@
 ---
 name: kenshi-races-dependent
-description: Use when making a Meitou code mod depend on Kenshi Races, using the Leoma, Crevan or Crabfolk races, adding a subrace (e.g. a ghost crab), playing its animation library (wave, dance, throw...), or fitting a new rigged .glb body as a race.
+description: Use when making a Meitou code mod depend on Kenshi Races, using the Leoma, Crevan, Crabfolk or Tiefling races, adding a subrace (e.g. a hermit crab), playing its animation library (wave, dance, throw...), or fitting a new rigged .glb body as a race.
 ---
 
 # Build on Kenshi Races
@@ -18,11 +18,11 @@ with its helper; it never copies its records or files. Read `docs/depending-on-k
 
 ## Steps
 
-1. **Manifest**: `"dependencies": [{ "id": "kenshi.races", "version": ">=0.7.0 <0.8.0" }]` (match the current `KenshiRaces/meitou.json`
+1. **Manifest**: `"dependencies": [{ "id": "kenshi.races", "version": ">=0.8.0 <0.9.0" }]` (match the current `KenshiRaces/meitou.json`
    minor), `gameVersion` floor at least 0.22.2 (data phase).
 2. **Project**: add a `kenshi.races` entry to `meitou.lock.json` from the release notes of `kenshi-races-v<version>`, and move `engine/` to its
    engine commit.
-3. **Use a race**: link a subrace RACE (`Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`) in your CHARACTER's `race` list; set
+3. **Use a race**: link a subrace RACE (`Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`) in your CHARACTER's `race` list; set
    `female chance` for leoma and crevan, which have both genders.
 4. **New subrace**: per body `dotnet run --project <KenshiRaces>/tools/RaceImport -c Release -- <model.glb> <Kenshi> <Mod>/items/races <stem>
    [male|female] [slim] [bust=female] [neck=<share>]`; check the log line (scale near 10 to 13 for a human-sized model, hideable vertices
@@ -33,4 +33,4 @@ with its helper; it never copies its records or files. Read `docs/depending-on-k
    `Initialize`, and answer `c.AddCombatMove` with `new CombatMove(technique, progress)` (progress 0 to 1, your own state, thread-safe).
 6. **Docs**: list the mod's races in its own docs; a change to `RaceBody`, `Subrace`, `RaceTraits`, `RaceCharacter`, `RaceGroup`, `RaceRecords`, `Races`, `RaceAnimation(s)` or `AnimationRecords` updates
    `docs/depending-on-kenshi-races.md`, `docs/kenshi-races.md` and this skill, and bumps Kenshi Races' minor version.
-7. **Check**: `dotnet build`, `dotnet test`; in game F10 **Kenshi Races: races** and `spawn <name>` (name subraces and characters one lowercase word, e.g. `ghostcrab`); a new game's editor lists the subrace.
+7. **Check**: `dotnet build`, `dotnet test`; in game F10 **Kenshi Races: races** and `spawn <name>` (name subraces and characters one lowercase word, e.g. `hermitcrab`); a new game's editor lists the subrace.
