@@ -1,6 +1,6 @@
 # Kenshi Races
 
-Three new races for the character editor, each with subraces, on the game's human skeletons (`kenshi.races`, no dependencies): every record
+Four new races for the character editor, each with subraces, on the game's human skeletons (`kenshi.races`, no dependencies): every record
 added at load, the bodies fitted by the [race import](race-import.md). It also ships an [animation library](animations.md) of 88 clips for
 every race on those skeletons. Mods use the races and clips, add subraces or add their own races:
 [depending-on-kenshi-races.md](depending-on-kenshi-races.md).
@@ -15,12 +15,18 @@ The editor lists each RACE_GROUP as a race and its RACEs as subraces (engine doc
 | Crevan `31-` | crevan `18-` | male, female | crevanmale `19-`, crevanfemale `21-` |
 | Crabfolk `32-` | crabman `12-` | single | crabman `13-` |
 | | crabqueen `14-` | single | crabqueen `15-` |
+| | spidercrab `22-` | single | spidercrab `23-` |
+| | ghostcrab `24-` | single | ghostcrab `25-` |
+| Tiefling `33-` | tiefling `26-` | single | tiefling `27-` |
 
 Ids end in `KenshiRaces.mod`. Subrace and CHARACTER names are one lowercase word, so the console's `spawn` takes them without quotes. Each body's
-files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leoma and Crevan). Male bodies are fitted to `male_skeleton`,
-female ones to `female_skeleton`; the crab bodies are male fits, so a crab queen is single gender with the male animations and voice. Source
+files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leoma, Crevan, the spider crab and the ghost crab). Male bodies are fitted to `male_skeleton`,
+female ones to `female_skeleton`; the crab and tiefling bodies are male fits, so the crab queen and the tiefling (both women, `bust=female`)
+are single gender with the male animations and voice (the game and Meitou make a single-gender race's characters male). The tiefling's tail is
+carried by `Spine`. Source
 models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
-Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`.
+Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`, `spidercrab.glb`, `ghostcrab.glb` and
+`tiefling-female.glb` (`bust=female`).
 
 ## Records
 
@@ -47,8 +53,10 @@ XP) and `stats bad` (x0.8), `strength` 1.2 for strength, which the game lays ove
 | --- | --- | --- | --- | --- |
 | leoma | strength, sabres, athletics, weapon smith, labouring | armour smith, farming, polearms, heavy weapons, robotics | 100 / 120 / 120 / 120 / 120 | all |
 | crevan | perception, stealth, lockpicking, thieving, assassination, robotics, dodge | the weapons above, farming, labouring | 140 / 100 / 100 / 90 / 90 | `no shoes`; head gear only named `Ashland...` (the Ashland Hat, the Ashlander Stormgoggles) |
-| crabman, crabqueen | martial arts, strength, toughness, melee attack and defence, swimming, labouring, engineering | dodge, turrets, crossbows, precision shooting, stealth, lockpicking, thieving, assassination, field medic, weapon, armour and crossbow smith | 100 / 200 / 200 / 250 / 120 | `no hats`; no footwear named `Sandals`; no weapons or crossbows |
+| crabman, crabqueen, spidercrab, ghostcrab | martial arts, strength, toughness, melee attack and defence, swimming, labouring, engineering | dodge, turrets, crossbows, precision shooting, stealth, lockpicking, thieving, assassination, field medic, weapon, armour and crossbow smith | 100 / 200 / 200 / 250 / 120 | `no hats`; no footwear named `Sandals`; no weapons or crossbows |
+| tiefling | (the Greenlander's) | (the Greenlander's) | 100 / 100 / 100 / 100 / 100 | all |
 
+- The spider and ghost crabs share the Crabfolk traits until their own are settled; the tiefling has none yet.
 - Gear limits beyond the RACE's slot flags are a wear rule (engine docs/modding.md "Wear rules", `RaceRules`) read from the RACE's own
   fields `kenshi races hats only` and `kenshi races no footwear` ('|'-separated names) and `kenshi races no weapons`, so a dependent's subrace
   with traits gets them. They refuse equipping, buying into a slot and a loaded save's worn gear; a generated character's weapons are not
