@@ -6,7 +6,7 @@ namespace KenshiRaces;
 /// (<c>ModContext.AddCombatMove</c>, <see cref="AnimationRecords.Technique"/>); the clips are in the ANIMATION_FILE
 /// <see cref="AnimationRecords.File"/>, linked to every race on the game's human skeletons. Generated from the export's clip list; ids
 /// <c>100-</c> to <c>158-KenshiRaces.mod</c> in name order for the first models' 59 clips, then <c>159-</c> to <c>171-</c> for the
-/// spidercrab's 13, each new clip taking the next free id.
+/// spidercrab's 13, <c>172-</c> to <c>187-</c> for the ghostcrab's 16, each new clip taking the next free id.
 /// </summary>
 public static class RaceAnimations
 {
@@ -371,6 +371,86 @@ public static class RaceAnimations
     public static readonly RaceAnimation RightHandSwordSlash = new("kr_right_hand_sword_slash", "Right_Hand_Sword_Slash", 1.5f, Technique(171));
 
     /// <summary>
+    /// Meshy's <c>Left_Short_Hook_from_Guard</c>, 1.27 s.
+    /// </summary>
+    public static readonly RaceAnimation LeftShortHookFromGuard = new("kr_left_short_hook_from_guard", "Left_Short_Hook_from_Guard", 1.267f, Technique(172));
+
+    /// <summary>
+    /// Meshy's <c>Left_Slash</c>, 3.17 s.
+    /// </summary>
+    public static readonly RaceAnimation LeftSlash = new("kr_left_slash", "Left_Slash", 3.167f, Technique(173));
+
+    /// <summary>
+    /// Meshy's <c>Left_Uppercut_from_Guard</c>, 1.30 s.
+    /// </summary>
+    public static readonly RaceAnimation LeftUppercutFromGuard = new("kr_left_uppercut_from_guard", "Left_Uppercut_from_Guard", 1.3f, Technique(174));
+
+    /// <summary>
+    /// Meshy's <c>Right_Upper_Hook_from_Guard</c>, 1.70 s.
+    /// </summary>
+    public static readonly RaceAnimation RightUpperHookFromGuard = new("kr_right_upper_hook_from_guard", "Right_Upper_Hook_from_Guard", 1.7f, Technique(175));
+
+    /// <summary>
+    /// Meshy's <c>Right_Uppercut_from_Guard</c>, 1.00 s.
+    /// </summary>
+    public static readonly RaceAnimation RightUppercutFromGuard = new("kr_right_uppercut_from_guard", "Right_Uppercut_from_Guard", 1f, Technique(176));
+
+    /// <summary>
+    /// Meshy's <c>Walk_Backward_inplace</c>, 0.87 s.
+    /// </summary>
+    public static readonly RaceAnimation WalkBackwardInplace = new("kr_walk_backward_inplace", "Walk_Backward_inplace", 0.8667f, Technique(177));
+
+    /// <summary>
+    /// Meshy's <c>Walk_Backward_with_Grenade_inplace</c>, 1.20 s.
+    /// </summary>
+    public static readonly RaceAnimation WalkBackwardWithGrenadeInplace = new("kr_walk_backward_with_grenade_inplace", "Walk_Backward_with_Grenade_inplace", 1.2f, Technique(178));
+
+    /// <summary>
+    /// Meshy's <c>Walk_Fight_Forward</c>, 1.70 s.
+    /// </summary>
+    public static readonly RaceAnimation WalkFightForward = new("kr_walk_fight_forward", "Walk_Fight_Forward", 1.7f, Technique(179));
+
+    /// <summary>
+    /// Meshy's <c>Walk_Forward_While_Shooting</c>, 3.27 s.
+    /// </summary>
+    public static readonly RaceAnimation WalkForwardWhileShooting = new("kr_walk_forward_while_shooting", "Walk_Forward_While_Shooting", 3.267f, Technique(180));
+
+    /// <summary>
+    /// Meshy's <c>Walk_Forward_with_Bow_Aimed</c>, 1.20 s.
+    /// </summary>
+    public static readonly RaceAnimation WalkForwardWithBowAimed = new("kr_walk_forward_with_bow_aimed", "Walk_Forward_with_Bow_Aimed", 1.2f, Technique(181));
+
+    /// <summary>
+    /// Meshy's <c>Walk_Left_with_Gun</c>, 1.20 s.
+    /// </summary>
+    public static readonly RaceAnimation WalkLeftWithGun = new("kr_walk_left_with_gun", "Walk_Left_with_Gun", 1.2f, Technique(182));
+
+    /// <summary>
+    /// Meshy's <c>Walk_with_Umbrella</c>, 1.30 s.
+    /// </summary>
+    public static readonly RaceAnimation WalkWithUmbrella = new("kr_walk_with_umbrella", "Walk_with_Umbrella", 1.3f, Technique(183));
+
+    /// <summary>
+    /// Meshy's <c>Walk_with_Umbrella_inplace</c>, 1.30 s.
+    /// </summary>
+    public static readonly RaceAnimation WalkWithUmbrellaInplace = new("kr_walk_with_umbrella_inplace", "Walk_with_Umbrella_inplace", 1.3f, Technique(184));
+
+    /// <summary>
+    /// Meshy's <c>Weapon_Combo</c>, 3.67 s.
+    /// </summary>
+    public static readonly RaceAnimation WeaponCombo = new("kr_weapon_combo", "Weapon_Combo", 3.667f, Technique(185));
+
+    /// <summary>
+    /// Meshy's <c>Weapon_Combo_1</c>, 3.50 s.
+    /// </summary>
+    public static readonly RaceAnimation WeaponCombo1 = new("kr_weapon_combo_1", "Weapon_Combo_1", 3.5f, Technique(186));
+
+    /// <summary>
+    /// Meshy's <c>Weapon_Combo_2</c>, 4.50 s.
+    /// </summary>
+    public static readonly RaceAnimation WeaponCombo2 = new("kr_weapon_combo_2", "Weapon_Combo_2", 4.5f, Technique(187));
+
+    /// <summary>
     /// Every clip, in id order.
     /// </summary>
     public static IReadOnlyList<RaceAnimation> All { get; } =
@@ -384,7 +464,10 @@ public static class RaceAnimations
         StandToSitTransitionM, StepToSitTransition, SwimForward, SwimIdle, SwordShout, TalkWithHandsOpen, TextingWalk, VictoryFistPump,
         WalkBackwardWithGunInplace, Walking, Walking2Inplace, WalkingWoman, WallPushJumpAndFlip, WaveForHelp3, Attack, Block6, Block9,
         BoxingGuardPrepStraightPunch, BroadswordLeft, BroadswordRight, BroadswordThrust, BroadswordTop, BroadswordTop2,
-        ChargedSlash, MageSoellCast6, ReapingSwing, RightHandSwordSlash
+        ChargedSlash, MageSoellCast6, ReapingSwing, RightHandSwordSlash,
+        LeftShortHookFromGuard, LeftSlash, LeftUppercutFromGuard, RightUpperHookFromGuard, RightUppercutFromGuard, WalkBackwardInplace,
+        WalkBackwardWithGrenadeInplace, WalkFightForward, WalkForwardWhileShooting, WalkForwardWithBowAimed, WalkLeftWithGun,
+        WalkWithUmbrella, WalkWithUmbrellaInplace, WeaponCombo, WeaponCombo1, WeaponCombo2
     ];
 
     /// <summary>

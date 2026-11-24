@@ -18,7 +18,7 @@ with its helper; it never copies its records or files. Read `docs/depending-on-k
 
 ## Steps
 
-1. **Manifest**: `"dependencies": [{ "id": "kenshi.races", "version": ">=0.5.0 <0.6.0" }]` (match the current `KenshiRaces/meitou.json`
+1. **Manifest**: `"dependencies": [{ "id": "kenshi.races", "version": ">=0.6.0 <0.7.0" }]` (match the current `KenshiRaces/meitou.json`
    minor), `gameVersion` floor at least 0.22.2 (data phase).
 2. **Project**: add a `kenshi.races` entry to `meitou.lock.json` from the release notes of `kenshi-races-v<version>`, and move `engine/` to its
    engine commit.
