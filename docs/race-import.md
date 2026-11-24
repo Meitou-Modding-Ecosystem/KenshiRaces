@@ -86,7 +86,10 @@ welded:
    fades out within 1.5 units of it, so the back is not pulled in around the tail's root (**Observed**, male Leoma: a notch above the tail).
 2. After slimming, each vertex carried by the pelvis, spines, neck, clavicles, upper arms, thighs or the bust bones, or by the head below the game's head
    joint, blends to the human's weights there (the six nearest human torso, neck, head, upper-limb vertices' weights by inverse distance):
-   fully within 0.5 units of the human, not at all beyond 1.2.
+   fully within 0.5 units of the human, not at all beyond 1.2. A limb vertex takes only its own limb's weights and the torso's next to it
+   (an arm: `Spine1`, `Spine2`, `Neck`; a leg: `Pelvis`, `Spine`), a torso vertex the torso's and the limbs' upper bones', never a forearm's
+   or calf's. **Observed** (Crab Queen, arms hanging by her hips): taking the nearest human weights of any bone gave the arms pelvis and
+   thigh weights and the hips forearm weights, so walking stretched webs between arms, hips and legs.
 3. The changed vertices and two rings around them are smoothed: four rounds, each halfway to the neighbours' mean.
 
 The bones (`L Boob` 28, `R Boob` 29) and the female rig's other handles differ from the male's (`R Clavicle` 23 against 25; the male has

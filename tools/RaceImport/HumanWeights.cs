@@ -55,6 +55,34 @@ public static class HumanWeights
     static readonly string[] Givers = [.. Takers, "Bip01 Head", "Bip01 L Forearm", "Bip01 R Forearm", "Bip01 L Calf", "Bip01 R Calf"];
 
     /// <summary>
+    /// The torso's bones: a torso vertex takes weights from these and the limbs' upper bones, a limb vertex from <see cref="Shoulder"/> or
+    /// <see cref="Hip"/> and its own limb.
+    /// </summary>
+    static readonly string[] Torso = ["Bip01 Pelvis", "Bip01 Spine", "Bip01 Spine1", "Bip01 Spine2", "Bip01 Neck", "Bip01 Head", "L Boob", "R Boob"];
+
+    /// <summary>
+    /// The torso bones an arm vertex may take weights from (the armpit's), so an arm hanging by the hips never takes the pelvis's.
+    /// </summary>
+    static readonly string[] Shoulder = ["Bip01 Spine1", "Bip01 Spine2", "Bip01 Neck"];
+
+    /// <summary>
+    /// The torso bones a leg vertex may take weights from.
+    /// </summary>
+    static readonly string[] Hip = ["Bip01 Pelvis", "Bip01 Spine"];
+
+    /// <summary>
+    /// The limbs, each its bones from the torso out: a limb vertex takes weights only from its own limb (and <see cref="Shoulder"/> or
+    /// <see cref="Hip"/>), so an arm beside a hip or a thigh beside the other never takes the other's.
+    /// </summary>
+    static readonly (string[] Bones, string[] Torso)[] Limbs =
+    [
+        (["Bip01 L Clavicle", "Bip01 L UpperArm", "Bip01 L Forearm"], Shoulder),
+        (["Bip01 R Clavicle", "Bip01 R UpperArm", "Bip01 R Forearm"], Shoulder),
+        (["Bip01 L Thigh", "Bip01 L Calf"], Hip),
+        (["Bip01 R Thigh", "Bip01 R Calf"], Hip),
+    ];
+
+    /// <summary>
     /// Bones a tail may be bound to.
     /// </summary>
     static readonly string[] Legs =
@@ -142,15 +170,14 @@ public static class HumanWeights
     }
 
     /// <summary>
-    /// Each taker vertex near the human (not a tail's) blended towards the human's weights there, fully within <see cref="Near"/>; returns the
-    /// vertices that changed.
+    /// Each taker vertex near the human (not a tail's) blended towards the human's weights there, fully within <see cref="Near"/>, from the
+    /// donors its own part may take (<see cref="DonorSets"/>); returns the vertices that changed.
     /// </summary>
     static List<int> Copy(Vector3[] points, Dictionary<ushort, float>[] own, float[] gaps, HashSet<int> tail, KenshiSkeleton kenshi,
         HumanBody human)
     {
         var takers = Takers.Where(kenshi.Has).Select(kenshi.Handle).ToHashSet();
-        var givers = Givers.Where(kenshi.Has).Select(kenshi.Handle).ToHashSet();
-        var donors = Enumerable.Range(0, human.Positions.Length).Where(v => givers.Contains(human.Bones[v])).ToArray();
+        var donors = DonorSets(kenshi, human);
         ushort head = kenshi.Handle("Bip01 Head");
         float neckTop = kenshi.Position("Bip01 Head").Y;
 
@@ -162,12 +189,42 @@ public static class HumanWeights
             float strength = Math.Clamp((Far - gaps[v]) / (Far - Near), 0, 1);
             if (!taker || tail.Contains(v) || strength <= 0) continue;
 
-            own[v] = Blend(own[v], HumanAt(points[v], donors, human), strength);
+            own[v] = Blend(own[v], HumanAt(points[v], donors.GetValueOrDefault(bone, donors[head]), human), strength);
             changed.Add(v);
         }
 
         return changed;
     }
+
+    /// <summary>
+    /// Per bone, the human vertices a vertex it carries takes weights from: for a limb's bone, its limb's and the torso bones next to it; for a
+    /// torso bone (the head's too), the torso's and every limb's upper bones (not forearms or calves).
+    /// </summary>
+    static Dictionary<ushort, int[]> DonorSets(KenshiSkeleton kenshi, HumanBody human)
+    {
+        var givers = Givers.Where(kenshi.Has).Select(kenshi.Handle).ToHashSet();
+        var upper = Limbs.SelectMany(l => l.Bones.Take(l.Bones.Length - 1));
+        var torso = Handles(kenshi, [.. Torso, .. upper]);
+        var result = Torso.Where(kenshi.Has).ToDictionary(kenshi.Handle, _ => DonorsOf(human, torso, givers));
+        foreach (var (bones, near) in Limbs)
+        {
+            var allowed = Handles(kenshi, [.. bones, .. near]);
+            foreach (var bone in Handles(kenshi, bones)) result[bone] = DonorsOf(human, allowed, givers);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// The human vertices carried by a bone that is both <paramref name="allowed"/> and a giver.
+    /// </summary>
+    static int[] DonorsOf(HumanBody human, HashSet<ushort> allowed, HashSet<ushort> givers) =>
+        [.. Enumerable.Range(0, human.Positions.Length).Where(v => allowed.Contains(human.Bones[v]) && givers.Contains(human.Bones[v]))];
+
+    /// <summary>
+    /// The handles of the named bones the rig has.
+    /// </summary>
+    static HashSet<ushort> Handles(KenshiSkeleton kenshi, IEnumerable<string> names) => names.Where(kenshi.Has).Select(kenshi.Handle).ToHashSet();
 
     /// <summary>
     /// The human's weights at <paramref name="point"/>: its <see cref="Donors"/> nearest donor vertices' weights, by inverse distance.
