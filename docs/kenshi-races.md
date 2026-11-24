@@ -34,6 +34,30 @@ Added in the data phase from the loaded game's own records (`RaceRecords`), so `
 - CHARACTER: a copy of Drifter (`2205-gamedata.base`) of the subrace and gender (`female chance` 100 or 0), no kit, money or bounty, with the
   recruit talk.
 - Engine: a CHARACTER's own `mesh` field overrides its race's body mesh.
+- WEAPON `50-` "FISTS- crab": the Crabfolk's fists ([Traits](#traits)).
+
+## Traits
+
+Each subrace's `RaceTraits` replace the Greenlander's (`RaceRecords.FillRace`). Aptitudes are the RACE's `stats good` (x1.2 starting value and
+XP) and `stats bad` (x0.8), `strength` 1.2 for strength, which the game lays over the lists (engine docs/game/character-stats.md "Races");
+"all weapons but ranged" are Katanas, Sabres, Hackers, Heavy Weapons, Blunt and Polearms; precision shooting is stat 36. Part health is each
+`combat anatomy` entry's value 1, the part's base hit points (the Greenlander's 100).
+
+| Subrace | +20% | -20% | Head / chest / stomach / arms / legs | Gear |
+| --- | --- | --- | --- | --- |
+| leoma | strength, sabres, athletics, weapon smith, labouring | armour smith, farming, polearms, heavy weapons, robotics | 100 / 120 / 120 / 120 / 120 | all |
+| crevan | perception, stealth, lockpicking, thieving, assassination, robotics, dodge | the weapons above, farming, labouring | 140 / 100 / 100 / 90 / 90 | `no shoes`; head gear only named `Ashland...` (the Ashland Hat, the Ashlander Stormgoggles) |
+| crabman, crabqueen | martial arts, strength, toughness, melee attack and defence, swimming, labouring, engineering | dodge, turrets, crossbows, precision shooting, stealth, lockpicking, thieving, assassination, field medic, weapon, armour and crossbow smith | 100 / 200 / 200 / 250 / 120 | `no hats`; no footwear named `Sandals`; no weapons or crossbows |
+
+- Gear limits beyond the RACE's slot flags are a wear rule (engine docs/modding.md "Wear rules", `RaceRules`) read from the RACE's own
+  fields `kenshi races hats only` and `kenshi races no footwear` ('|'-separated names) and `kenshi races no weapons`, so a dependent's subrace
+  with traits gets them. They refuse equipping, buying into a slot and a loaded save's worn gear; a generated character's weapons are not
+  checked (Kenshi Races' characters spawn with none).
+- Crabfolk fists: a copy of the skeletons' `FISTS- robo` (cut x1.2, bleed 0.2, robot damage 1; the people's `FISTS`: 1, 0.05, 0.6) with cut
+  x1.3 and blunt x1.1, named by the RACE's `fists lv1` and `fists lv100`.
+- Crabfolk shell: every blow landing on them (melee, bolt, execution) is x0.8 before armour and toughness (a hit filter, engine docs/modding.md
+  "Hits before they land"; RACE field `kenshi races damage taken`). The game's RACE has no damage resistance: skeletons only take less from
+  weapons whose `robot damage mult` is below 1 (**Verified**, base data: 40 of 54 WEAPONs 1, `FISTS` and 5 more 0.6, 6 above 1).
 
 ## Character editor
 
