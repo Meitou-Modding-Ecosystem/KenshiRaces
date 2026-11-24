@@ -1,16 +1,19 @@
-<a id="permanent-branch-policy-and-repository-onboarding"></a>
-# Política de sucursal permanente e incorporación del repositorio
+# Protección de ramas y alta de repositorios
 
-Todos los repositorios de Meitou -Modding-Ecosystem utilizan la [política central permanente](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md) :
+Todos los repositorios de la organización siguen la política permanente común. [GutenStructure](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md)
 
-| Rama | Requisito |
+| Rama | Requisitos |
 | --- | --- |
-| Ramas ordinarias | Desprotegido |
-| beta | PR + pasando por CI ; Los supermantenedores pueden eludir la revisión, incluidas las autofusiones. |
-| principal / lanzamiento | PR + aprobación de CI + una aprobación de supermantenedor independiente; sin omisión de revisión |
+| Ramas de trabajo | Sin protección. |
+| `beta` | PR y CI satisfactoria. Los supermantenedores pueden omitir la revisión, incluso para fusionar sus propias PR. |
+| `main` / `release` | PR, CI satisfactoria y una aprobación independiente de un supermantenedor. La revisión es obligatoria sin excepciones. |
 
-GitHub Actions no tiene omisión de revisión. La excepción del equipo Beta se aplica solo a las revisiones: la seguridad obligatoria de PR / CI no tiene derivación. CODEOWNERS no agrega ningún requisito de aprobación adicional.
+GitHub Actions carece de excepción de revisión. En beta, la excepción del equipo se limita a la revisión. La PR y los controles obligatorios siguen siendo imprescindibles. CODEOWNERS no exige otra aprobación.
 
-Las plantillas de GitHub copian el código fuente, no ramifican conjuntos de reglas, permisos de equipo, entornos o secretos.  Configurar protecciones de rama de lanzamiento de GutenStructure descubre nuevos repositorios de organizaciones públicas cada hora en el minuto 17, asigna acceso de escritura al repositorio del equipo si falta y aplica la política. Para configurar un nuevo repositorio de inmediato, solicite a un mantenedor autorizado de GutenStructure una vista previa y luego aplique ese flujo de trabajo en la organización principal de destino. Haga esto antes de confiar en fusiones o publicaciones protegidas. Mantenga Release readiness en el llamante CI y verifique las ejecuciones de pases reales; Las comprobaciones esperadas sin un flujo de trabajo coincidente esperarán para siempre.
+Las plantillas copian el código fuente. Las reglas, permisos, entornos y secretos se configuran aparte. Cada hora, en el minuto 17, el flujo central descubre los repositorios públicos nuevos, concede al equipo permiso de escritura si hace falta y aplica la política. Para una configuración inmediata, un mantenedor autorizado de GutenStructure (`Configure release branch protections`) debe previsualizar y aplicar el flujo desde main para la organización. Hazlo antes de publicar o confiar en las protecciones.
 
-Cree principal/lanzamiento a partir de una fuente estable revisada cuando esté listo; la política se dirige a ellos incluso antes de que existan. Mantenga los pines de flujo de trabajo centrales revisados ​​e inmutables de esta plantilla, actualizando tanto la puerta de lanzamiento como el editor del paquete juntos a través de relaciones públicas. Los repositorios privados requieren una validación de plan/protección por separado; el descubrimiento no otorga acceso a Azure. Los secretos de la plataforma externa permanecen en entornos propiedad del autor y nunca se copian de esta plantilla.
+Mantén Release readiness en la CI del repositorio y verifica que se ejecute con éxito. Un control esperado sin flujo asociado quedará pendiente. Crea main y release a partir de código estable y revisado. Las reglas ya se dirigen a ellas antes de crearlas.
+
+Conserva las referencias inmutables revisadas de los flujos centrales. Actualiza juntos por PR el control de publicación y el publicador de paquetes. Los repositorios privados requieren verificar el plan y las protecciones por separado. La detección no concede acceso a Azure. Los secretos de plataformas externas permanecen en los entornos de sus propietarios.
+
+[English](../../../docs/branch-policy.md) · [Kenshi Races](../README.md)

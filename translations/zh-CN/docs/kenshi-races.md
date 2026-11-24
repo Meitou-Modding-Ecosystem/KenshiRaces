@@ -4,16 +4,16 @@
 角色编辑器的三个新种族，每个种族都有子种族，位于游戏的人体骨骼上（ `kenshi.races` ，无依赖性）：加载时添加的每个记录，身体由 [race import](race-import.md) ] 安装。它还为这些骨架上的每场比赛提供了一个包含 59 个剪辑的动画库](animations.md) 。模组使用种族和剪辑，添加子种族或添加自己的种族：[depending-on-kenshi-races.md](depending-on-kenshi-races.md) 。
 
 <a id="races"></a>
-## 比赛
+## 可玩种族
 
-编辑器将每个 RACE_GROUP 列为种族，并将其种族列为子种族（引擎文档/characters.md“角色编辑器”）。
+编辑器将每个 RACE_GROUP 显示为一个种族，其中的 RACE 记录显示为亚种。
 
-| 比赛 ( RACE_GROUP ) | 亚族 ( RACE ) | 性别 | 人物 |
+| 种族 | 亚种 | 身体模型 | 角色 |
 | --- | --- | --- | --- |
-| Leoma `30-` | 雷奥马 `10-` | 男、女 | 雄性 `11-` , 雌性 `17-` |
-| Crevan `31-` | 克雷文 `18-` | 男、女 | 公羊 `19-` , 母羊 `21-` |
-| Crabfolk `32-` | 蟹人 `12-` | 单身的 | 蟹人 `13-` |
-|  | 螃蟹皇后 `14-` | 单身的 | 螃蟹皇后 `15-` |
+| Leoma `30-` | leoma `10-` | 男性、女性 | leomamale `11-`, leomafemale `17-` |
+| Crevan `31-` | crevan `18-` | 男性、女性 | crevanmale `19-`, crevanfemale `21-` |
+| Crabfolk `32-` | crabman `12-` | 单一 | crabman `13-` |
+|  | crabqueen `14-` | 单一 | crabqueen `15-` |
 
 Id 以 `KenshiRaces.mod` 结尾。 Subrace 和 CHARACTER 名称是一个小写单词，因此控制台的 `spawn` 将它们不带引号。每个主体的文件都是 `KenshiRaces/items/races/kenshiraces_<character>*` （ Leoma 和 Crevan 上的法线贴图）。公头适用于 `male_skeleton` ，母头适用于 `female_skeleton` ；螃蟹的身体是男性的，所以螃蟹女王是单一性别的，动画和声音都是男性的。源模型（ Meshy 导出，slim 1）：leomamale“Leonid Bare - 3ds Max Biped.glb”，crabman 和crabqueen“... - 3ds Max Biped.glb”，其他 `leonidfemale.glb` 、 `corvidmale.glb` 、 `corvidfemale.glb` 。
 
@@ -38,14 +38,16 @@ Id 以 `KenshiRaces.mod` 结尾。 Subrace 和 CHARACTER 名称是一个小写�
 DIALOGUE  `1-KenshiRaces.mod` ：角色说“你看起来可以使用另一双手。”，玩家回答“加入我们”。动作 18（加入小队）将角色添加到玩家的小队中。
 
 <a id="testing-in-game"></a>
-## 游戏中测试
+## 招募与游戏内测试
 
-1. 在启动器中启用 Kenshi Races （或 `data/mods.cfg` ）。
-2. 控制台： `spawn leomafemale` （或表中的任何 CHARACTER ）在光标处生成；与Recruit交谈，或F10调试Recruit。
-3. F10 ** Kenshi Races ：种族** 列出加载的每个已安装的种族（此模组和相关者的）。
-4. 新游戏：编辑的种族箭头到达 Leoma 、 Crevan 和 Crabfolk 。
+1. 在启动器或 `data/mods.cfg` 中启用 Kenshi Races。
+2. 在控制台输入 `spawn leomafemale`，角色就会出现在光标位置。也可以使用表中的其他角色名称。
+3. 与角色交谈并同意其加入小队，也可以使用 F10 调试菜单中的 Recruit。
+4. F10 菜单中的 **Kenshi Races: races**会列出本模组及依赖它的模组已加载的适配种族。
 
 <a id="clothing"></a>
-## 衣服
+## 服装与护甲
 
-盔甲共享身体的骨骼，因此它会随着这些身体一起移动，但它是围绕人体建模的。零件图隐藏了带有 `hide parts` 的物品（外套、长袍、夹克）下的皮肤；减肥会吸收比其他地方的人更笨重的东西（[race import](race-import.md#slimming) ）。远离人类的形状（贝壳、爪子）仍然刺穿严密的盔甲。
+护甲会随同一套骨骼活动，但外形按人体制作。使用 `hide parts` 的外套、长袍和夹克会隐藏覆盖区域的皮肤。甲壳与蟹钳仍可能穿出紧身护甲。 适配时会收窄超出人类体形的部分，使其更接近人体比例。 ([race-import.md](race-import.md#slimming)).
+
+[English](../../../docs/kenshi-races.md) · [Kenshi Races](../README.md)

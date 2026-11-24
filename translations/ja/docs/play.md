@@ -1,9 +1,9 @@
 <a id="build-and-run-locally"></a>
-# ローカルで構築して実行する
+# ローカルでビルドして起動する
 
-Building `Play` builds the engine and every mod in this repo, copies the mods and the frameworks `meitou.lock.json` names into the game's mods folder, and then starts the game.好きなツールを使用してください: Visual Studio 、 VS Code 、またはターミナルはすべて同じビルドを実行します。
+`Play`をビルドすると、エンジンとリポジトリ内の全MODがコンパイルされます。次に、MODと`meitou.lock.json`に記載されたフレームワークをゲームのMODフォルダーへコピーしてゲームを起動します。Visual Studio、VS Code、ターミナルのいずれでも同じビルドが実行されます。
 
-3 つすべてに が必要です。 NET 11 SDK とそのサブモジュールを含むクローン ( `git clone --recurse-submodules <repo URL>` 、または既存のクローンの `git submodule update --init --recursive` )。これらがないと、ビルドは `MEITOU001` で停止し、そのコマンドに名前が付けられます。
+.NET 11 SDKをインストールし、`git clone --recurse-submodules <repo URL>`でサブモジュールを含めてクローンしてください。既存のクローンでは`git submodule update --init --recursive`を実行します。サブモジュールがないと、ビルドは`MEITOU001`で停止し、必要なコマンドを表示します。
 
 <a id="visual-studio"></a>
 ## Visual Studio
@@ -14,16 +14,16 @@ Building `Play` builds the engine and every mod in this repo, copies the mods an
 
 | プロフィール | 走る | 用途: |
 | --- | --- | --- |
-| プレイ (エンジン + MOD) | このリポジトリの `engine` サブモジュールからビルドされた `MeitouClient.exe` | MOD のテストとデバッグ。改造コードのブレークポイントが機能する |
-| Meitou ランチャー（インストール済み） | Meitou リリース、 `%LOCALAPPDATA%\MeitouLauncher\current\meitou-launcher.exe` からインストールされたランチャー | MOD リストまたはロード順序を変更し、新しい MOD のコードを信頼する |
+| `Play (engine + mods)` | このリポジトリの `engine` サブモジュールからビルドされた `MeitouClient.exe` | MOD のテストとデバッグ。改造コードのブレークポイントが機能する |
+| `Meitou launcher (installed)` | Meitou リリース、 `%LOCALAPPDATA%\MeitouLauncher\current\meitou-launcher.exe` からインストールされたランチャー | MOD リストまたはロード順序を変更し、新しい MOD のコードを信頼する |
 
 <a id="vs-code"></a>
 ## VS Code
 
 1. C# Dev Kit 拡張機能をインストールします (フォルダーを開くと VS Code が提供します。これは `.vscode/extensions.json` にあります)。
 2. リポジトリのルート フォルダーを開きます ([ファイル] > [フォルダーを開く])。
-3. 実行してデバッグ (Ctrl+Shift+D) し、**再生 (エンジン + MOD)** を選択して、F5 を押します。最初にビルドとデプロイが行われ、次にデバッガーでエンジンが開始されます。改造コードのブレークポイントは機能します。
-4. インストールされているランチャーの場合: [ターミナル] > [タスクの実行] > ** Meitou ランチャー (インストール済み)**。ビルドしてデプロイし、ランチャーを開きます。
+3. 実行してデバッグ (Ctrl+Shift+D) し、**Play (engine + mods)**を選択して、F5 を押します。最初にビルドとデプロイが行われ、次にデバッガーでエンジンが開始されます。改造コードのブレークポイントは機能します。
+4. インストールされているランチャーの場合: [ターミナル] > [タスクの実行] > **Meitou launcher (installed)**。ビルドしてデプロイし、ランチャーを開きます。
 
 [ターミナル] > [ビルド タスクの実行] (Ctrl+Shift+B) はビルドとデプロイのみを行います。
 
@@ -58,9 +58,9 @@ dotnet build Play
 - MOD を検索します: `meitou.json` および `<Folder>/<Folder>.csproj` を含むすべての最上位フォルダー。新しい MOD では `Play` を変更する必要はありません。
 - 選択した構成に関係なく、**リリース**でエンジンと各 MOD をビルドします。MOD がキャラクターのタスクを開始すると、デバッグ エンジン ビルドは `TaskStart.CheckStarts` をスローします。改造コード内のブレークポイントは引き続き機能します (リリース シンボルが展開されます)。
 - 各 MOD の `<Mod>.dll` 、 `<Mod>.pdb` 、 `meitou.json` を `<Kenshi>\mods\<Mod>\` にコピーします。まずゲームを閉じます。実行中のゲームにより DLL がロックされます。
-- `meitou.lock.json` の各フレームワークを、ダウンロードしたリリース フォルダーから `<Kenshi>\mods\<Framework>\` にコピーします。または、クローンからビルドされたフレームワーク ([local-development.md](local-development.md) )] の場合は、そのビルド出力をコピーします。
-- データ ジェネレーターを備えた MOD ( `<Mod>.Data/<Mod>.Data.csproj` 、 `<generator> <Kenshi folder> <output .mod>` として実行) は、インストールされたゲームから生成された `<Mod>.mod` を取得します。失敗はビルド警告であり、MOD は警告なしでデプロイされます。他のすべての MOD には空の `<Mod>.mod` がありません。既存のものは決して置き換えられません。
-- `Structures` フォルダーを持つ MOD は、その `.glb` モデルをそのデプロイされたフォルダーにインポートし、レコードはその `.mod` ([ Structures.md](structures.md) )] にマージされます。
+- `meitou.lock.json` の各フレームワークを、ダウンロードしたリリース フォルダーから `<Kenshi>\mods\<Framework>\` にコピーします。または、クローンからビルドされたフレームワーク ([local-development.md](local-development.md))] の場合は、そのビルド出力をコピーします。
+- データ ジェネレーターを備えた MOD (`<Mod>.Data/<Mod>.Data.csproj` 、 `<generator> <Kenshi folder> <output .mod>` として実行) は、インストールされたゲームから生成された `<Mod>.mod` を取得します。失敗はビルド警告であり、MOD は警告なしでデプロイされます。他のすべての MOD には空の `<Mod>.mod` がありません。既存のものは決して置き換えられません。
+- `Structures` フォルダーを持つ MOD は、その `.glb` モデルをそのデプロイされたフォルダーにインポートし、レコードはその `.mod` ([ Structures.md](structures.md))] にマージされます。
 - mods フォルダーが存在しない場合、何もコピーされず、ビルドにその旨が表示されます。
 - ランチャーの [再生] ボタンは、このリポジトリのエンジンではなく、インストールされているリリースを開始します。それを閉じて、「Play (engine + mods)」を実行してビルドをテストします。
 
@@ -88,3 +88,5 @@ dotnet build Play
 
 - インストールしたランチャーを 1 回実行します (上記のいずれかの方法)。MOD とそのフレームワークを有効にし、そのコードを信頼します。
 - コピーが「アクセス拒否」で失敗した場合は、エディタを管理者として実行するのではなく、 `Kenshi\mods` に対する変更権限をユーザーに付与します ([プロパティ] > [セキュリティ])。
+
+[English](../../../docs/play.md) · [Kenshi Races](../README.md)

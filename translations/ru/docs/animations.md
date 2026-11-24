@@ -1,25 +1,25 @@
 <a id="animations"></a>
-# Анимации
+# Библиотека из 59 анимаций и процесс их создания
 
-Kenshi Races поставляется с библиотекой анимации: каждый клип исходных моделей рас (анимационная библиотека Meshy , 59 клипов) перенацелен на мужские и женские скелеты игры, так что любой персонаж на этих скелетах может играть в нее: люди, шеки, улей и скелеты, а также приспособленные расы. Моды воспроизводят их через Kenshi Races ' API ([зависит от-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations) ).
+Kenshi Races поставляется с библиотекой анимации: каждый клип исходных моделей рас (анимационная библиотека Meshy, 59 клипов) перенацелен на мужские и женские скелеты игры, так что любой персонаж на этих скелетах может играть в нее: люди, шеки, улей и скелеты, а также приспособленные расы. Моды воспроизводят их через Kenshi Races ' API ([зависит от-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations)).
 
 <a id="files-and-records"></a>
 ## Файлы и записи
 
 - `KenshiRaces/items/animations/kenshiraces_anims_male.skeleton` и `_female.skeleton` : каждый начинается с костей своего игрового скелета побайтно (дорожки файла анимации применяются с помощью дескриптора кости, а дескрипторы женского рига различаются), затем клипы, 30 клавиш в секунду.
-- ANIMATION_FILE  `40-KenshiRaces.mod` ( `AnimationRecords.File` ) называет оба. Фаза данных связывает его с `animation files` каждой расы, чей `male mesh` находится под `data/character/meshes/` (кроме Королевы Улья, у которой есть собственный скелет) или представляет собой подогнанное тело ( `/items/races/` ), а `RaceRecords.FillRace` связывает его с новыми подрасами, в том числе и с зависимыми.
-- Отключенный COMBAT_TECHNIQUE для каждого клипа (от `100-` до `158-KenshiRaces.mod` , порядок имен), `anim name` = клип: отключен, поэтому ни один бой его не выберет; мод воспроизводит его как боевой прием мода (engine docs/modding.md, «Боевые приемы»).
+- ANIMATION_FILE  `40-KenshiRaces.mod` (`AnimationRecords.File`) называет оба. Фаза данных связывает его с `animation files` каждой расы, чей `male mesh` находится под `data/character/meshes/` (кроме Королевы Улья, у которой есть собственный скелет) или представляет собой подогнанное тело (`/items/races/`), а `RaceRecords.FillRace` связывает его с новыми подрасами, в том числе и с зависимыми.
+- Отключенный COMBAT_TECHNIQUE для каждого клипа (от `100-` до `158-KenshiRaces.mod`, порядок имен), `anim name` = клип: отключен, поэтому ни один бой его не выберет; мод воспроизводит его как боевой прием мода (engine docs/modding.md, «Боевые приемы»).
 
 <a id="making-them"></a>
 ## Делая их
 
-`tools/AnimationExport` с клоном [ Motion Lab ](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) ( `MOTIONLAB` , по умолчанию `../PZAKenshiMotionLab` ) и игровым `data/character/meshes` :
+`tools/AnimationExport` с клоном [ Motion Lab ](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) (`MOTIONLAB`, по умолчанию `../PZAKenshiMotionLab`) и игровым `data/character/meshes` :
 
-1. `python tools/AnimationExport/split.py <model.glb> <clips folder>` для каждой исходной модели: одна ссылка на клип, суставы `Bip001` переименованы в роли Mixamo, которые читает Motion Lab . Более поздняя модель перезаписывает клип, предоставленный более ранней моделью; самец Leoma идет последним.
+1. `python tools/AnimationExport/split.py <model.glb> <clips folder>` для каждой исходной модели: одна ссылка на клип, суставы `Bip001` переименованы в роли Mixamo, которые читает Motion Lab. Более поздняя модель перезаписывает клип, предоставленный более ранней моделью; самец Leoma идет последним.
 2. Для каждого пола `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference <clip>.glb ...` (каждый клип): перенацеливает их на тело игры (около минуты для 59).
 3. `python tools/AnimationExport/export.py <out>/human_<gender>_rigged.glb <gender>_skeleton.skeleton KenshiRaces/items/animations/kenshiraces_anims_<gender>.skeleton <clips>.json` : называет их `kr_<clip lower case>` и записывает файл.
 
-Каждый клип воспроизводится на месте: там, где проехал исходный клип (столбец «Путешествие», метры), перемещение корня по земле вычитается как прямая линия, покачивание и раскачивание сохраняются. Все смотрят вперед в игре: отклонение корня соответствует -90° позы привязки, как и собственные холостые движения игры (**Проверено**, `idle_stand_normal` в `male_skeleton.skeleton` ). Новому клипу также нужна строка в `RaceAnimations` со следующим идентификатором свободной техники (159) и ее строка здесь.
+Каждый клип воспроизводится на месте: там, где проехал исходный клип (столбец «Путешествие», метры), перемещение корня по земле вычитается как прямая линия, покачивание и раскачивание сохраняются. Все смотрят вперед в игре: отклонение корня соответствует -90° позы привязки, как и собственные холостые движения игры (**Проверено**, `idle_stand_normal` в `male_skeleton.skeleton`). Новому клипу также нужна строка в `RaceAnimations` со следующим идентификатором свободной техники (159) и ее строка здесь.
 
 <a id="clips"></a>
 ## Клипы
@@ -85,3 +85,5 @@ Kenshi Races поставляется с библиотекой анимации
 | `kr_walking_woman` | `WalkingWoman` | `156-` | Walking_Woman | 0.97 |  |
 | `kr_wall_push_jump_and_flip` | `WallPushJumpAndFlip` | `157-` | Wall_Push_Jump_and_Flip | 2.00 | 1.3 |
 | `kr_wave_for_help_3` | `WaveForHelp3` | `158-` | Wave_for_Help_3 | 3.17 |  |
+
+[English](../../../docs/animations.md) · [Kenshi Races](../README.md)

@@ -1,7 +1,7 @@
 <a id="race-import-fitting-a-body-onto-the-games-skeleton"></a>
-# 레이스 가져오기: 게임의 뼈대에 신체 맞추기
+# GLB 몸체를 게임의 스켈레톤에 맞추기
 
-`tools/RaceImport` 는 리깅된 `.glb` 본체( Meshy , Hi3D : "3ds Max Biped" 리그, 조인트 `Bip001 ...` )를 게임이 자체 인간 애니메이션으로 애니메이션하는 본체( `male_skeleton.skeleton` 또는 `female_skeleton.skeleton` 에 연결된 스킨 처리된 오우거 메시, DDS 텍스처 및 부품 맵)로 바꿉니다. 게임 설치에서 리그의 뼈대, 인체 및 부품 맵을 읽으므로 CI 가 아닌 Kenshi 가 있는 시스템에서 실행됩니다. 출력이 커밋됩니다.
+`tools/RaceImport` 는 리깅된 `.glb` 본체(Meshy, Hi3D : "3ds Max Biped" 리그, 조인트 `Bip001 ...`)를 게임이 자체 인간 애니메이션으로 애니메이션하는 본체(`male_skeleton.skeleton` 또는 `female_skeleton.skeleton` 에 연결된 스킨 처리된 오우거 메시, DDS 텍스처 및 부품 맵)로 바꿉니다. 게임 설치에서 리그의 뼈대, 인체 및 부품 맵을 읽으므로 CI 가 아닌 Kenshi 가 있는 시스템에서 실행됩니다. 출력이 커밋됩니다.
 
 <a id="run-it"></a>
 ## 실행해 보세요
@@ -10,18 +10,18 @@
 dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim]
 ```
 
-- `<Kenshi folder>` : 게임 폴더(그 안에 `data/` ), 예: `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"` .
-- 스템은 파일 이름을 지정하며 모드 전체에서 고유해야 합니다(게임은 기본 이름으로 파일을 찾습니다): `<modfolder lower case>_<race>` .
-- `male` / `female` : 리그, 기본 남성. 여성의 신체는 `female_skeleton` 에 장착되며 `human_female.mesh` 및 `FemaleMask_Default.png` (게임 내 여성 애니메이션 및 음성, 편집자의 가슴 슬라이더)와 비교하여 측정됩니다. 남성은 `male_skeleton` , `human_male.mesh` 및 `MaleMask_Default.png` 입니다.
-- `slim` : 0 ~ 1, 기본값 1 ([슬리밍](#slimming) ); 옷보다 더 부피가 큰 경주를 위해 그것을 낮추십시오.
-- `<stem>.mesh` , `<stem>_d.dds` , `<stem>_n.dds` (모델에 노멀 맵이 있는 경우에만) 및 `<stem>_parts.png` 를 작성합니다. 로그 라인은 정점 수, 크기, 경계 및 숨길 수 있는 부분에 속하는 정점 수를 제공합니다.
-- `.glb` 를 저장소 외부에 유지합니다(수십 MB ). 4개의 출력을 커밋합니다. `.gitignore` 는 `*/items/races/*.mesh` 및 `*.dds` 를 통과시킵니다.
-- 종속 모드는 자체 출력 폴더( `<Mod>/items/races` )와 스템을 사용하여 KenshiRaces 복제본에서 이를 실행합니다.
+- `<Kenshi folder>` : 게임 폴더(그 안에 `data/`), 예: `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
+- 스템은 파일 이름을 지정하며 모드 전체에서 고유해야 합니다(게임은 기본 이름으로 파일을 찾습니다): `<modfolder lower case>_<race>`.
+- `male` / `female` : 리그, 기본 남성. 여성의 신체는 `female_skeleton` 에 장착되며 `human_female.mesh` 및 `FemaleMask_Default.png` (게임 내 여성 애니메이션 및 음성, 편집자의 가슴 슬라이더)와 비교하여 측정됩니다. 남성은 `male_skeleton`, `human_male.mesh` 및 `MaleMask_Default.png` 입니다.
+- `slim` : 0 ~ 1, 기본값 1 ([슬리밍](#slimming)); 옷보다 더 부피가 큰 경주를 위해 그것을 낮추십시오.
+- `<stem>.mesh`, `<stem>_d.dds`, `<stem>_n.dds` (모델에 노멀 맵이 있는 경우에만) 및 `<stem>_parts.png` 를 작성합니다. 로그 라인은 정점 수, 크기, 경계 및 숨길 수 있는 부분에 속하는 정점 수를 제공합니다.
+- `.glb` 를 저장소 외부에 유지합니다(수십 MB). 4개의 출력을 커밋합니다. `.gitignore` 는 `*/items/races/*.mesh` 및 `*.dds` 를 통과시킵니다.
+- 종속 모드는 자체 출력 폴더(`<Mod>/items/races`)와 스템을 사용하여 KenshiRaces 복제본에서 이를 실행합니다.
 
 <a id="what-the-model-needs"></a>
 ## 모델에 필요한 것
 
-- Biped 관절 `Bip001 Pelvis` , `Spine` , `Spine1` , `Spine2` , `Neck` , `Head` , 둘 다 `Clavicle` , `UpperArm` , `Forearm` , `Hand` , `Thigh` , `Calf` , 머리 위의 `Foot` , `Toe0` 및 `mixamorig:HeadTop_End` . 추가 관절(손가락, 꼬리, 도우미)은 가장 가까운 Biped 조상을 따릅니다. **검증**: Leoma , Crevan , Crabman 및 Crab Queen( Meshy 수출).
+- Biped 관절 `Bip001 Pelvis`, `Spine`, `Spine1`, `Spine2`, `Neck`, `Head`, 둘 다 `Clavicle`, `UpperArm`, `Forearm`, `Hand`, `Thigh`, `Calf`, 머리 위의 `Foot`, `Toe0` 및 `mixamorig:HeadTop_End`. 추가 관절(손가락, 꼬리, 도우미)은 가장 가까운 Biped 조상을 따릅니다. **검증**: Leoma, Crevan, Crabman 및 Crab Queen(Meshy 수출).
 - 기본 색상 텍스처입니다. 금속성 거칠기와 일반 질감이 있는 경우 사용됩니다.
 - 모든 휴식 포즈: T-포즈와 A-포즈가 모두 적합합니다(게임의 바인드 포즈는 팔을 아래로 내립니다).
 
@@ -32,7 +32,7 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 2. 스케일: 가장 낮은 정점 위의 모델 머리 관절 위의 게임 머리 뼈대 높이입니다.
 3. 각 척추, 팔, 다리 뼈대는 게임에서처럼 관절에서 하위 뼈대를 가리키도록 회전되며 게임 길이(0.6~1.6배)만큼 늘어납니다.
 4. 골반, 척추, 목 및 쇄골은 하나의 단단한 조각(게임의 목, 어깨 및 엉덩이 관절에 최소한의 정사각형)으로 장착되어 가슴의 모양이 유지됩니다. 뼈당 맞는 부분은 척추와 쇄골 무게가 섞이는 곳에서 전단됩니다. 골반과 척추 관절은 적합하지 않습니다. 게임의 골반은 엉덩이와 수평이고 Biped 내보내기는 그 위에 위치하여 가슴이 유닛 정도 떨어집니다.
-5. 머리는 몸통이 게임의 머리 관절까지 운반하는 위치의 중간 지점에 착지하므로 메시가 뼈 아래에 위치합니다. 게임의 목은 어깨 위로 한 단위 정도 올라가는데 이 모델은 거의 그렇게 하지 않습니다. 머리를 관절에 놓으면 목이 길이의 약 3배까지 늘어납니다(남성 Leoma , Crabman 및 Crab Queen에서 **관찰**: 장착된 목은 2.4 단위, 모델 자체는 0.8, 게임에서는 1.4).
+5. 머리는 몸통이 게임의 머리 관절까지 운반하는 위치의 중간 지점에 착지하므로 메시가 뼈 아래에 위치합니다. 게임의 목은 어깨 위로 한 단위 정도 올라가는데 이 모델은 거의 그렇게 하지 않습니다. 머리를 관절에 놓으면 목이 길이의 약 3배까지 늘어납니다(남성 Leoma, Crabman 및 Crab Queen에서 **관찰**: 장착된 목은 2.4 단위, 모델 자체는 0.8, 게임에서는 1.4).
 6. 발은 똑바로 유지되고 눌려서 발바닥이 땅에 닿게 됩니다(발과 게발은 게임의 발보다 키가 큽니다).
 7. 각 정점은 관절 맞춤의 가중치 합입니다. 무게는 관절이 따르는 게임 뼈로 이동하며 가장 무거운 4개는 그대로 유지됩니다.
 
@@ -41,7 +41,7 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 <a id="slimming"></a>
 ## 슬리밍
 
-게임의 의상은 리그의 인체를 중심으로 모델링되었으므로 몸이 비쳐 보이는 것보다 더 큽니다. 각 몸통과 사지 뼈(골반, 척추, 쇄골, 위쪽 및 아래쪽 팔, 다리) 주위에서 이 도구는 뼈의 6분의 1당 및 뼈 주위의 12분의 1 회전당 인체의 가장 먼 범위를 측정합니다. 해당 범위를 넘어서는 꼭지점에 0.15 단위(천 1.5cm)를 더하면 초과분의 5분의 1이 유지되며, 수정 사항은 뼈 무게에 따라 혼합됩니다. 수정은 제한의 1.5~2.5배 사이에서 페이드 아웃되고(그 이상: 발톱과 같은 부속물, 단독으로 남겨짐) 뼈의 슬라이스 외부 정점(골반 아래에 매달려 있는 꼬리)에 대해 0이고 표면 위에서 매끄러워지며(12 라운드의 이웃 평균화, UV 이음새 용접) 인접한 정점이 비슷하게 움직입니다. **관찰됨**(남성 Leoma ): 정점의 39%가 평균 1.3cm, 최대 9.5cm 이동합니다.
+게임의 의상은 리그의 인체를 중심으로 모델링되었으므로 몸이 비쳐 보이는 것보다 더 큽니다. 각 몸통과 사지 뼈(골반, 척추, 쇄골, 위쪽 및 아래쪽 팔, 다리) 주위에서 이 도구는 뼈의 6분의 1당 및 뼈 주위의 12분의 1 회전당 인체의 가장 먼 범위를 측정합니다. 해당 범위를 넘어서는 꼭지점에 0.15 단위(천 1.5cm)를 더하면 초과분의 5분의 1이 유지되며, 수정 사항은 뼈 무게에 따라 혼합됩니다. 수정은 제한의 1.5~2.5배 사이에서 페이드 아웃되고(그 이상: 발톱과 같은 부속물, 단독으로 남겨짐) 뼈의 슬라이스 외부 정점(골반 아래에 매달려 있는 꼬리)에 대해 0이고 표면 위에서 매끄러워지며(12 라운드의 이웃 평균화, UV 이음새 용접) 인접한 정점이 비슷하게 움직입니다. **관찰됨**(남성 Leoma): 정점의 39%가 평균 1.3cm, 최대 9.5cm 이동합니다.
 
 <a id="bust"></a>
 ## 흉상
@@ -51,17 +51,19 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 <a id="human-only-bones"></a>
 ## 인간 전용 뼈
 
-여성 뼈대에는 Biped 리그에는 부족한 `L Boob` 및 `R Boob` (편집자의 가슴 크기, 높이 및 간격 배율 및 이동, 엔진 docs/animation.md)가 있습니다. 슬리밍 후 가장 무거운 뼈대가 `Spine1` 또는 `Spine2` 인 각 정점은 1 단위 내에서 1 거리만큼 크기가 조정된 가장 가까운 인간 정점의 인간 전용 가중치를 취합니다. 공간을 확보하기 위해 자체 무게가 줄어듭니다. **관찰됨**( `human_female.mesh` ): 흉상 정점은 두 개의 뼈(994개 전면 가슴 정점 중 892개)에 의해 전달됩니다. 뼈대( `L Boob` 28, `R Boob` 29)와 여성 리그의 다른 핸들은 남성 리그의 핸들( `R Clavicle` 23 대 25, 남성은 `Bip01 Jaw` )과 다르므로 메시는 항상 자체 리그 핸들에 대해 작성됩니다.
+여성 뼈대에는 Biped 리그에는 부족한 `L Boob` 및 `R Boob` (편집자의 가슴 크기, 높이 및 간격 배율 및 이동, 엔진 docs/animation.md)가 있습니다. 슬리밍 후 가장 무거운 뼈대가 `Spine1` 또는 `Spine2` 인 각 정점은 1 단위 내에서 1 거리만큼 크기가 조정된 가장 가까운 인간 정점의 인간 전용 가중치를 취합니다. 공간을 확보하기 위해 자체 무게가 줄어듭니다. **관찰됨**(`human_female.mesh`): 흉상 정점은 두 개의 뼈(994개 전면 가슴 정점 중 892개)에 의해 전달됩니다. 뼈대(`L Boob` 28, `R Boob` 29)와 여성 리그의 다른 핸들은 남성 리그의 핸들(`R Clavicle` 23 대 25, 남성은 `Bip01 Jaw`)과 다르므로 메시는 항상 자체 리그 핸들에 대해 작성됩니다.
 
 <a id="part-map"></a>
 ## 부품 지도
 
 경주의 `part map male` / `female`  PNG 는 각 정점이 속한 신체 부위를 표시합니다. 착용 아이템' `hide parts` 해당 부품 그리기를 중지합니다(엔진 docs/characters.md "숨겨진 신체 부품"). 이 도구는 각 장착된 정점에 동일한 뼈가 전달하는 가장 가까운 인체 정점의 일부를 제공하고 해당 정점의 uv에 있는 리그의 부품 맵에서 읽은 다음 이를 장착된 정점의 자체 uv(1024 × 1024, 다른 텍셀은 투명)에 씁니다. 각 인간 부분은 먼저 0.8 단위만큼 성장합니다(부분이 없는 정점은 해당 거리 내에서 가장 가까운 표시된 정점의 정점을 취함). 왜냐하면 더 큰 신체가 더 넓은 밴드에 걸쳐 잘리기 때문입니다.
 
-**관찰됨**( `MaleMask_Default.png` , 256², 게임 샘플링 시 `human_male.mesh` uvs에서 샘플링됨): 15,504개의 정점 중 642개는 부분을 갖습니다. 빨간색은 가슴 윗부분과 어깨 윗부분, 흰색 밴드는 윗팔 둘레, 녹색은 배 앞쪽입니다.  기본 데이터(rebirth.mod)의 `hide parts` : Drifter's 및 패딩 가죽 자켓 1, 민소매 롱코트 및 더스트코트 2, 롱코트 및 더스트코트 3, Ninja Gi 및 Rags 4, 로브 5, 플레이트 재킷, 스킨 슈트 및 크랩 아머 7; 신성한 하인 누더기, 수도사 바지 및 후드 0. 0인 항목은 아무것도 숨기지 않습니다. 슬리밍은 그것을 다룹니다. **관찰됨**( `human_female.mesh` uvs의 `FemaleMask_Default.png` ): 빨간색은 가슴(1,102개의 정점), 흰색은 팔 위쪽 밴드(560), 녹색은 배(250)입니다.
+**관찰됨**(`MaleMask_Default.png`, 256², 게임 샘플링 시 `human_male.mesh` uvs에서 샘플링됨): 15,504개의 정점 중 642개는 부분을 갖습니다. 빨간색은 가슴 윗부분과 어깨 윗부분, 흰색 밴드는 윗팔 둘레, 녹색은 배 앞쪽입니다.  기본 데이터(rebirth.mod)의 `hide parts` : Drifter's 및 패딩 가죽 자켓 1, 민소매 롱코트 및 더스트코트 2, 롱코트 및 더스트코트 3, Ninja Gi 및 Rags 4, 로브 5, 플레이트 재킷, 스킨 슈트 및 크랩 아머 7; 신성한 하인 누더기, 수도사 바지 및 후드 0. 0인 항목은 아무것도 숨기지 않습니다. 슬리밍은 그것을 다룹니다. **관찰됨**(`human_female.mesh` uvs의 `FemaleMask_Default.png`): 빨간색은 가슴(1,102개의 정점), 흰색은 팔 위쪽 밴드(560), 녹색은 배(250)입니다.
 
 <a id="textures"></a>
 ## 텍스처
 
 - `_d` : 기본 색상, 알파 = 광택 = (255 - 거칠기) / 2(맵이 없는 거칠기 200); 2048², BC3(밉 포함).
 - `_n` : 게임의 캐릭터 레이아웃, X는 알파, Y는 녹색, Y는 glTF의 +Y에서 위로 뒤집혀 있습니다. 빨간색과 파란색 0.
+
+[English](../../../docs/race-import.md) · [Kenshi Races](../README.md)

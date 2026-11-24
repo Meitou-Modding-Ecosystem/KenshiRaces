@@ -1,25 +1,25 @@
 <a id="animations"></a>
-# アニメーション
+# 59本のアニメーションとその制作手順
 
-Kenshi Races にはアニメーション ライブラリが同梱されています。種族のソース モデル ( Meshy のアニメーション ライブラリ、59 個のクリップ) のすべてのクリップがゲームの男性と女性のスケルトンにリターゲットされているため、これらのスケルトン上の任意のキャラクター (人間、シェク、ハイバー、スケルトン、および適合した種族) が再生できます。 MOD は Kenshi Races および API ([dending-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations) ]) を通じてそれらを再生します。
+Kenshi Races にはアニメーション ライブラリが同梱されています。種族のソース モデル (Meshy のアニメーション ライブラリ、59 個のクリップ) のすべてのクリップがゲームの男性と女性のスケルトンにリターゲットされているため、これらのスケルトン上の任意のキャラクター (人間、シェク、ハイバー、スケルトン、および適合した種族) が再生できます。 MOD は Kenshi Races および API ([dending-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations) ]) を通じてそれらを再生します。
 
 <a id="files-and-records"></a>
 ## ファイルとレコード
 
 - `KenshiRaces/items/animations/kenshiraces_anims_male.skeleton` および `_female.skeleton` : それぞれ、ゲーム スケルトンのボーンからバイトごとに始まり (アニメーション ファイルのトラックはボーン ハンドルによって適用され、女性リグのハンドルは異なります)、次にクリップ、1 秒あたり 30 キーです。
-- ANIMATION_FILE `40-KenshiRaces.mod` ( `AnimationRecords.File` ) 両方の名前を付けます。データフェーズはそれを `animation files` あらゆる人種の `male mesh` 下にあります `data/character/meshes/` (独自のスケルトンを持つハイブ クイーンを除く)、またはフィットしたボディ ( `/items/races/` ）、 そして `RaceRecords.FillRace` それを新しいサブレース、つまり依存するサブレースにリンクします。
-- クリップごとに無効化された COMBAT_TECHNIQUE ( `100-` から `158-KenshiRaces.mod` 、名前順)、 `anim name` = クリップ: 無効化されているため、戦いは選択しません。 MOD はそれを MOD 戦闘移動として再生します (engine docs/modding.md、「戦闘移動」)。
+- ANIMATION_FILE `40-KenshiRaces.mod` (`AnimationRecords.File`) 両方の名前を付けます。データフェーズはそれを `animation files` あらゆる人種の `male mesh` 下にあります `data/character/meshes/` (独自のスケルトンを持つハイブ クイーンを除く)、またはフィットしたボディ (`/items/races/` ）、 そして `RaceRecords.FillRace` それを新しいサブレース、つまり依存するサブレースにリンクします。
+- クリップごとに無効化された COMBAT_TECHNIQUE (`100-` から `158-KenshiRaces.mod` 、名前順)、 `anim name` = クリップ: 無効化されているため、戦いは選択しません。 MOD はそれを MOD 戦闘移動として再生します (engine docs/modding.md、「戦闘移動」)。
 
 <a id="making-them"></a>
 ## 作る
 
-`tools/AnimationExport` と [ Motion Lab ](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) クローン ( `MOTIONLAB` 、デフォルト `../PZAKenshiMotionLab` ) およびゲームの `data/character/meshes` :
+`tools/AnimationExport` と [ Motion Lab ](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) クローン (`MOTIONLAB` 、デフォルト `../PZAKenshiMotionLab`) およびゲームの `data/character/meshes` :
 
 1. ソース モデルごとの `python tools/AnimationExport/split.py <model.glb> <clips folder>` : クリップごとに 1 つのリファレンス、 `Bip001` ジョイントの名前が Motion Lab が読み取る Mixamo ロールに変更されます。新しいモデルは、以前のモデルが提供したクリップを上書きします。男性の Leoma が最後になります。
 2. 性別ごとに、 `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference <clip>.glb ...` (すべてのクリップ): ゲーム本体にターゲットを変更します (59 で約 1 分)。
 3. `python tools/AnimationExport/export.py <out>/human_<gender>_rigged.glb <gender>_skeleton.skeleton KenshiRaces/items/animations/kenshiraces_anims_<gender>.skeleton <clips>.json` : `kr_<clip lower case>` という名前を付けてファイルを書き込みます。
 
-すべてのクリップは所定の位置で再生されます。ソース クリップが移動した場所 (トラベル列、メートル)、ルートの地面の移動が直線として取り出され、揺れとボブが維持されます。すべてがゲームの前方を向いています。ゲーム自体のアイドルと同様に、ルートのヨーはバインド ポーズの -90 度に一致します (**検証済み**、 `male_skeleton.skeleton` の `idle_stand_normal` )。新しいクリップには、次の無料テクニック ID (159 以降) を含む `RaceAnimations` の行と、ここにその行が必要です。
+すべてのクリップは所定の位置で再生されます。ソース クリップが移動した場所 (トラベル列、メートル)、ルートの地面の移動が直線として取り出され、揺れとボブが維持されます。すべてがゲームの前方を向いています。ゲーム自体のアイドルと同様に、ルートのヨーはバインド ポーズの -90 度に一致します (**検証済み**、 `male_skeleton.skeleton` の `idle_stand_normal`)。新しいクリップには、次の無料テクニック ID (159 以降) を含む `RaceAnimations` の行と、ここにその行が必要です。
 
 <a id="clips"></a>
 ## クリップ
@@ -85,3 +85,5 @@ Kenshi Races にはアニメーション ライブラリが同梱されていま
 | `kr_walking_woman` | `WalkingWoman` | `156-` | Walking_Woman | 0.97 |  |
 | `kr_wall_push_jump_and_flip` | `WallPushJumpAndFlip` | `157-` | Wall_Push_Jump_and_Flip | 2.00 | 1.3 |
 | `kr_wave_for_help_3` | `WaveForHelp3` | `158-` | Wave_for_Help_3 | 3.17 |  |
+
+[English](../../../docs/animations.md) · [Kenshi Races](../README.md)

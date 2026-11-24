@@ -1,13 +1,13 @@
 <a id="agents-working-across-repos"></a>
-# Agenti che lavorano su repository
+# Coordinare le modifiche tra repository
 
 Assegna a un agente ogni repository toccato dalla modifica, digli quale repository possiede ciascuna parte e chiedigli di ottenere PR in ordine di dipendenza: motore, quindi framework, quindi mod. Una sessione dell'agente per modifica, non una per repository.
 
 <a id="give-the-agent-the-repos"></a>
 ## Dai all'agente i pronti contro termine
 
-- **Sessione cloud:** ogni repository deve essere allegato alla sessione o al progetto. L'agente li clona fianco a fianco e lavora sul proprio ramo in ciascuno.
-- **Il tuo PC (telecomando):** i cloni nelle cartelle da [local-development.md](local-development.md) . L'agente può anche fare ciò che le sessioni cloud non possono fare, ad esempio `gh repo create` .
+- **Sessione cloud:**ogni repository deve essere allegato alla sessione o al progetto. L'agente li clona fianco a fianco e lavora sul proprio ramo in ciascuno.
+- **Il tuo PC (telecomando):**i cloni nelle cartelle da [local-development.md](local-development.md). L'agente può anche fare ciò che le sessioni cloud non possono fare, ad esempio `gh repo create`.
 
 <a id="where-each-part-goes"></a>
 ## Dove va ogni parte
@@ -25,12 +25,12 @@ Assegna a un agente ogni repository toccato dalla modifica, digli quale reposito
 <a id="order-for-a-change-that-crosses-repos"></a>
 ## Ordine per una modifica che attraversa i pronti contro termine
 
-1. Motore PR in `fork` , unito. I pin del motore si spostano solo sui tag di rilascio upstream, quindi il framework e i PR mod che ne hanno bisogno attendono fino a quando upstream (VlcekM/ MeitouClient ) rilascia la modifica. Fino ad allora, compila localmente sul ramo del motore ([local-development.md](local-development.md#change-the-engine-and-a-mod-together) ).
-2. Il framework PR che apporta la modifica (e sposta il suo pin `engine` sulla release che ha ciò di cui ha bisogno), confluito in `beta` . CI pubblica la prerelease della beta.
-3. Mod PR che sposta `meitou.lock.json` a quella prerelease (e `engine` al commit del motore di blocco), fuso in `beta` .
-4. Dopo il rilascio del framework viene promosso e taggato: un mod PR che sposta il blocco su `<framework>-v<version>` .
+1. Motore PR in `fork`, unito. I pin del motore si spostano solo sui tag di rilascio upstream, quindi il framework e i PR mod che ne hanno bisogno attendono fino a quando upstream (VlcekM/ MeitouClient) rilascia la modifica. Fino ad allora, compila localmente sul ramo del motore ([local-development.md](local-development.md#change-the-engine-and-a-mod-together)).
+2. Il framework PR che apporta la modifica (e sposta il suo pin `engine` sulla release che ha ciò di cui ha bisogno), confluito in `beta`. CI pubblica la prerelease della beta.
+3. Mod PR che sposta `meitou.lock.json` a quella prerelease (e `engine` al commit del motore di blocco), fuso in `beta`.
+4. Dopo il rilascio del framework viene promosso e taggato: un mod PR che sposta il blocco su `<framework>-v<version>`.
 
-Ogni PR collega quello precedente. Una modifica di rilievo al framework API supera la versione secondaria del framework ed elenca tutti i repository dipendenti; ogni dipendente ottiene il proprio lucchetto PR .
+Ogni PR collega quello precedente. Una modifica di rilievo al framework API supera la versione secondaria del framework ed elenca tutti i repository dipendenti; ogni dipendente ottiene il proprio lucchetto PR.
 
 In una catena, il passaggio 2 si ripete una volta per livello, dall'alto verso il basso: un cambiamento del Logistics Core avviene, quindi un War Orchestration PR blocca quello Logistics che costruisce e pubblica il proprio, quindi il Bast Front PR blocca entrambi.
 
@@ -70,3 +70,5 @@ Order: engine -> RivalryCore -> AshenHand, each PR into its integration branch, 
 Build against unmerged changes with the local override; the final mod PR pins the published beta prerelease.
 Follow the cross-repo rules. Report each PR link in order.
 ```
+
+[English](../../../docs/agents-across-repos.md) · [Kenshi Races](../README.md)

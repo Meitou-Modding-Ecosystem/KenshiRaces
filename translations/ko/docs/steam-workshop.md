@@ -1,9 +1,9 @@
 <a id="publishing-to-the-steam-workshop"></a>
-# Steam 창작마당에 게시
+# Steam 창작마당에 게시하기
 
 ZIP 릴리스에서 모드의 창작마당 항목을 직접 한 번 생성합니다. 그 후 [Workshop Watcher](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/workshop-watcher.md) 는 Windows PC 에서 실행되고 각각의 새로운 GitHub 릴리스를 일정에 따라 해당 항목에 업로드합니다. 모든 단계는 항목을 소유할 Steam 계정으로 로그인한 PC 의 **Windows PowerShell**에서 실행됩니다.
 
-명령은 이러한 값을 사용합니다. 모드의 폴더 이름(예: `release.yml`  `mod-folder` ) 및 첫 번째 릴리스 버전을 사용하여 PowerShell 창당 한 번 설정합니다.
+명령은 이러한 값을 사용합니다. 모드의 폴더 이름(예: `release.yml`  `mod-folder`) 및 첫 번째 릴리스 버전을 사용하여 PowerShell 창당 한 번 설정합니다.
 
 ```powershell
 $Mod = "ExampleMod"
@@ -15,8 +15,8 @@ $Watcher = "$env:LOCALAPPDATA\WorkshopWatcher\WorkshopWatcher.ps1"
 <a id="1-release-the-mod"></a>
 ## 1. 모드 출시
 
-1. `beta` 를 `main` 로 병합한 다음 `main` 의 PR 를 열고 `release` ([분기](../README.md#branches) )로 병합합니다.
-2. `release` 의 릴리스 워크플로를 기다립니다. 병합 `<slug>-v<version>` 를 `meitou.json` 의 버전(예: `example-mod-v0.1.0` )으로 태그 지정하고 `<Mod>-<version>.zip` 및 `<Mod>-<version>.zip.sha256` 를 사용하여 릴리스를 생성합니다. 태그를 지정하기 전에 해당 실행이 실패하면 `powershell -ExecutionPolicy Bypass -File tools\Tag-Release.ps1` 는 태그를 수동으로 푸시합니다( `-DryRun` 는 명령만 인쇄합니다).
+1. `beta` 를 `main` 로 병합한 다음 `main` 의 PR 를 열고 `release` ([분기](../README.md#branches))로 병합합니다.
+2. `release` 의 릴리스 워크플로를 기다립니다. 병합 `<slug>-v<version>` 를 `meitou.json` 의 버전(예: `example-mod-v0.1.0`)으로 태그 지정하고 `<Mod>-<version>.zip` 및 `<Mod>-<version>.zip.sha256` 를 사용하여 릴리스를 생성합니다. 태그를 지정하기 전에 해당 실행이 실패하면 `powershell -ExecutionPolicy Bypass -File tools\Tag-Release.ps1` 는 태그를 수동으로 푸시합니다(`-DryRun` 는 명령만 인쇄합니다).
 
 <a id="2-install-workshop-watcher-and-sign-in-to-steam"></a>
 ## 2. Workshop Watcher를 설치하고 Steam에 로그인하세요.
@@ -34,13 +34,13 @@ Workshop Watcher 가이드의 [](https://github.com/TheIvoryDisaster/GutenStruct
    Expand-Archive "$Work\$Mod.zip" -DestinationPath $Work
    ```
 
-`$Work\$Mod` 는 이제 `$Mod.dll` , `meitou.json` 및 `$Mod.mod` 를 보유합니다.
-2. 항목의 미리보기 이미지를 `$Work\preview.png` : PNG 또는 JPG , 1 MB , 정사각형(512 x 512 픽셀 작동)으로 저장합니다.
+`$Work\$Mod` 는 이제 `$Mod.dll`, `meitou.json` 및 `$Mod.mod` 를 보유합니다.
+2. 항목의 미리보기 이미지를 `$Work\preview.png` : PNG 또는 JPG, 1 MB, 정사각형(512 x 512 픽셀 작동)으로 저장합니다.
 
 <a id="4-write-the-vdf"></a>
 ## 4. VDF 를 작성하세요
 
-steamcmd는 VDF 파일( `"workshopitem"` 블록 내부에 있는 `"key" "value"` 쌍의 텍스트 파일)에서 항목을 생성합니다. 이 명령은 경로가 채워진 `$Work\create.vdf` 를 작성합니다. 먼저 `title` 및 `description` 를 편집합니다.
+steamcmd는 VDF 파일(`"workshopitem"` 블록 내부에 있는 `"key" "value"` 쌍의 텍스트 파일)에서 항목을 생성합니다. 이 명령은 경로가 채워진 `$Work\create.vdf` 를 작성합니다. 먼저 `title` 및 `description` 를 편집합니다.
 
 ```powershell
 $Dir = $Work.Replace('\', '/')
@@ -61,7 +61,7 @@ $Dir = $Work.Replace('\', '/')
 
 | 열쇠 | 값 |
 | --- | --- |
-| `appid` | `233860` , Kenshi 의 스팀 앱 ID . |
+| `appid` | `233860`, Kenshi 의 스팀 앱 ID. |
 | `publishedfileid` | `0` 가 새 항목을 생성합니다. 다른 번호는 기존 항목을 업데이트합니다. |
 | `contentfolder` | 파일이 항목의 콘텐츠가 되는 폴더의 전체 경로: 상위 폴더가 아닌 ZIP 의 mod 폴더입니다. |
 | `previewfile` | 미리보기 이미지의 전체 경로입니다. |
@@ -72,7 +72,7 @@ $Dir = $Work.Replace('\', '/')
 
 값에 대한 규칙:
 
-- 슬래시( `C:/Users/me/Downloads/...` )를 사용하여 경로를 작성합니다. 백슬래시는 두 번 사용해야 합니다( `C:\\Users\\me\\...` ).
+- 슬래시(`C:/Users/me/Downloads/...`)를 사용하여 경로를 작성합니다. 백슬래시는 두 번 사용해야 합니다(`C:\\Users\\me\\...`).
 - 값 내부의 큰따옴표는 `\"` 로 작성됩니다.
 - 파일 ASCII 을 유지하십시오.
 
@@ -111,3 +111,5 @@ powershell -ExecutionPolicy Bypass -File $Watcher run -DryRun
 ## 이후 출시될 때마다
 
 1단계에서와 같이 모드를 해제합니다. 감시자의 다음 예정된 실행은 ZIP 를 다운로드하고 SHA -256을 확인한 후 릴리스 제목과 링크를 변경 노트로 사용하여 항목에 업로드합니다. 항목의 제목, 설명, 미리보기 또는 가시성은 변경되지 않습니다. 항목 페이지에서 변경하십시오. `powershell -ExecutionPolicy Bypass -File $Watcher status` 에는 일정, 다음 실행 및 마지막 업로드가 표시됩니다.
+
+[English](../../../docs/steam-workshop.md) · [Kenshi Races](../README.md)

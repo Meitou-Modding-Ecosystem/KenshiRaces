@@ -1,12 +1,12 @@
 <a id="depending-on-kenshi-races"></a>
-# 取决于 Kenshi Races
+# 在其他模组中使用本框架并添加亚种
 
-代码 mod 如何使用 Kenshi Races 的种族和动画，向其中添加子种族或添加自己的种族 ( `kenshi.races` )。加载器规则：引擎 [modding-dependency.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md) 。代理技能经历相同的步骤： [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md) 。
+代码 mod 如何使用 Kenshi Races 的种族和动画，向其中添加子种族或添加自己的种族 (`kenshi.races`)。加载器规则：引擎 [modding-dependency.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md) 。代理技能经历相同的步骤： [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md) 。
 
 <a id="1-reference-it-at-build-time-never-ship-it"></a>
 ## 1. 在构建时引用它，而不是发布它
 
-在由 [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate) 制作的存储库中，将 Kenshi Races ' 发布 zip 添加到 `meitou.lock.json` ；构建会下载、检查并引用它，然后 Play 会部署它。每个值都来自发行版注释 ( `kenshi-races-v<version>` )：
+在由 [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate) 制作的存储库中，将 Kenshi Races ' 发布 zip 添加到 `meitou.lock.json` ；构建会下载、检查并引用它，然后 Play 会部署它。每个值都来自发行版注释 (`kenshi-races-v<version>`)：
 
 ```json
 {
@@ -53,7 +53,7 @@ public void EditData(ModDataContext c)
 - 种族（亚种）： `Races.LeomaRace` 、 `CrevanRace` 、 `CrabmanRace` 、 `CrabQueenRace` 。
 - 角色（无套件，可招募）： `LeomaMaleCharacter` 、 `LeomaFemaleCharacter` 、 `CrevanMaleCharacter` 、 `CrevanFemaleCharacter` 、 `CrabmanCharacter` 、 `CrabQueenCharacter` 。
 - RACE_GROUPs （编辑的种族）： `LeomaGroup` 、 `CrevanGroup` 、 `CrabfolkGroup` 。 `Races.Recruit` 是“加入我们”。讲话。
-- `Races.Leoma` 、 `Crevan` 、 `Crabman` 、 `CrabQueen` ( `Subrace` ) 和 `Races.Groups` 描述它们。表：[kenshi-races.md“种族”](kenshi-races.md#races) 。
+- `Races.Leoma` 、 `Crevan` 、 `Crabman` 、 `CrabQueen` (`Subrace`) 和 `Races.Groups` 描述它们。表：[kenshi-races.md“种族”](kenshi-races.md#races) 。
 
 <a id="4-add-a-subrace-or-a-race"></a>
 ## 4. 添加子种族或种族
@@ -76,7 +76,7 @@ public void EditData(ModDataContext c)
 - 具有 `Male` 和 `Female` 身体的亚种将获得编辑器的性别箭头；其中一个是单一性别，每个角色都穿着它。
 - `RaceRecords.Add(c, subrace, talk)` ： `talk` 是字符的 DIALOGUE id， `null` 是无字符。
 - 您自己的种族： `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` 添加了 RACE_GROUP 和每个子种族。
-- 子种族为 `playable` 和 Kenshi Races ' 编辑器限制 ( `RaceRecords.EditorLimits` );  当您之后想要更改更多字段时， `FillRace` / `FillCharacter` 填写您自己添加的记录（ `c.Add` ）。
+- 子种族为 `playable` 和 Kenshi Races ' 编辑器限制 (`RaceRecords.EditorLimits`);  当您之后想要更改更多字段时， `FillRace` / `FillCharacter` 填写您自己添加的记录（ `c.Add` ）。
 - ids 是你的：你自己的 `.mod` 文件名的记录。
 
 <a id="6-play-its-animations"></a>
@@ -101,4 +101,6 @@ public void Initialize(ModContext c)
 <a id="5-check-it"></a>
 ## 5.检查一下
 
-`dotnet build` ，您的测试，然后在游戏 F10 ** Kenshi Races ：种族** 中列出您的种族及其网格，然后 `spawn <name>` 生成它。用一个小写单词命名子种族和字符，例如 `ghostcrab` ，因此控制台将它们不带引号；新游戏的编辑器会列出您的子种族。
+`dotnet build` ，您的测试，然后在游戏 F10 **Kenshi Races ：种族**中列出您的种族及其网格，然后 `spawn <name>` 生成它。用一个小写单词命名子种族和字符，例如 `ghostcrab` ，因此控制台将它们不带引号；新游戏的编辑器会列出您的子种族。
+
+[English](../../../docs/depending-on-kenshi-races.md) · [Kenshi Races](../README.md)

@@ -1,5 +1,5 @@
 <a id="local-development-setup"></a>
-# 本地开发设置
+# 设置和更新本地仓库
 
 仅将您正在处理的存储库克隆到一个文件夹中。每个都使用 `dotnet build` 自行构建，并且需要自行下载和哈希检查的框架。
 
@@ -87,7 +87,7 @@ Set-Content "$Ashen\Meitou.user.props" "<Project><PropertyGroup><MeitouFramework
 - `MeitouFrameworkSources` 采用由 `;` 分隔的框架项目路径，例如 `$Logistics\LogisticsCore\LogisticsCore.csproj` 。 `MeitouEngineDir` 命名框架克隆所基于的引擎。
 - 删除该行以返回到锁定的 ZIP 。
 
-**框架链。** Bast Front 的 `meitou.lock.json` 列出了战争编排和后勤核心。要同时更改框架和 Bast Front，请在 Bast Front 中覆盖两者：
+**框架链。**Bast Front 的 `meitou.lock.json` 列出了战争编排和后勤核心。要同时更改框架和 Bast Front，请在 Bast Front 中覆盖两者：
 
 ```powershell
 Set-Content "$Bast\Meitou.user.props" "<Project><PropertyGroup><MeitouFrameworkSources>$War\WarOrchestration\WarOrchestration.csproj;$Logistics\LogisticsCore\LogisticsCore.csproj</MeitouFrameworkSources><MeitouEngineDir>$Bast\engine\</MeitouEngineDir></PropertyGroup></Project>"
@@ -144,3 +144,5 @@ powershell -ExecutionPolicy Bypass -File "$Ashen\tools\Update-Local.ps1" -Clean 
 - 它以 `Up to date` 或标记为 `FIX` 的行列表结尾。
 
 仅当 `meitou.lock.json` 更改时，下一个版本才会再次下载框架。
+
+[English](../../../docs/local-development.md) · [Kenshi Races](../README.md)

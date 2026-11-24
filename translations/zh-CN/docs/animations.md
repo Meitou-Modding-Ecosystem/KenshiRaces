@@ -1,5 +1,5 @@
 <a id="animations"></a>
-# 动画
+# 59段动画及其制作方法
 
 Kenshi Races 附带了一个动画库：种族源模型的每个剪辑（ Meshy 的动画库，59 个剪辑），都重新定位到游戏的男性和女性骨骼上，因此这些骨骼上的任何角色都可以玩它，人类、石蛇、蜂巢和骷髅以及适合的种族。 Mods 通过 Kenshi Races ' API 来玩它们（[depending-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations) ）。
 
@@ -7,7 +7,7 @@ Kenshi Races 附带了一个动画库：种族源模型的每个剪辑（ Meshy 
 ## 文件和记录
 
 - `KenshiRaces/items/animations/kenshiraces_anims_male.skeleton` 和 `_female.skeleton` ：每个都从其游戏骨架的骨骼逐字节开始（动画文件的轨迹通过骨骼手柄应用，女性装备的手柄不同），然后是剪辑，每秒 30 个关键点。
-- ANIMATION_FILE  `40-KenshiRaces.mod` ( `AnimationRecords.File` ) 命名两者。数据阶段将其链接到每个种族的 `animation files` 中，该种族的 `male mesh` 位于 `data/character/meshes/` 之下（蜂巢女王除外，它有自己的骨架）或者是一个合适的身体（ `/items/races/` ），并且 `RaceRecords.FillRace` 将其链接到新的子种族，也是一个附属种族。
+- ANIMATION_FILE  `40-KenshiRaces.mod` (`AnimationRecords.File`) 命名两者。数据阶段将其链接到每个种族的 `animation files` 中，该种族的 `male mesh` 位于 `data/character/meshes/` 之下（蜂巢女王除外，它有自己的骨架）或者是一个合适的身体（ `/items/races/` ），并且 `RaceRecords.FillRace` 将其链接到新的子种族，也是一个附属种族。
 - 每个剪辑一个禁用的 COMBAT_TECHNIQUE （ `100-` 到 `158-KenshiRaces.mod` ，名称顺序）， `anim name` = 剪辑：禁用，所以没有战斗会选择它； mod 将其作为 mod 战斗动作来播放（engine docs/modding.md，“战斗动作”）。
 
 <a id="making-them"></a>
@@ -85,3 +85,5 @@ Kenshi Races 附带了一个动画库：种族源模型的每个剪辑（ Meshy 
 | `kr_walking_woman` | `WalkingWoman` | `156-` | Walking_Woman | 0.97 |  |
 | `kr_wall_push_jump_and_flip` | `WallPushJumpAndFlip` | `157-` | Wall_Push_Jump_and_Flip | 2.00 | 1.3 |
 | `kr_wave_for_help_3` | `WaveForHelp3` | `158-` | Wave_for_Help_3 | 3.17 |  |
+
+[English](../../../docs/animations.md) · [Kenshi Races](../README.md)

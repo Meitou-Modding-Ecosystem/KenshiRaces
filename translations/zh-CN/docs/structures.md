@@ -1,5 +1,5 @@
 <a id="structures-from-3d-models"></a>
-# 3D 模型的结构
+# 无需FCS即可将GLB模型导入为建筑
 
 将 `.glb` 模型（ Meshy 、 Hi3D 、 Blender 导出）放入 mod 的 `Structures` 文件夹中，游戏构建会将其变成可以从构建菜单中放置的建筑物：Ogre 网格、压缩纹理、碰撞和 `<Mod>.mod` 中的记录。没有 FCS ，没有 Blender ，导入本身不需要安装游戏。
 
@@ -97,13 +97,15 @@
 对照游戏文件（ Kenshi 1.0.68 数据）和引擎读取器进行检查：
 
 - **单位**：世界单位为0.1 m，Y向上； glTF 为米，Y 向上，因此比例为 10（游戏的碰撞文件使用重力 98.1）。
-- **材质**：建筑部件的外观是其 MATERIAL_SPEC （ `texture map` 、 `normal map` 、 `metalness map` 、 `material type` ），而不是网格物体的材质名称（引擎 `docs/formats/runtime-materials.md` ）。游戏的建筑着色器 ( `data/materials/deferred/objects.hlsl` ) 将漫反射 RGB 读取为颜色，将 A 读取为光泽度（乘以 `specular mult` ），将法线 RGB 读取为切线空间法线，将 A 读取为剪切蒙版 ( `material type` 1, `alpha threshold` )，金属度来自 R。导入写入光泽度 = 1 - glTF 粗糙度和金属度（来自 glTF 的蓝色通道）； glTF MASK 和 BLEND 成为切口。
+- **材质**：建筑部件的外观是其 MATERIAL_SPEC （ `texture map` 、 `normal map` 、 `metalness map` 、 `material type` ），而不是网格物体的材质名称（引擎 `docs/formats/runtime-materials.md` ）。游戏的建筑着色器 (`data/materials/deferred/objects.hlsl`) 将漫反射 RGB 读取为颜色，将 A 读取为光泽度（乘以 `specular mult` ），将法线 RGB 读取为切线空间法线，将 A 读取为剪切蒙版 (`material type` 1, `alpha threshold`)，金属度来自 R。导入写入光泽度 = 1 - glTF 粗糙度和金属度（来自 glTF 的蓝色通道）； glTF MASK 和 BLEND 成为切口。
 - **切线**：着色器的副法线为 cross(切线，法线) × w，在游戏的网格上，它沿着递增的 V 指向（**已验证**： `prisoner_pole.mesh` 86 of 86 个三角形， `Camp_tent1.mesh` 1858 of 1865）。 glTF 法线贴图将图像指向绿色（减小 V），因此导入会转动绿色通道并设置游戏的方式。
 - **碰撞**：零件的 `xml collision` 是PhysX NxuStream2文件；手写的最小文件加载（游戏的 `Camp_tent1_COL.xml` 是一个盒子）。 PhysX 是 Z 向上，游戏将 (x, y, z) 映射到 (x, z, -y)，因此导入将零件的点写入为 (x, -z, y)。三角形网格以普通点和三角形的形式出现；游戏在加载时烹饪它， Meitou 按原样读取它（引擎 `docs/formats/collision.md` ）。
-- **场地**： BUILDING 和 BUILDING_PART 携带游戏露营帐篷 1 ( `18026-small_changes_otto.mod` ) 的全套场地，因此不会出现默认情况；没有 `functionality` ，所以它是一座普通的建筑。
-- **解锁**：一旦完成的研究将建筑物列在 `enable buildings` 中，建筑物就会出现在构建菜单中；每场比赛都以 `_Default Start` ( `5359-gamedata.base` ) 结束开始。 **在基础游戏上使用引擎的 `GameDatabase` 、 `ResearchGate` 和 `BuildingBuildData` 以及导入的模组进行**验证**：结构已解锁并按设置消耗建筑材料。
+- **场地**： BUILDING 和 BUILDING_PART 携带游戏露营帐篷 1 (`18026-small_changes_otto.mod`) 的全套场地，因此不会出现默认情况；没有 `functionality` ，所以它是一座普通的建筑。
+- **解锁**：一旦完成的研究将建筑物列在 `enable buildings` 中，建筑物就会出现在构建菜单中；每场比赛都以 `_Default Start` (`5359-gamedata.base`) 结束开始。 **在基础游戏上使用引擎的 `GameDatabase` 、 `ResearchGate` 和 `BuildingBuildData` 以及导入的模组进行**验证**：结构已解锁并按设置消耗建筑材料。
 
 <a id="not-covered-yet"></a>
 ## 尚未覆盖
 
 内饰、门、功能（存储、床、工艺）和转动部件。
+
+[English](../../../docs/structures.md) · [Kenshi Races](../README.md)

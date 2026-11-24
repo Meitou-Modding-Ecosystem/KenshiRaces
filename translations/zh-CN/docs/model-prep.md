@@ -1,5 +1,5 @@
 <a id="preparing-a-model"></a>
-# 准备模型
+# 调整模型面数、尺寸和纹理
 
 在生成的 `.glb` （ Meshy 、 Hi3D 、 Blender ）进入 `<Mod>/Structures/` （建筑物）或 `<Mod>/ItemModels/` （物品）之前，如何将其获取到游戏处理的多边形数、纹理大小和真实世界大小。导入本身： [structurals.md](structures.md) 。
 
@@ -24,8 +24,8 @@ python tools\model-info.py <Mod>\Structures\my-hut.glb
 
 生成器往往给出10万或更多；进口警告超过15万。切割它：
 
-- ** Meshy ：** 使用上述预算中的目标多边形数重新网格化模型（四边形或三角形拓扑都可以），保留纹理，然后再次将其下载为 GLB 。
-- ** Blender ：** 文件 > 导入 > glTF，选择网格，添加抽取修改器（折叠）并降低比率，直到状态栏中的面数在预算内，应用它，然后文件 > 导出 > glTF 二进制 ( `.glb` ) 并启用“应用修改器”。
+- **Meshy ：**使用上述预算中的目标多边形数重新网格化模型（四边形或三角形拓扑都可以），保留纹理，然后再次将其下载为 GLB 。
+- **Blender ：**文件 > 导入 > glTF，选择网格，添加抽取修改器（折叠）并降低比率，直到状态栏中的面数在预算内，应用它，然后文件 > 导出 > glTF 二进制 (`.glb`) 并启用“应用修改器”。
 
 碰撞被单独简化（ `collisionTriangles` ，默认 2000），因此切割可见网格与帧速率和文件大小有关。
 
@@ -64,3 +64,5 @@ Item beast-capsule.glb -> mesh mymod_beast_capsule.mesh, material 950000-MyMod.m
 ## 6. 承诺
 
 将 `.glb` 、其 `.json` 和文件夹的 `ids.json` 一起提交。 `ids.json` 保持每个模型的记录 ID 固定，并根据这些 ID 保存放置的建筑物的名称。
+
+[English](../../../docs/model-prep.md) · [Kenshi Races](../README.md)

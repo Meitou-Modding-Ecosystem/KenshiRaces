@@ -1,5 +1,5 @@
 <a id="local-development-setup"></a>
-# ローカル開発セットアップ
+# ローカルリポジトリのセットアップと更新
 
 作業するリポジトリのみを 1 つのフォルダーにクローン作成します。それぞれは `dotnet build` を使用して独自に構築され、必要なフレームワークはダウンロードしてハッシュ チェック自体を行います。
 
@@ -70,7 +70,7 @@ dotnet run --project Play
 ```
 
 - 最初のビルドは、 `meitou.lock.json` で指定された各フレームワークを `deps` にダウンロードし、その SHA -256 が一致しない場合は停止します。
-- `dotnet run --project Play` は、ロックされたフレームワークと MOD を `Kenshi\mods` にコピーし、エンジンを開始します。 Visual Studio 、 VS Code およびインストールされているランチャー: [play.md](play.md) .
+- `dotnet run --project Play` は、ロックされたフレームワークと MOD を `Kenshi\mods` にコピーし、エンジンを開始します。 Visual Studio 、 VS Code およびインストールされているランチャー: [play.md](play.md).
 - 依存関係については、ランチャーの MOD の上にあるフレームワークを有効にします。
 
 <a id="change-a-framework-and-a-mod-together"></a>
@@ -87,7 +87,7 @@ Set-Content "$Ashen\Meitou.user.props" "<Project><PropertyGroup><MeitouFramework
 - `MeitouFrameworkSources` は、 `;` で区切られたフレームワーク プロジェクト パスを受け取ります。 `$Logistics\LogisticsCore\LogisticsCore.csproj` 。 `MeitouEngineDir` は、フレームワーク クローンが構築されるエンジンに名前を付けます。
 - 行を削除して、ロックされた ZIP に戻ります。
 
-**フレームワーク チェーン。** Bast Front の `meitou.lock.json` には、War Orchestration と Logistics Core がリストされています。フレームワークと Bast Front の両方を一緒に変更するには、Bast Front で両方をオーバーライドします。
+**フレームワーク チェーン。**Bast Front の `meitou.lock.json` には、War Orchestration と Logistics Core がリストされています。フレームワークと Bast Front の両方を一緒に変更するには、Bast Front で両方をオーバーライドします。
 
 ```powershell
 Set-Content "$Bast\Meitou.user.props" "<Project><PropertyGroup><MeitouFrameworkSources>$War\WarOrchestration\WarOrchestration.csproj;$Logistics\LogisticsCore\LogisticsCore.csproj</MeitouFrameworkSources><MeitouEngineDir>$Bast\engine\</MeitouEngineDir></PropertyGroup></Project>"
@@ -131,16 +131,18 @@ powershell -ExecutionPolicy Bypass -File "$Ashen\tools\Switch-Engine.ps1" -To Up
 <a id="keep-clones-current"></a>
 ## クローンを最新の状態に保つ
 
-プルするたびに、またエンジン タイプが欠落している (例: `The type or namespace name 'RelationCause' could not be found` ) ためにビルドが失敗するたびに、 Visual Studio を閉じて、MOD のリポジトリで更新スクリプトを実行します。
+プルするたびに、またエンジン タイプが欠落している (例: `The type or namespace name 'RelationCause' could not be found`) ためにビルドが失敗するたびに、 Visual Studio を閉じて、MOD のリポジトリで更新スクリプトを実行します。
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "$Ashen\tools\Update-Local.ps1" -Clean -Build
 ```
 
-- `beta` に切り替えてプルし、 `engine` と `build/gutenstructure` をコミット `beta` ピンに更新します ( `git pull` のみは古いピンに残します)。 `-Branch <name>` は別のブランチをプルします。
+- `beta` に切り替えてプルし、 `engine` と `build/gutenstructure` をコミット `beta` ピンに更新します (`git pull` のみは古いピンに残します)。 `-Branch <name>` は別のブランチをプルします。
 - 各サブモジュールをピンと照合してチェックし、エンジンのバージョンを出力します。
 - `Meitou.user.props` または環境の `MeitouEngineDir` と `MeitouFrameworkSources` にフラグを立てます。ビルドでこのリポジトリのピンの代わりに別のリポジトリのエンジンまたはフレームワークを使用します。フレームワークと MOD を一緒に変更する場合を除き、これらを削除してください。
 - `-Clean` は、git で無視された `bin` フォルダーと `obj` フォルダーを削除するため、古いエンジンのビルドは再利用されません。 `-Build` は `dotnet build` を実行します。
 - これは、 `Up to date` または `FIX` とマークされた行のリストで終わります。
 
 次のビルドでは、 `meitou.lock.json` が変更された場合にのみ、フレームワークが再度ダウンロードされます。
+
+[English](../../../docs/local-development.md) · [Kenshi Races](../README.md)

@@ -1,16 +1,19 @@
-<a id="permanent-branch-policy-and-repository-onboarding"></a>
-# Permanente Branch-Richtlinie und Repository-Onboarding
+# Branchschutz und Einrichtung neuer Repositories
 
-Alle Meitou -Modding-Ecosystem-Repositories verwenden die [zentrale permanente Richtlinie](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md) :
+Für alle Repositories der Organisation gilt die gemeinsame dauerhafte Richtlinie. [GutenStructure](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md)
 
-| Zweig | Erfordernis |
+| Branch | Voraussetzungen |
 | --- | --- |
-| Gewöhnliche Zweige | Ungeschützt |
-| Beta | PR + vorbei an CI ; Super-Maintainer können die Überprüfung umgehen, einschließlich Selbstzusammenführungen |
-| Haupt- / Veröffentlichung | PR + Bestehen von CI + eine unabhängige Super-Maintainer-Genehmigung; Kein Review-Bypass |
+| Arbeitsbranches | Ungeschützt. |
+| `beta` | PR und erfolgreiche CI. Super-Maintainer dürfen die Reviewpflicht umgehen, auch beim Zusammenführen eigener PRs. |
+| `main` / `release` | PR, erfolgreiche CI und eine unabhängige Freigabe durch einen Super-Maintainer. Die Reviewpflicht gilt ausnahmslos. |
 
-GitHub Actions verfügt über keine Überprüfungsumgehung. Die Beta-Team-Ausnahme gilt nur für Bewertungen: Die obligatorische PR -/ CI -Sicherheit hat keinen Bypass. CODEOWNERS fügt keine zusätzliche Genehmigungspflicht hinzu.
+GitHub Actions hat keine Review-Ausnahme. Die Ausnahme auf beta gilt ausschließlich für Reviews. PR und Pflichtprüfungen bleiben verbindlich. CODEOWNERS verlangt keine zusätzliche Freigabe.
 
-GitHub-Vorlagen kopieren die Quelle, nicht Zweigregelsätze, Teamberechtigungen, Umgebungen oder Geheimnisse. GutenStructure s „Release-Branch-Schutz konfigurieren“ erkennt stündlich in Minute 17 neue öffentliche Organisations-Repositorys, weist dem Team-Repository Schreibzugriff zu, falls dieser fehlt, und wendet die Richtlinie an. Um ein neues Repo sofort zu konfigurieren, bitten Sie einen autorisierten GutenStructure -Betreuer, eine Vorschau anzuzeigen und diesen Workflow dann auf die Haupt- und Zielorganisation anzuwenden. Tun Sie dies, bevor Sie sich auf geschützte Zusammenführungen oder Veröffentlichungen verlassen. Behalten Sie Release readiness im Anrufer CI und überprüfen Sie die tatsächlichen Passläufe. erwartete Prüfungen ohne passenden Workflow warten ewig.
+GitHub-Vorlagen kopieren den Quelltext. Regelsätze, Teamrechte, Umgebungen und Geheimnisse werden separat eingerichtet. Stündlich zur Minute 17 erkennt der zentrale Workflow neue öffentliche Repositories, gewährt dem Team bei Bedarf Schreibzugriff und wendet die Richtlinie an. Für die sofortige Einrichtung lässt ein berechtigter GutenStructure (`Configure release branch protections`)-Maintainer den Workflow auf main für die Organisation erst als Vorschau und dann zur Anwendung laufen. Vor Veröffentlichung und Nutzung geschützter Merges abschließen.
 
-Erstellen Sie die Haupt-/Releaseversion aus der überprüften stabilen Quelle, wenn Sie fertig sind. Die Politik nimmt sie ins Visier, noch bevor sie existieren. Behalten Sie die unveränderlichen, überprüften zentralen Workflow-Pins dieser Vorlage bei und aktualisieren Sie sowohl das Release-Gate als auch den Paketherausgeber gemeinsam durch PRs. Private Repos erfordern eine separate Plan-/Schutzvalidierung; Durch die Erkennung wird kein Azure-Zugriff gewährt. Externe Plattformgeheimnisse verbleiben in Umgebungen, die dem Autor gehören, und werden niemals aus dieser Vorlage kopiert.
+Release readiness muss in der aufrufenden CI bleiben. Erfolgreiche Läufe prüfen. Fehlt einem erwarteten Check der zugehörige Workflow, wartet er dauerhaft. main und release bei Bedarf aus geprüftem stabilem Quellstand erstellen. Die Regeln gelten schon vor der Erstellung.
+
+Die geprüften unveränderlichen Workflow-Referenzen der Vorlage beibehalten. Freigabekontrolle und Paketveröffentlichung gemeinsam per PR aktualisieren. Tarif und Schutzregeln privater Repositories separat prüfen. Die Erkennung gewährt keinen Azure-Zugriff. Plattformgeheimnisse bleiben in den Umgebungen der Autoren.
+
+[English](../../../docs/branch-policy.md) · [Kenshi Races](../README.md)

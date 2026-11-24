@@ -1,43 +1,46 @@
-<a id="kenshi-races"></a>
 # Kenshi Races
 
-ゲームの人間のスケルトンの MeitouClient ](https://github.com/Meitou-Modding-Ecosystem/MeitouClient) の新しい種族、キャラクター エディターで再生可能: Leoma と Crevan (男性と女性) および Crabfolk (カニマン、クラブクイーン)、すべての人間のスケルトン レースの 59 クリップのアニメーション ライブラリ、および他の MOD が独自のレースとサブレースを追加するフレームワーク。 GPL -3.0以降。
+[English](../../README.md) · [Français](../fr/README.md) · [Deutsch](../de/README.md) · [Español](../es/README.md) · [Italiano](../it/README.md) · [Português do Brasil](../pt-BR/README.md) · [Русский](../ru/README.md) · 日本語 · [한국어](../ko/README.md) · [简体中文](../zh-CN/README.md)
 
-- レース、その記録、ゲーム内でのテスト: [docs/kenshi-races.md](docs/kenshi-races.md) 。
-- これらの種族を使用するか、別の MOD から独自の種族を追加します: [docs/ddependent-on-kenshi-races.md](docs/depending-on-kenshi-races.md) (エージェント スキル `.claude/skills/kenshi-races-dependent` )]。
-- アニメーション ライブラリ (人間のスケルトンの人種ごとに 59 個のクリップ) とその作成方法: [docs/animations.md](docs/animations.md) .
-- リグ付き `.glb` ボディ ( Meshy 、 Hi3D "3ds Max Biped") をゲームのスケルトンにフィッティングします: [docs/race-import.md](docs/race-import.md) 。
+Kenshi Racesは[MeitouClient](https://github.com/Meitou-Modding-Ecosystem/MeitouClient)のキャラクターエディターに3種のプレイアブル種族を追加します。LeomaとCrevanには男女のボディがあり、Crabfolkには`crabman`と`crabqueen`の2種類があります。いずれもゲームの人間用スケルトンを使用します。同じスケルトンを使うすべての種族で利用できる59本のアニメーションと、ほかのMODが独自の種族や亜種を追加するためのフレームワークも含まれています。 GPL-3.0-or-later.
 
-- Visual Studio 、 VS Code 、またはターミナル (このリポジトリのエンジン、またはゲームにデプロイされたインストール済みランチャー) を使用してローカルでビルドして実行します: [docs/play.md](docs/play.md) .
-- マシン上にリポジトリをセットアップします: [docs/local-development.md](docs/local-development.md) .
-- リポジトリにまたがる変更についてエージェントに指示する: [docs/agents-across-repos.md](docs/agents-across-repos.md) 。
-- エンジンのピン、バージョン、 CI 、リリースのエージェント ルール: [ CLAUDE .md](../../CLAUDE.md) ( `AGENTS.md` と同じ);段階的な手順: `.claude/skills/meitou-engine-release` 。
-- ビルドされた MOD を最新の Meitou リリースと照合してチェックします ( CI はすべての PR で実行します): [docs/refcheck.md](docs/refcheck.md) .
-- MOD を初めて Steam ワークショップに公開し、その後はリリースごとに公開します: [docs/steam-workshop.md](docs/steam-workshop.md) 。
-- 旋回 `.glb` モデル ( Meshy , Hi3D , Blender ) 建築可能な構造物に、いいえ FCS 必要: [docs/structs.md] ](docs/structures.md) ;まず、生成されたモデルのポリ数、サイズ、テクスチャを正しく取得します: [docs/model-prep.md] ](docs/model-prep.md) .
+## ガイド
+
+- [種族とレコード、ゲーム内でのテスト](docs/kenshi-races.md)
+- [別のMODでフレームワークを使い、亜種を追加する](docs/depending-on-kenshi-races.md)
+- [59本のアニメーションとその制作手順](docs/animations.md)
+- [GLB形式のボディをゲームのスケルトンに合わせる](docs/race-import.md)
+- [Visual Studio、VS Code、ターミナルからビルドして起動する](docs/play.md)
+- [ローカルリポジトリのセットアップと更新](docs/local-development.md)
+- [複数のリポジトリにまたがる変更の進め方](docs/agents-across-repos.md)
+- [Meitouの新しいリリースとの互換性を確認する](docs/refcheck.md)
+- [Steamワークショップに公開する](docs/steam-workshop.md)
+- [FCSを使わずにGLBモデルを建築物として取り込む](docs/structures.md)
+- [ポリゴン数、寸法、テクスチャを調整する](docs/model-prep.md)
+- [ブランチ保護とレビューのルール](docs/branch-policy.md)
+- [リポジトリのルールとエージェント用の手順](../../CLAUDE.md) · [AGENTS.md](../../AGENTS.md) · [kenshi-races-dependent](../../.claude/skills/kenshi-races-dependent/SKILL.md) · [meitou-engine-release](../../.claude/skills/meitou-engine-release/SKILL.md)
 
 <a id="numbers"></a>
-## 数字
+## 共有ID
 
-タスク タイプ ( `AddGoalType` 、 `AddJobType` ) とダイアログ コード ( `AddDialogueCondition` 、 `AddDialogueEffect` ) は、ロードされたすべての MOD ([MOD 番号ブロック](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/numbers.md) )] によって共有されます。 Kenshi Races は何も主張していない。
-
-| 番号 | プール | 使用 |
-| --- | --- | --- |
+タスク種別と会話コードの番号は、読み込まれたすべてのMODで共有します。Kenshi Racesは番号を予約していません。 (`AddGoalType`, `AddJobType`, `AddDialogueCondition`, `AddDialogueEffect`). [GutenStructure](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/numbers.md)
 
 <a id="layout"></a>
-## レイアウト
+## リポジトリの構成
 
-- `engine/` : Git サブモジュールとしての MeitouClient は、MOD ビルドの対象となるエンジンに固定されます。 `git pull` は移動しません。プル実行のたびに `powershell -ExecutionPolicy Bypass -File tools\Update-Local.ps1 -Clean -Build` を実行します ([クローンを最新の](docs/local-development.md#keep-clones-current) に維持します)。
-- `KenshiRaces/` : MOD のプロジェクトと `meitou.json` ; `KenshiRaces/items/races/` : フィットしたボディ (コミットされたインポート出力)。 `KenshiRaces.Tests/` : そのテスト (合成データ、ゲームのインストールは必要ありません)。 `<Mod>.Data/` (オプション): インストールされているゲームから `<Mod>.mod` を書き込むジェネレーター。 `<Mod>/Structures/` (オプション): `.glb` モデルは、デプロイ時に構築可能な構造としてインポートされます ([docs/ Structures.md](docs/structures.md) )。
-- `meitou.lock.json` : フレームワークは ([フレームワーク ロック](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md) ); に対して MOD ビルドをリリースします。フレームワーク更新ワークフローは、フレームワークを新しいリリースに移動し、 CI が通過するとマージします ([フレームワーク更新](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-update.md) ])。
-- `Play/` : ワンクリックでビルド、デプロイ、実行。
-- `tools/` : `Update-Local.ps1` 、ローカル プルとエンジン ピン チェック ([クローンを最新の](docs/local-development.md#keep-clones-current) に保つ)。 `refcheck.sh` および `RefCheck/` 、エンジン参照チェック ([docs/refcheck.md](docs/refcheck.md) )]; `StructureImport/` 、モデルのインポート ([docs/structs.md](docs/structures.md) ); `RaceImport/` 、ボディフィッティング ([docs/race-import.md](docs/race-import.md) )]; `model-info.py` および `prepare-model.py` 、モデル チェックとテクスチャ縮小 ([docs/model-prep.md](docs/model-prep.md) )]。
-- `Directory.Build.props` はエンジンをインポートするため、MOD はゲームの設定でビルドされます (警告はエラーです)。
-- `Directory.Build.rsp` は、各 `gameVersion` フロアに等しい、MOD サポートをサポートする最も古い Meitou としてエンジン参照をスタンプします。ゲームは、より新しいエンジン スタンプを参照する MOD を拒否し、サブモジュールは `1.0.0.0` ([バージョン管理](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/versioning.md) ]) をビルドします。 Meitou 互換性ワークフローは、新しい Meitou リリース ([meitou compat](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/meitou-compat.md) ]) に対して MOD を毎日チェックします。
+- `engine/` — ビルド対象のコミットに固定したMeitouClientサブモジュールです。プルするたびに下のコマンドで更新してください。 [Update-Local.ps1](docs/local-development.md#keep-clones-current)
+
+  `powershell -ExecutionPolicy Bypass -File tools\Update-Local.ps1 -Clean -Build`
+
+- `KenshiRaces/`, `meitou.json`, `KenshiRaces/items/races/`, `KenshiRaces.Tests/` — MOD本体とマニフェストです。適合済みのボディはリポジトリに含まれています。テストには合成データを使うため、ゲームのインストールは不要です。
+- `<Mod>.Data/` → `<Mod>.mod`, `<Mod>/Structures/` — 任意のプロジェクトで、インストール済みのゲームからMODデータを生成したり、配置時にGLBモデルを建築物として取り込んだりできます。 [StructureImport](docs/structures.md)
+- `meitou.lock.json` — フレームワークのバージョンを固定します。更新ワークフローが新しい版へ移行し、CIの成功後にマージします。 [Framework lock](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md) · [Framework update](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-update.md)
+- `Play/` — ワンクリックでビルド、配置、起動します。
+- `tools/` — 同期、エンジン参照の検査、建築物のインポート、ボディの適合、テクスチャの調整に使うツールです。 [Update-Local.ps1](docs/local-development.md#keep-clones-current) · [refcheck.sh / RefCheck](docs/refcheck.md) · [StructureImport](docs/structures.md) · [RaceImport](docs/race-import.md) · [model-info.py / prepare-model.py](docs/model-prep.md)
+- `Directory.Build.props` — エンジンのビルド設定を取り込みます。コンパイラの警告はエラーとして扱われます。
+- `Directory.Build.rsp` — エンジン参照のバージョンをサポート対象の最も古い版に合わせます。実行中のエンジンより新しい版を参照するMODは読み込めません。サブモジュールには既定のアセンブリバージョンが使われます。 (`gameVersion`, `1.0.0.0`).  Meitouの新しいリリースとの互換性は毎日検証されます。 [Versioning](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/versioning.md) · [Meitou compatibility](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/meitou-compat.md)
 
 <a id="branches"></a>
-## 支店
+## ブランチ
 
-`beta` に PR します。 CI (ビルドとテスト) に合格する必要があります。 `beta` はプレイでテストされると `main` に昇格し、本番環境は PR から `release` に進みます。 `release` にマージするたびに `<slug>-v<version>` タグが付けられ、そのタグが存在しない限り MOD の zip ( `.github/workflows/release.yml` ) が公開されます。 `tools\Tag-Release.ps1` は手動フォールバックです。
-
-- 新しいリポジトリのブランチ保護と永続的なベータ/メイン/リリースのレビュー: [docs/branch-policy.md](docs/branch-policy.md) 。テンプレートのコピーソース。 GutenStructure は調整を通じて設定を適用します。
+PRの宛先はbetaです。ビルドとテストの成功が必要です。ゲーム内で確認後、betaからmainへ昇格できます。製品版はrelease宛てのPRで公開します。releaseへのマージ時、バージョンタグが未作成ならタグを付けてZIPを公開します。手動でのタグ作成には予備のスクリプトを使えます。 (`<slug>-v<version>`, `.github/workflows/release.yml`, `tools\Tag-Release.ps1`). [Beta / main / release](docs/branch-policy.md)

@@ -1,7 +1,7 @@
 <a id="publishing-to-the-steam-workshop"></a>
-# 发布到 Steam 创意工坊
+# 发布到Steam创意工坊
 
-您可以从版本 ZIP 手动创建一次 mod 的创意工坊项目。之后，[Workshop Watcher](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/workshop-watcher.md) 在您的 Windows PC 上运行，并按计划将每个新的 GitHub 版本上传到该项目。所有步骤都在 PC 上的 **Windows PowerShell** 中运行，登录到拥有该项目的 Steam 帐户。
+您可以从版本 ZIP 手动创建一次 mod 的创意工坊项目。之后，[Workshop Watcher](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/workshop-watcher.md) 在您的 Windows PC 上运行，并按计划将每个新的 GitHub 版本上传到该项目。所有步骤都在 PC 上的 **Windows PowerShell**中运行，登录到拥有该项目的 Steam 帐户。
 
 命令使用这些值。在每个 PowerShell 窗口中设置一次，并使用 mod 的文件夹名称（如 `release.yml`  `mod-folder` ）及其第一个发行版本：
 
@@ -72,7 +72,7 @@ $Dir = $Work.Replace('\', '/')
 
 值规则：
 
-- 使用正斜杠 ( `C:/Users/me/Downloads/...` ) 写入路径。反斜杠必须加倍 ( `C:\\Users\\me\\...` )。
+- 使用正斜杠 (`C:/Users/me/Downloads/...`) 写入路径。反斜杠必须加倍 (`C:\\Users\\me\\...`)。
 - 值内的双引号写作 `\"` 。
 - 保留文件 ASCII 。
 
@@ -111,3 +111,5 @@ powershell -ExecutionPolicy Bypass -File $Watcher run -DryRun
 ## 之后的每个版本
 
 按照步骤 1 发布 mod。观察者的下一次预定运行将下载 ZIP ，检查其 SHA -256 并将其上传到项目，并使用发布标题和链接作为更改说明。它永远不会更改项目的标题、描述、预览或可见性：更改项目页面上的内容。 `powershell -ExecutionPolicy Bypass -File $Watcher status` 显示时间表、下一次运行和最后一次上传。
+
+[English](../../../docs/steam-workshop.md) · [Kenshi Races](../README.md)

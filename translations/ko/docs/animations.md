@@ -1,25 +1,25 @@
 <a id="animations"></a>
-# 애니메이션
+# 애니메이션 59종과 제작 과정
 
-Kenshi Races 는 애니메이션 라이브러리를 제공합니다. 종족의 소스 모델( Meshy 의 애니메이션 라이브러리, 59개 클립)의 모든 클립은 게임의 남성 및 여성 스켈레톤에 대상이 변경되므로 해당 스켈레톤의 모든 캐릭터, 인간, 셰크, 하이브 및 스켈레톤은 물론 장착된 종족까지 재생할 수 있습니다. 모드에서는 Kenshi Races ' API ([dependent-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations) )를 통해 재생합니다.
+Kenshi Races 는 애니메이션 라이브러리를 제공합니다. 종족의 소스 모델(Meshy 의 애니메이션 라이브러리, 59개 클립)의 모든 클립은 게임의 남성 및 여성 스켈레톤에 대상이 변경되므로 해당 스켈레톤의 모든 캐릭터, 인간, 셰크, 하이브 및 스켈레톤은 물론 장착된 종족까지 재생할 수 있습니다. 모드에서는 Kenshi Races ' API ([dependent-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations))를 통해 재생합니다.
 
 <a id="files-and-records"></a>
 ## 파일 및 기록
 
 - `KenshiRaces/items/animations/kenshiraces_anims_male.skeleton` 및 `_female.skeleton` : 각각은 게임 스켈레톤의 뼈대 바이트로 시작합니다(애니메이션 파일의 트랙은 뼈대 핸들에 의해 적용되고 여성 리그의 핸들은 다름). 그런 다음 클립, 초당 30개의 키.
-- ANIMATION_FILE  `40-KenshiRaces.mod` ( `AnimationRecords.File` )는 둘 다 이름을 지정합니다. 데이터 단계에서는 `male mesh` 가 `data/character/meshes/` 아래에 있거나(자체 골격이 있는 하이브 여왕 제외) 또는 장착된 신체( `/items/races/` )인 모든 종족의 `animation files` 에 연결하고, `RaceRecords.FillRace` 는 이를 종속 종족인 새로운 하위 종족에도 연결합니다.
-- 클립당 비활성화된 COMBAT_TECHNIQUE ( `100-` ~ `158-KenshiRaces.mod` , 이름 순서), `anim name` = 클립: 비활성화되었으므로 전투에서 이를 선택하지 않습니다. 모드는 이를 모드 전투 동작으로 재생합니다(engine docs/modding.md, "전투 동작").
+- ANIMATION_FILE  `40-KenshiRaces.mod` (`AnimationRecords.File`)는 둘 다 이름을 지정합니다. 데이터 단계에서는 `male mesh` 가 `data/character/meshes/` 아래에 있거나(자체 골격이 있는 하이브 여왕 제외) 또는 장착된 신체(`/items/races/`)인 모든 종족의 `animation files` 에 연결하고, `RaceRecords.FillRace` 는 이를 종속 종족인 새로운 하위 종족에도 연결합니다.
+- 클립당 비활성화된 COMBAT_TECHNIQUE (`100-` ~ `158-KenshiRaces.mod`, 이름 순서), `anim name` = 클립: 비활성화되었으므로 전투에서 이를 선택하지 않습니다. 모드는 이를 모드 전투 동작으로 재생합니다(engine docs/modding.md, "전투 동작").
 
 <a id="making-them"></a>
 ## 만들기
 
-[ Motion Lab ](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) 클론( `MOTIONLAB` , 기본값 `../PZAKenshiMotionLab` ) 및 게임의 `data/character/meshes` 가 있는 `tools/AnimationExport` :
+[ Motion Lab ](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) 클론(`MOTIONLAB`, 기본값 `../PZAKenshiMotionLab`) 및 게임의 `data/character/meshes` 가 있는 `tools/AnimationExport` :
 
 1. 소스 모델당 `python tools/AnimationExport/split.py <model.glb> <clips folder>` : 클립당 하나의 참조, `Bip001` 조인트는 Motion Lab 가 읽는 Mixamo 역할로 이름이 변경되었습니다. 이후 모델은 이전 모델이 제공한 클립을 덮어씁니다. 수컷 Leoma 가 마지막에 갑니다.
 2. 성별에 따라 `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference <clip>.glb ...` (모든 클립): 게임 본문에 대상을 변경합니다(59개의 경우 약 1분).
 3. `python tools/AnimationExport/export.py <out>/human_<gender>_rigged.glb <gender>_skeleton.skeleton KenshiRaces/items/animations/kenshiraces_anims_<gender>.skeleton <clips>.json` : `kr_<clip lower case>` 라는 이름을 지정하고 파일을 씁니다.
 
-모든 클립은 제자리에서 재생됩니다. 소스 클립이 이동한 곳(여행 열, 미터)에서 루트의 지면 이동은 직선으로 가져와 흔들리고 밥을 유지합니다. 모두 게임의 앞쪽을 향합니다. 루트의 요는 게임 자체의 유휴 상태와 마찬가지로 바인드 포즈의 -90°와 일치합니다(**인증됨**, `male_skeleton.skeleton` 의 `idle_stand_normal` ). 새 클립에는 다음 무료 기술 ID(159 켜짐)가 있는 `RaceAnimations` 의 라인과 여기에 해당 행이 필요합니다.
+모든 클립은 제자리에서 재생됩니다. 소스 클립이 이동한 곳(여행 열, 미터)에서 루트의 지면 이동은 직선으로 가져와 흔들리고 밥을 유지합니다. 모두 게임의 앞쪽을 향합니다. 루트의 요는 게임 자체의 유휴 상태와 마찬가지로 바인드 포즈의 -90°와 일치합니다(**인증됨**, `male_skeleton.skeleton` 의 `idle_stand_normal`). 새 클립에는 다음 무료 기술 ID(159 켜짐)가 있는 `RaceAnimations` 의 라인과 여기에 해당 행이 필요합니다.
 
 <a id="clips"></a>
 ## 클립
@@ -85,3 +85,5 @@ Kenshi Races 는 애니메이션 라이브러리를 제공합니다. 종족의 �
 | `kr_walking_woman` | `WalkingWoman` | `156-` | Walking_Woman | 0.97 |  |
 | `kr_wall_push_jump_and_flip` | `WallPushJumpAndFlip` | `157-` | Wall_Push_Jump_and_Flip | 2.00 | 1.3 |
 | `kr_wave_for_help_3` | `WaveForHelp3` | `158-` | Wave_for_Help_3 | 3.17 |  |
+
+[English](../../../docs/animations.md) · [Kenshi Races](../README.md)

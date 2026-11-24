@@ -1,13 +1,13 @@
 <a id="agents-working-across-repos"></a>
-# Agentes que trabajan en repositorios
+# Coordinar cambios entre repositorios
 
 Déle a un agente cada repositorio que toque el cambio, dígale qué repositorio posee cada parte y haga que obtenga los PR en orden de dependencia: motor, luego marco, luego mod. Una sesión de agente por cambio, no una por repositorio.
 
 <a id="give-the-agent-the-repos"></a>
 ## Darle al agente los repositorios
 
-- **Sesión en la nube:** cada repositorio debe estar adjunto a la sesión o proyecto. El agente los clona uno al lado del otro y trabaja en su propia rama en cada uno.
-- **Tu PC (Control remoto):** los clones en las carpetas de [local-development.md](local-development.md) . El agente también puede hacer lo que las sesiones en la nube no pueden, como `gh repo create` .
+- **Sesión en la nube:**cada repositorio debe estar adjunto a la sesión o proyecto. El agente los clona uno al lado del otro y trabaja en su propia rama en cada uno.
+- **Tu PC (Control remoto):**los clones en las carpetas de [local-development.md](local-development.md). El agente también puede hacer lo que las sesiones en la nube no pueden, como `gh repo create`.
 
 <a id="where-each-part-goes"></a>
 ## donde va cada parte
@@ -25,12 +25,12 @@ Déle a un agente cada repositorio que toque el cambio, dígale qué repositorio
 <a id="order-for-a-change-that-crosses-repos"></a>
 ## Orden de cambio que cruza repos
 
-1. Motor PR en `fork` , fusionado. Los pines del motor se mueven solo a las etiquetas de versión ascendentes, por lo que el marco y los RP mod que lo necesitan esperan hasta que las etiquetas ascendentes (VlcekM/ MeitouClient ) publiquen el cambio. Hasta entonces, cree localmente en la rama del motor ([local-development.md](local-development.md#change-the-engine-and-a-mod-together) ).
-2. Framework PR que realiza el cambio (y mueve su pin `engine` a la versión que tiene lo que necesita), fusionado en `beta` . CI publica la versión preliminar beta.
-3. Mod PR que mueve `meitou.lock.json` a esa versión preliminar (y `engine` al compromiso del motor de bloqueo), fusionado en `beta` .
-4. Después de promocionar y etiquetar el lanzamiento del marco: un mod PR que mueve el bloqueo a `<framework>-v<version>` .
+1. Motor PR en `fork`, fusionado. Los pines del motor se mueven solo a las etiquetas de versión ascendentes, por lo que el marco y los RP mod que lo necesitan esperan hasta que las etiquetas ascendentes (VlcekM/ MeitouClient) publiquen el cambio. Hasta entonces, cree localmente en la rama del motor ([local-development.md](local-development.md#change-the-engine-and-a-mod-together)).
+2. Framework PR que realiza el cambio (y mueve su pin `engine` a la versión que tiene lo que necesita), fusionado en `beta`. CI publica la versión preliminar beta.
+3. Mod PR que mueve `meitou.lock.json` a esa versión preliminar (y `engine` al compromiso del motor de bloqueo), fusionado en `beta`.
+4. Después de promocionar y etiquetar el lanzamiento del marco: un mod PR que mueve el bloqueo a `<framework>-v<version>`.
 
-Cada PR vincula al anterior. Un cambio importante en el marco API afecta la versión menor del marco y enumera todos los repositorios dependientes; cada dependiente obtiene su propio bloqueo PR .
+Cada PR vincula al anterior. Un cambio importante en el marco API afecta la versión menor del marco y enumera todos los repositorios dependientes; cada dependiente obtiene su propio bloqueo PR.
 
 En una cadena, el paso 2 se repite una vez por capa, de arriba hacia abajo: un cambio de Logistics Core aterriza, luego un War Orchestration PR bloquea esa logística que construye y publica el suyo propio, luego Bast Front PR bloquea ambos.
 
@@ -70,3 +70,5 @@ Order: engine -> RivalryCore -> AshenHand, each PR into its integration branch, 
 Build against unmerged changes with the local override; the final mod PR pins the published beta prerelease.
 Follow the cross-repo rules. Report each PR link in order.
 ```
+
+[English](../../../docs/agents-across-repos.md) · [Kenshi Races](../README.md)

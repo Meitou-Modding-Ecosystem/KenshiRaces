@@ -1,25 +1,25 @@
 <a id="animations"></a>
-# Animationen
+# Bibliothek mit 59 Animationen und ihre Erstellung
 
-Kenshi Races liefert eine Animationsbibliothek: Jeder Clip der Quellmodelle der Rassen (Animationsbibliothek von Meshy , 59 Clips), neu ausgerichtet auf die männlichen und weiblichen Skelette des Spiels, sodass jeder Charakter auf diesen Skeletten es spielen kann, Menschen, Shek, Hivers und Skelette sowie die angepassten Rassen. Mods spielen sie über Kenshi Races ' API ([abhängig von kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations) ).
+Kenshi Races liefert eine Animationsbibliothek: Jeder Clip der Quellmodelle der Rassen (Animationsbibliothek von Meshy, 59 Clips), neu ausgerichtet auf die männlichen und weiblichen Skelette des Spiels, sodass jeder Charakter auf diesen Skeletten es spielen kann, Menschen, Shek, Hivers und Skelette sowie die angepassten Rassen. Mods spielen sie über Kenshi Races ' API ([abhängig von kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations)).
 
 <a id="files-and-records"></a>
 ## Dateien und Aufzeichnungen
 
 - `KenshiRaces/items/animations/kenshiraces_anims_male.skeleton` und `_female.skeleton` : Jeder beginnt Byte für Byte mit den Knochen des Spielskeletts (die Spuren einer Animationsdatei werden durch den Knochengriff bestimmt, und die Griffe des weiblichen Rigs unterscheiden sich), dann mit den Clips, 30 Tasten pro Sekunde.
-- ANIMATION_FILE  `40-KenshiRaces.mod` ( `AnimationRecords.File` ) benennt beide. Die Datenphase verknüpft es mit dem `animation files` jeder Rasse, deren `male mesh` unter `data/character/meshes/` steht (mit Ausnahme der Hive Queen, die ihr eigenes Skelett hat) oder ein angepasster Körper ist ( `/items/races/` ), und `RaceRecords.FillRace` verknüpft es mit neuen Unterrassen, auch einem abhängigen.
-- Ein deaktivierter COMBAT_TECHNIQUE pro Clip ( `100-` bis `158-KenshiRaces.mod` , Namensreihenfolge), `anim name` = der Clip: deaktiviert, daher wird er von keinem Kampf ausgewählt; Ein Mod spielt es als Mod-Kampfzug (engine docs/modding.md, „Combat Moves“).
+- ANIMATION_FILE  `40-KenshiRaces.mod` (`AnimationRecords.File`) benennt beide. Die Datenphase verknüpft es mit dem `animation files` jeder Rasse, deren `male mesh` unter `data/character/meshes/` steht (mit Ausnahme der Hive Queen, die ihr eigenes Skelett hat) oder ein angepasster Körper ist (`/items/races/`), und `RaceRecords.FillRace` verknüpft es mit neuen Unterrassen, auch einem abhängigen.
+- Ein deaktivierter COMBAT_TECHNIQUE pro Clip (`100-` bis `158-KenshiRaces.mod`, Namensreihenfolge), `anim name` = der Clip: deaktiviert, daher wird er von keinem Kampf ausgewählt; Ein Mod spielt es als Mod-Kampfzug (engine docs/modding.md, „Combat Moves“).
 
 <a id="making-them"></a>
 ## Wir machen sie
 
-`tools/AnimationExport` mit einem [ Motion Lab ](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) -Klon ( `MOTIONLAB` , Standard `../PZAKenshiMotionLab` ) und dem `data/character/meshes` des Spiels:
+`tools/AnimationExport` mit einem [ Motion Lab ](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) -Klon (`MOTIONLAB`, Standard `../PZAKenshiMotionLab`) und dem `data/character/meshes` des Spiels:
 
 1. `python tools/AnimationExport/split.py <model.glb> <clips folder>` pro Quellmodell: eine Referenz pro Clip, `Bip001` -Verbindungen wurden in die Mixamo-Rollen umbenannt, die der Motion Lab liest. Ein späteres Modell überschreibt einen Clip, den ein früheres Modell lieferte; der männliche Leoma kommt als Letzter.
 2. Für jedes Geschlecht richtet `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference <clip>.glb ...` (jeder Clip) sie erneut auf den Körper des Spiels aus (ungefähr eine Minute für 59).
 3. `python tools/AnimationExport/export.py <out>/human_<gender>_rigged.glb <gender>_skeleton.skeleton KenshiRaces/items/animations/kenshiraces_anims_<gender>.skeleton <clips>.json` : Benennt sie als `kr_<clip lower case>` und schreibt die Datei.
 
-Jeder Clip wird an der richtigen Stelle abgespielt: Dort, wo sich ein Quellclip bewegt hat (Spalte „Reise“, Meter), wird die Bodenbewegung der Wurzel als gerade Linie herausgenommen, wobei Schwankung und Wackelbewegung beibehalten werden. Alle blicken in die Vorwärtsrichtung des Spiels: Das Gieren der Wurzel stimmt mit den -90° der Bindungshaltung überein, wie es auch bei den Leerläufen des Spiels der Fall ist (**Verifiziert**, `idle_stand_normal` in `male_skeleton.skeleton` ). Ein neuer Clip benötigt außerdem seine Zeile in `RaceAnimations` mit der nächsten freien Technik-ID (159 auf) und seine Zeile hier.
+Jeder Clip wird an der richtigen Stelle abgespielt: Dort, wo sich ein Quellclip bewegt hat (Spalte „Reise“, Meter), wird die Bodenbewegung der Wurzel als gerade Linie herausgenommen, wobei Schwankung und Wackelbewegung beibehalten werden. Alle blicken in die Vorwärtsrichtung des Spiels: Das Gieren der Wurzel stimmt mit den -90° der Bindungshaltung überein, wie es auch bei den Leerläufen des Spiels der Fall ist (**Verifiziert**, `idle_stand_normal` in `male_skeleton.skeleton`). Ein neuer Clip benötigt außerdem seine Zeile in `RaceAnimations` mit der nächsten freien Technik-ID (159 auf) und seine Zeile hier.
 
 <a id="clips"></a>
 ## Clips
@@ -85,3 +85,5 @@ Jeder Clip wird an der richtigen Stelle abgespielt: Dort, wo sich ein Quellclip 
 | `kr_walking_woman` | `WalkingWoman` | `156-` | Walking_Woman | 0.97 |  |
 | `kr_wall_push_jump_and_flip` | `WallPushJumpAndFlip` | `157-` | Wall_Push_Jump_and_Flip | 2.00 | 1.3 |
 | `kr_wave_for_help_3` | `WaveForHelp3` | `158-` | Wave_for_Help_3 | 3.17 |  |
+
+[English](../../../docs/animations.md) · [Kenshi Races](../README.md)

@@ -1,5 +1,5 @@
 <a id="local-development-setup"></a>
-# 로컬 개발 설정
+# 로컬 저장소 설정 및 업데이트
 
 작업 중인 저장소만 하나의 폴더에 복제하세요. 각각은 `dotnet build` 를 사용하여 자체적으로 구축되며 필요한 프레임워크를 다운로드하고 해시 확인합니다.
 
@@ -18,7 +18,7 @@
 | 잿빛손 | Ashen Hand (경쟁 코어 사용) | `beta` |
 | 농업 | 농업 | `beta` |
 | 스쿼드아레나 | SquadArena 모드 및 분대 평가 도구 | `beta` |
-| GutenStructure (TheIvoryDisaster) | 공유 CI , 패키징, 릴리스 게이트, 프레임워크 잠금 대상 | `beta` |
+| GutenStructure (TheIvoryDisaster) | 공유 CI, 패키징, 릴리스 게이트, 프레임워크 잠금 대상 | `beta` |
 
 <a id="folders"></a>
 ## 폴더
@@ -39,8 +39,8 @@ $Bast      = "$Repos\BastFront"
 <a id="prerequisites"></a>
 ## 전제조건
 
-- . NET 11 SDK (각 저장소의 `global.json` 는 버전 이름을 지정함) 및 Git.
-- 편집기: Visual Studio , C# Dev Kit가 있는 VS Code 또는 Rider. 터미널만으로도 작동합니다.
+-. NET 11 SDK (각 저장소의 `global.json` 는 버전 이름을 지정함) 및 Git.
+- 편집기: Visual Studio, C# Dev Kit가 있는 VS Code 또는 Rider. 터미널만으로도 작동합니다.
 - Kenshi 가 설치되었습니다. `C:\Program Files (x86)\Steam\steamapps\common\Kenshi` 에 없으면 `KENSHI_PATH` 환경 변수를 해당 폴더로 설정합니다.
 
 <a id="clone"></a>
@@ -70,7 +70,7 @@ dotnet run --project Play
 ```
 
 - 첫 번째 빌드는 `meitou.lock.json` 에 명명된 각 프레임워크를 `deps` 로 다운로드하고 해당 SHA -256이 일치하지 않으면 중지됩니다.
-- `dotnet run --project Play` 는 잠긴 프레임워크와 모드를 `Kenshi\mods` 에 복사하고 엔진을 시작합니다. Visual Studio , VS Code 및 설치된 런처: [play.md](play.md) .
+- `dotnet run --project Play` 는 잠긴 프레임워크와 모드를 `Kenshi\mods` 에 복사하고 엔진을 시작합니다. Visual Studio, VS Code 및 설치된 런처: [play.md](play.md).
 - 모든 종속성과 마찬가지로 실행기에서 모드 위의 프레임워크를 활성화합니다.
 
 <a id="change-a-framework-and-a-mod-together"></a>
@@ -84,10 +84,10 @@ Set-Content "$Ashen\Meitou.user.props" "<Project><PropertyGroup><MeitouFramework
 
 - `$Ashen` 의 빌드는 이제 `$Rivalry` 의 Rivalry Core를 컴파일하고 `$Rivalry\engine` 의 엔진을 사용하며 Play는 해당 Rivalry Core 빌드를 배포합니다.
 - `Meitou.user.props` 는 자식을 무시합니다. 이미 Kenshi 설정을 보유하고 있는 경우 대신 `PropertyGroup` 내부에 두 줄을 추가하십시오.
-- `MeitouFrameworkSources` 는 `;` 로 구분된 프레임워크 프로젝트 경로를 사용합니다. `$Logistics\LogisticsCore\LogisticsCore.csproj` . `MeitouEngineDir` 는 프레임워크 클론이 빌드되는 엔진의 이름을 지정합니다.
+- `MeitouFrameworkSources` 는 `;` 로 구분된 프레임워크 프로젝트 경로를 사용합니다. `$Logistics\LogisticsCore\LogisticsCore.csproj`. `MeitouEngineDir` 는 프레임워크 클론이 빌드되는 엔진의 이름을 지정합니다.
 - 잠긴 ZIP 로 돌아가려면 해당 줄을 삭제하세요.
 
-**프레임워크 체인.** Bast Front의 `meitou.lock.json` 에는 전쟁 조율 및 물류 코어가 나열되어 있습니다. 프레임워크와 Bast Front를 함께 변경하려면 Bast Front에서 둘 다 재정의합니다.
+**프레임워크 체인.**Bast Front의 `meitou.lock.json` 에는 전쟁 조율 및 물류 코어가 나열되어 있습니다. 프레임워크와 Bast Front를 함께 변경하려면 Bast Front에서 둘 다 재정의합니다.
 
 ```powershell
 Set-Content "$Bast\Meitou.user.props" "<Project><PropertyGroup><MeitouFrameworkSources>$War\WarOrchestration\WarOrchestration.csproj;$Logistics\LogisticsCore\LogisticsCore.csproj</MeitouFrameworkSources><MeitouEngineDir>$Bast\engine\</MeitouEngineDir></PropertyGroup></Project>"
@@ -121,26 +121,28 @@ powershell -ExecutionPolicy Bypass -File "$Ashen\tools\Switch-Engine.ps1" -To Up
 ```
 
 - `-To Upstream` : VlcekM/ MeitouClient  `master` 의 최신 커밋(누락된 경우 스크립트에서 `upstream` 원격을 추가함)
-- `-To Release` : 최신 업스트림 릴리스 태그 `vX.Y.Z` .
+- `-To Release` : 최신 업스트림 릴리스 태그 `vX.Y.Z`.
 - `-To Fork` : 조직 포크의 `fork` 분기를 가져왔습니다.
 - `-Branch <name>` : 엔진 PR 의 분기와 같은 조직 포크의 분기입니다.
 - `-Path` 가 없으면 모드 저장소 옆에 있는 `MeitouClient` 폴더를 사용합니다. `-Run` 는 Release에서 게임을 빌드하고 시작합니다. `-Build` 는 빌드만 합니다.
 - 업스트림, 릴리스 및 `-Branch` 는 분리된 커밋에 복제본을 둡니다. 로컬 `master` 및 `fork` 분기는 변경되지 않습니다. 클론에 커밋되지 않은 변경 사항이 있으면 아무것도 변경하지 않고 스크립트가 중지됩니다.
-- 모드 저장소의 자체 `engine` 하위 모듈( `Update-Local.ps1` 및 핀)에는 절대 건드리지 않습니다.
+- 모드 저장소의 자체 `engine` 하위 모듈(`Update-Local.ps1` 및 핀)에는 절대 건드리지 않습니다.
 
 <a id="keep-clones-current"></a>
 ## 클론을 최신 상태로 유지
 
-끌어올 때마다 엔진 유형이 누락되어(예: `The type or namespace name 'RelationCause' could not be found` ) 빌드가 실패할 때마다 Visual Studio 를 닫고 모드 저장소에서 업데이트 스크립트를 실행하세요.
+끌어올 때마다 엔진 유형이 누락되어(예: `The type or namespace name 'RelationCause' could not be found`) 빌드가 실패할 때마다 Visual Studio 를 닫고 모드 저장소에서 업데이트 스크립트를 실행하세요.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "$Ashen\tools\Update-Local.ps1" -Clean -Build
 ```
 
-- `beta` 로 전환하여 가져온 다음 `engine` 및 `build/gutenstructure` 를 커밋 `beta` 핀으로 업데이트합니다( `git pull` 만 이전 핀에 그대로 둡니다). `-Branch <name>` 는 다른 분기를 가져옵니다.
+- `beta` 로 전환하여 가져온 다음 `engine` 및 `build/gutenstructure` 를 커밋 `beta` 핀으로 업데이트합니다(`git pull` 만 이전 핀에 그대로 둡니다). `-Branch <name>` 는 다른 분기를 가져옵니다.
 - 각 하위 모듈을 해당 핀과 비교하여 엔진 버전을 인쇄합니다.
 - `Meitou.user.props` 또는 환경에서 `MeitouEngineDir` 및 `MeitouFrameworkSources` 에 플래그를 지정합니다. 이는 빌드가 이 저장소의 핀 대신 다른 저장소의 엔진이나 프레임워크를 사용하도록 만듭니다. 프레임워크와 모드를 함께 변경하지 않는 한 삭제하세요.
 - `-Clean` 는 git이 무시한 `bin` 및 `obj` 폴더를 삭제하므로 이전 엔진의 빌드가 재사용되지 않습니다. `-Build` 는 `dotnet build` 를 실행합니다.
 - `Up to date` 또는 `FIX` 로 표시된 줄 목록으로 끝납니다.
 
 다음 빌드에서는 `meitou.lock.json` 가 변경된 경우에만 프레임워크를 다시 다운로드합니다.
+
+[English](../../../docs/local-development.md) · [Kenshi Races](../README.md)

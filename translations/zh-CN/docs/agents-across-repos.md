@@ -1,13 +1,13 @@
 <a id="agents-working-across-repos"></a>
-# 跨存储库工作的代理
+# 协调跨仓库的更改
 
 为每个涉及更改的存储库提供一个代理，告诉它哪个存储库拥有每个部分，并让它按照依赖顺序放置 PR：引擎，然后是框架，然后是 mod。每次更改一个代理会话，而不是每个存储库一个代理会话。
 
 <a id="give-the-agent-the-repos"></a>
 ## 向代理提供存储库
 
-- **云会话：** 每个存储库必须附加到会话或项目。代理并排克隆它们，并在每个分支各自的分支上工作。
-- **您的 PC （远程控制）：** [local-development.md](local-development.md) 文件夹中的克隆。代理还可以执行云会话无法执行的操作，例如 `gh repo create` 。
+- **云会话：**每个存储库必须附加到会话或项目。代理并排克隆它们，并在每个分支各自的分支上工作。
+- **您的 PC （远程控制）：**[local-development.md](local-development.md) 文件夹中的克隆。代理还可以执行云会话无法执行的操作，例如 `gh repo create` 。
 
 <a id="where-each-part-goes"></a>
 ## 每个部分去哪里
@@ -25,7 +25,7 @@
 <a id="order-for-a-change-that-crosses-repos"></a>
 ## 跨存储库的更改订单
 
-1. 发动机 PR 变为 `fork` ，合并。引擎引脚仅移动到上游发布标签，因此需要它的框架和 mod PR 会等到上游 (VlcekM/ MeitouClient ) 发布更改。在那之前，在本地针对引擎分支进行构建（[local-development.md](local-development.md#change-the-engine-and-a-mod-together) ）。
+1. 发动机 PR 变为 `fork` ，合并。引擎引脚仅移动到上游发布标签，因此需要它的框架和 mod PR 会等到上游 (VlcekM/ MeitouClient) 发布更改。在那之前，在本地针对引擎分支进行构建（[local-development.md](local-development.md#change-the-engine-and-a-mod-together) ）。
 2. 进行更改的框架 PR （并将其 `engine` 引脚移至具有所需内容的版本），合并到 `beta` 中。 CI 发布 Beta 预发行版。
 3. Mod PR 将 `meitou.lock.json` 移动到该预发布（并将 `engine` 移动到锁的引擎提交），并合并到 `beta` 中。
 4. 框架版本升级并标记后：将锁移至 `<framework>-v<version>` 的 mod PR 。
@@ -70,3 +70,5 @@ Order: engine -> RivalryCore -> AshenHand, each PR into its integration branch, 
 Build against unmerged changes with the local override; the final mod PR pins the published beta prerelease.
 Follow the cross-repo rules. Report each PR link in order.
 ```
+
+[English](../../../docs/agents-across-repos.md) · [Kenshi Races](../README.md)

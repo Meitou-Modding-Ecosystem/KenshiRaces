@@ -1,13 +1,13 @@
 <a id="agents-working-across-repos"></a>
-# Agenten, die reposübergreifend arbeiten
+# Änderungen über mehrere Repositories koordinieren
 
 Geben Sie einem Agenten jedes Repo, das die Änderung berührt, teilen Sie ihm mit, welches Repo die einzelnen Teile besitzt, und lassen Sie es PRs in der Abhängigkeitsreihenfolge landen: Engine, dann Framework, dann Mod. Eine Agentensitzung pro Änderung, nicht eine pro Repo.
 
 <a id="give-the-agent-the-repos"></a>
 ## Geben Sie dem Agenten die Repos
 
-- **Cloud-Sitzung:** Jedes Repo muss an die Sitzung oder das Projekt angehängt werden. Der Agent klont sie nebeneinander und arbeitet in jedem an einem eigenen Zweig.
-- **Ihr PC (Fernsteuerung):** die Klone in den Ordnern von [local-development.md](local-development.md) . Der Agent kann auch das tun, was Cloud-Sitzungen nicht können, z. B. `gh repo create` .
+- **Cloud-Sitzung:**Jedes Repo muss an die Sitzung oder das Projekt angehängt werden. Der Agent klont sie nebeneinander und arbeitet in jedem an einem eigenen Zweig.
+- **Ihr PC (Fernsteuerung):**die Klone in den Ordnern von [local-development.md](local-development.md). Der Agent kann auch das tun, was Cloud-Sitzungen nicht können, z. B. `gh repo create`.
 
 <a id="where-each-part-goes"></a>
 ## Wohin jeder Teil geht
@@ -20,17 +20,17 @@ Geben Sie einem Agenten jedes Repo, das die Änderung berührt, teilen Sie ihm m
 | Kriegsorchestrierung (Kampfszenarien zur Logistik, keine Geschichte oder Charaktere) | Kriegsorchestrierung | `beta` |
 | Bast-Front-Nahkampf | BastFront | `beta` |
 | Der Code eines Mods, Datengenerator, Tests, Dokumente | Das Repo dieses Mods | `beta` |
-| Gemeinsam genutztes CI , Verpackung, Freigabetor, Sperrziel | GutenStructure | `beta` |
+| Gemeinsam genutztes CI, Verpackung, Freigabetor, Sperrziel | GutenStructure | `beta` |
 
 <a id="order-for-a-change-that-crosses-repos"></a>
 ## Bestellen Sie eine Repo-übergreifende Änderung
 
-1. Motor PR in `fork` , zusammengeführt. Engine-Pins verschieben sich nur zu Upstream-Release-Tags, daher warten die Framework- und Mod-PRs, die sie benötigen, bis der Upstream (VlcekM/ MeitouClient ) die Änderung veröffentlicht. Bis dahin bauen Sie lokal auf dem Engine-Zweig auf ([local-development.md](local-development.md#change-the-engine-and-a-mod-together) ).
-2. Framework PR , das die Änderung vornimmt (und seinen `engine` -Pin auf die Version verschiebt, die alles hat, was es benötigt), wurde in `beta` zusammengeführt. CI veröffentlicht die Beta-Vorabversion.
-3. Mod PR , der `meitou.lock.json` zu dieser Vorabversion verschiebt (und `engine` zum Engine-Commit der Sperre), zusammengeführt mit `beta` .
-4. Nachdem die Framework-Veröffentlichung beworben und markiert wurde: ein Mod PR , der die Sperre auf `<framework>-v<version>` verschiebt.
+1. Motor PR in `fork`, zusammengeführt. Engine-Pins verschieben sich nur zu Upstream-Release-Tags, daher warten die Framework- und Mod-PRs, die sie benötigen, bis der Upstream (VlcekM/ MeitouClient) die Änderung veröffentlicht. Bis dahin bauen Sie lokal auf dem Engine-Zweig auf ([local-development.md](local-development.md#change-the-engine-and-a-mod-together)).
+2. Framework PR, das die Änderung vornimmt (und seinen `engine` -Pin auf die Version verschiebt, die alles hat, was es benötigt), wurde in `beta` zusammengeführt. CI veröffentlicht die Beta-Vorabversion.
+3. Mod PR, der `meitou.lock.json` zu dieser Vorabversion verschiebt (und `engine` zum Engine-Commit der Sperre), zusammengeführt mit `beta`.
+4. Nachdem die Framework-Veröffentlichung beworben und markiert wurde: ein Mod PR, der die Sperre auf `<framework>-v<version>` verschiebt.
 
-Jeder PR verknüpft den davor. Eine bahnbrechende API -Änderung des Frameworks beeinträchtigt die Nebenversion des Frameworks und listet alle abhängigen Repos auf; Jeder abhängige Benutzer erhält seine eigene Sperre PR .
+Jeder PR verknüpft den davor. Eine bahnbrechende API -Änderung des Frameworks beeinträchtigt die Nebenversion des Frameworks und listet alle abhängigen Repos auf; Jeder abhängige Benutzer erhält seine eigene Sperre PR.
 
 In einer Kette wird Schritt 2 einmal pro Ebene von oben nach unten wiederholt: Eine Änderung des Logistikkerns landet, dann sperrt ein War Orchestration PR diesen Logistik-Build und veröffentlicht seinen eigenen, dann sperrt der Bast Front PR beide.
 
@@ -70,3 +70,5 @@ Order: engine -> RivalryCore -> AshenHand, each PR into its integration branch, 
 Build against unmerged changes with the local override; the final mod PR pins the published beta prerelease.
 Follow the cross-repo rules. Report each PR link in order.
 ```
+
+[English](../../../docs/agents-across-repos.md) · [Kenshi Races](../README.md)

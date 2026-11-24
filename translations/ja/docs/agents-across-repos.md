@@ -1,13 +1,13 @@
 <a id="agents-working-across-repos"></a>
-# リポジトリ全体で動作するエージェント
+# 複数のリポジトリにまたがる変更の進め方
 
 変更が触れるすべてのリポジトリを 1 人のエージェントに与え、どのリポジトリが各部分を所有しているかを伝え、依存関係の順序 (エンジン、フレームワーク、MOD) で PR を配置します。リポジトリごとに 1 つではなく、変更ごとに 1 つのエージェント セッション。
 
 <a id="give-the-agent-the-repos"></a>
 ## エージェントにリポジトリを渡します
 
-- **クラウド セッション:** 各リポジトリはセッションまたはプロジェクトにアタッチする必要があります。エージェントはそれらを並べてクローンし、それぞれの独自のブランチで動作します。
-- **あなたの PC (リモート コントロール):** [local-development.md](local-development.md) .エージェントは、 `gh repo create` など、クラウド セッションではできないことも実行できます。
+- **クラウド セッション:**各リポジトリはセッションまたはプロジェクトにアタッチする必要があります。エージェントはそれらを並べてクローンし、それぞれの独自のブランチで動作します。
+- **あなたの PC (リモート コントロール):**[local-development.md](local-development.md).エージェントは、 `gh repo create` など、クラウド セッションではできないことも実行できます。
 
 <a id="where-each-part-goes"></a>
 ## 各パーツの行き先
@@ -25,12 +25,12 @@
 <a id="order-for-a-change-that-crosses-repos"></a>
 ## リポジトリをまたぐ変更のオーダー
 
-1. エンジン PR を `fork` に統合します。エンジン ピンはアップストリームのリリース タグにのみ移動するため、それを必要とするフレームワークと MOD PR は、アップストリーム (VlcekM/ MeitouClient ) が変更をリリースするまで待機します。それまでは、エンジン ブランチをローカルでビルドします ([local-development.md](local-development.md#change-the-engine-and-a-mod-together) ])。
+1. エンジン PR を `fork` に統合します。エンジン ピンはアップストリームのリリース タグにのみ移動するため、それを必要とするフレームワークと MOD PR は、アップストリーム (VlcekM/ MeitouClient) が変更をリリースするまで待機します。それまでは、エンジン ブランチをローカルでビルドします ([local-development.md](local-development.md#change-the-engine-and-a-mod-together) ])。
 2. 変更を行う (および `engine` ピンを必要なものがあるリリースに移動する) フレームワーク PR は、 `beta` にマージされます。 CI はベータ版のプレリリースを公開します。
 3. `meitou.lock.json` をそのプレリリース (および `engine` をロックのエンジン コミット) に移動する Mod PR は、 `beta` にマージされます。
 4. フレームワークのリリースがプロモートされてタグ付けされた後、ロックを `<framework>-v<version>` に移動する mod PR 。
 
-それぞれ PR その前のものをリンクします。壊れる枠組み API 変更によりフレームワークのマイナー バージョンが変更され、すべての依存リポジトリがリストされます。各依存関係は独自のロックを取得します PR .
+それぞれ PR その前のものをリンクします。壊れる枠組み API 変更によりフレームワークのマイナー バージョンが変更され、すべての依存リポジトリがリストされます。各依存関係は独自のロックを取得します PR.
 
 チェーンでは、ステップ 2 がレイヤーごとにトップダウンで 1 回繰り返されます。ロジスティックス コアの変更が着地し、次にウォー オーケストレーション PR がロジスティックスが構築して独自に公開したものをロックし、次にバスト フロント PR が両方をロックします。
 
@@ -70,3 +70,5 @@ Order: engine -> RivalryCore -> AshenHand, each PR into its integration branch, 
 Build against unmerged changes with the local override; the final mod PR pins the published beta prerelease.
 Follow the cross-repo rules. Report each PR link in order.
 ```
+
+[English](../../../docs/agents-across-repos.md) · [Kenshi Races](../README.md)

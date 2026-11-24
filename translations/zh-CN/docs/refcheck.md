@@ -1,9 +1,9 @@
 <a id="engine-references-refcheck"></a>
-# 发动机参考 ( RefCheck )
+# 检查与新版Meitou的兼容性
 
 Mod 是针对一个引擎（此存储库的 `engine` 子模块）构建的，并在玩家拥有的任何 Meitou 版本上运行。当版本更改 mod 调用的某些内容的签名时，mod 的源代码仍可能编译，但已构建的 DLL 会向游戏请求旧成员，并在运行时失败并显示 `MissingMethodException` 。
 
-这不是假设。 Meitou 0.21 为 `Inventory.Add(ItemInstance)` 提供了第二个可选参数 ( `Add(ItemInstance, bool mainShut = false)` )。调用 `bag.Add(item)` 的源代码针对任一版本进行编译，但针对 0.20 或更早版本构建的 DLL 调用单参数方法，而 0.21 不再具有该方法。在《荒原记忆》中，破坏了游戏中的纪念品，并且该异常在会话的其余部分中停止了整个系统。没有测试发现它：测试针对一个引擎进行编译。
+这不是假设。 Meitou 0.21 为 `Inventory.Add(ItemInstance)` 提供了第二个可选参数 (`Add(ItemInstance, bool mainShut = false)`)。调用 `bag.Add(item)` 的源代码针对任一版本进行编译，但针对 0.20 或更早版本构建的 DLL 调用单参数方法，而 0.21 不再具有该方法。在《荒原记忆》中，破坏了游戏中的纪念品，并且该异常在会话的其余部分中停止了整个系统。没有测试发现它：测试针对一个引擎进行编译。
 
 <a id="what-it-checks"></a>
 ## 它检查什么
@@ -41,3 +41,5 @@ MISSING Meitou.Simulation.Items.Inventory::Add(Meitou.Simulation.Items.ItemInsta
 以适用于您支持的每个版本的方式调用成员：如果您删除旧引擎，则针对较新的引擎进行重建，或者通过反射找到成员并用默认值填充您未传递的参数。 The Wasteland Remembers 的 `InventoryCompat` 为 `Inventory.Add` 做了后者。
 
 对引擎的反射调用不会被检查：它们会在您写入它们的地方轻微失败。
+
+[English](../../../docs/refcheck.md) · [Kenshi Races](../README.md)

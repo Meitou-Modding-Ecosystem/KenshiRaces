@@ -1,13 +1,13 @@
 <a id="agents-working-across-repos"></a>
-# Agents travaillant sur des dépôts
+# Coordonner les changements entre plusieurs dépôts
 
 Donnez à un agent chaque dépôt touché par le changement, dites-lui quel dépôt possède chaque partie et demandez-lui d'attribuer les PR dans l'ordre des dépendances : moteur, puis framework, puis mod. Une session d'agent par changement, pas une par dépôt.
 
 <a id="give-the-agent-the-repos"></a>
 ## Donnez les dépôts à l'agent
 
-- **Session Cloud :** chaque dépôt doit être attaché à la session ou au projet. L'agent les clone côte à côte et travaille sur sa propre branche dans chacune.
-- **Votre PC (télécommande) :** les clones dans les dossiers de [local-development.md](local-development.md) . L'agent peut également faire ce que les sessions cloud ne peuvent pas faire, comme `gh repo create` .
+- **Session Cloud :**chaque dépôt doit être attaché à la session ou au projet. L'agent les clone côte à côte et travaille sur sa propre branche dans chacune.
+- **Votre PC (télécommande) :**les clones dans les dossiers de [local-development.md](local-development.md). L'agent peut également faire ce que les sessions cloud ne peuvent pas faire, comme `gh repo create`.
 
 <a id="where-each-part-goes"></a>
 ## Où va chaque partie
@@ -25,12 +25,12 @@ Donnez à un agent chaque dépôt touché par le changement, dites-lui quel dép
 <a id="order-for-a-change-that-crosses-repos"></a>
 ## Commande pour un changement qui traverse les pensions
 
-1. Moteur PR en `fork` , fusionné. Les broches du moteur se déplacent uniquement vers les balises de version en amont, de sorte que les PR du framework et des mods qui en ont besoin attendent que l'amont (VlcekM/ MeitouClient ) publie le changement. En attendant, construisez localement sur la branche du moteur ([local-development.md](local-development.md#change-the-engine-and-a-mod-together) ).
-2. Framework PR qui effectue le changement (et déplace sa broche `engine` vers la version qui contient ce dont il a besoin), fusionné dans `beta` . CI publie la version bêta.
-3. Mod PR qui déplace `meitou.lock.json` vers cette version préliminaire (et `engine` vers la validation du moteur de la serrure), fusionné dans `beta` .
-4. Une fois la version framework promue et étiquetée : un mod PR qui déplace le verrou vers `<framework>-v<version>` .
+1. Moteur PR en `fork`, fusionné. Les broches du moteur se déplacent uniquement vers les balises de version en amont, de sorte que les PR du framework et des mods qui en ont besoin attendent que l'amont (VlcekM/ MeitouClient) publie le changement. En attendant, construisez localement sur la branche du moteur ([local-development.md](local-development.md#change-the-engine-and-a-mod-together)).
+2. Framework PR qui effectue le changement (et déplace sa broche `engine` vers la version qui contient ce dont il a besoin), fusionné dans `beta`. CI publie la version bêta.
+3. Mod PR qui déplace `meitou.lock.json` vers cette version préliminaire (et `engine` vers la validation du moteur de la serrure), fusionné dans `beta`.
+4. Une fois la version framework promue et étiquetée : un mod PR qui déplace le verrou vers `<framework>-v<version>`.
 
-Chaque PR relie celui qui le précède. Un changement radical du framework API supprime la version mineure du framework et répertorie tous les dépôts dépendants ; chaque personne à charge obtient son propre verrou PR .
+Chaque PR relie celui qui le précède. Un changement radical du framework API supprime la version mineure du framework et répertorie tous les dépôts dépendants ; chaque personne à charge obtient son propre verrou PR.
 
 Dans une chaîne, l'étape 2 se répète une fois par couche, de haut en bas : un changement de noyau logistique arrive, puis une orchestration de guerre PR verrouille cette construction logistique et publie la sienne, puis le Bast Front PR verrouille les deux.
 
@@ -70,3 +70,5 @@ Order: engine -> RivalryCore -> AshenHand, each PR into its integration branch, 
 Build against unmerged changes with the local override; the final mod PR pins the published beta prerelease.
 Follow the cross-repo rules. Report each PR link in order.
 ```
+
+[English](../../../docs/agents-across-repos.md) · [Kenshi Races](../README.md)

@@ -1,43 +1,46 @@
-<a id="kenshi-races"></a>
 # Kenshi Races
 
-De nouvelles races pour [ MeitouClient ](https://github.com/Meitou-Modding-Ecosystem/MeitouClient) sur les squelettes humains du jeu, jouables dans l'éditeur de personnages : Leoma et Crevan (mâle et femelle) et le Crabfolk (crabman, crabqueen), une bibliothèque d'animation de 59 clips pour chaque race de squelette humain, et le cadre avec lequel d'autres mods ajoutent leurs propres races et sous-races. GPL -3.0 ou version ultérieure.
+[English](../../README.md) · Français · [Deutsch](../de/README.md) · [Español](../es/README.md) · [Italiano](../it/README.md) · [Português do Brasil](../pt-BR/README.md) · [Русский](../ru/README.md) · [日本語](../ja/README.md) · [한국어](../ko/README.md) · [简体中文](../zh-CN/README.md)
 
-- Les courses, leurs records et leurs tests en jeu : [docs/kenshi-races.md](docs/kenshi-races.md) .
-- Utiliser ces races ou ajouter les vôtres à partir d'un autre mod : [docs/dedependent-on-kenshi-races.md](docs/depending-on-kenshi-races.md) (compétence d'agent `.claude/skills/kenshi-races-dependent` ).
-- La bibliothèque d'animations (59 clips pour chaque race sur les squelettes humains) et comment elle a été réalisée : [docs/animations.md](docs/animations.md) .
-- Montage d'un corps `.glb` gréé ( Meshy , Hi3D "3ds Max Biped") sur le squelette du jeu : [docs/race-import.md](docs/race-import.md) .
+Kenshi Races ajoute à [MeitouClient](https://github.com/Meitou-Modding-Ecosystem/MeitouClient) trois races jouables dans l’éditeur de personnages. Les Leoma et les Crevan disposent de corps masculins et féminins. Les Crabfolk comprennent deux variantes, `crabman` et `crabqueen`. Toutes utilisent les squelettes humains du jeu. Le mod fournit aussi 59 animations utilisables par toutes les races partageant ces squelettes, ainsi qu’un framework permettant à d’autres mods d’ajouter leurs propres races et sous-races. GPL-3.0-or-later.
 
-- Construisez et exécutez localement avec Visual Studio , VS Code ou le terminal (le moteur de ce dépôt ou le lanceur installé, déployé dans le jeu) : [docs/play.md](docs/play.md) .
-- Configuration des dépôts sur votre machine : [docs/local-development.md](docs/local-development.md) .
-- Instruire les agents sur une modification qui s'étend sur les dépôts : [docs/agents-across-repos.md](docs/agents-across-repos.md) .
-- Règles d'agent pour le code PIN du moteur, les versions, CI et les versions : [ CLAUDE .md](../../CLAUDE.md) (identique à `AGENTS.md` ) ; procédures étape par étape : `.claude/skills/meitou-engine-release` .
-- Vérification d'un mod construit par rapport à la dernière version de Meitou ( CI le fait sur chaque PR ) : [docs/refcheck.md](docs/refcheck.md) .
-- Publication du mod sur Steam Workshop pour la première fois, puis à chaque version : [docs/steam-workshop.md](docs/steam-workshop.md) .
-- En transformant les modèles `.glb` ( Meshy , Hi3D , Blender ) en structures à construire, aucun FCS n'est nécessaire : [docs/structures.md](docs/structures.md) ; obtenir en premier le nombre de polycomptes, la taille et les textures d'un modèle généré : [docs/model-prep.md](docs/model-prep.md) .
+## Guides
+
+- [Les races, leurs données et les essais en jeu](docs/kenshi-races.md)
+- [Utiliser le framework dans un autre mod et ajouter des sous-races](docs/depending-on-kenshi-races.md)
+- [Bibliothèque de 59 animations et méthode de création](docs/animations.md)
+- [Adapter un corps GLB au squelette du jeu](docs/race-import.md)
+- [Compiler et lancer le jeu avec Visual Studio, VS Code ou le terminal](docs/play.md)
+- [Configurer et mettre à jour les dépôts locaux](docs/local-development.md)
+- [Coordonner les changements entre plusieurs dépôts](docs/agents-across-repos.md)
+- [Vérifier la compatibilité avec une nouvelle version de Meitou](docs/refcheck.md)
+- [Publier sur le Steam Workshop](docs/steam-workshop.md)
+- [Importer un modèle GLB comme bâtiment sans utiliser le FCS](docs/structures.md)
+- [Préparer la géométrie, les dimensions et les textures](docs/model-prep.md)
+- [Protection des branches et règles de revue](docs/branch-policy.md)
+- [Règles du dépôt et procédures pour les agents](../../CLAUDE.md) · [AGENTS.md](../../AGENTS.md) · [kenshi-races-dependent](../../.claude/skills/kenshi-races-dependent/SKILL.md) · [meitou-engine-release](../../.claude/skills/meitou-engine-release/SKILL.md)
 
 <a id="numbers"></a>
-## Nombres
+## Identifiants partagés
 
-Les types de tâches ( `AddGoalType` , `AddJobType` ) et les codes de dialogue ( `AddDialogueCondition` , `AddDialogueEffect` ) sont partagés par chaque mod chargé ([blocs de numéros de mod](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/numbers.md) ). Kenshi Races n’en revendique aucun.
-
-| Nombre | Piscine | Utiliser |
-| --- | --- | --- |
+Les types de tâches et les codes de dialogue appartiennent à un espace de numérotation partagé par tous les mods chargés. Kenshi Races ne réserve aucun numéro. (`AddGoalType`, `AddJobType`, `AddDialogueCondition`, `AddDialogueEffect`). [GutenStructure](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/numbers.md)
 
 <a id="layout"></a>
-## Mise en page
+## Organisation du dépôt
 
-- `engine/` : MeitouClient en tant que sous-module git, épinglé au moteur, valide les builds du mod. `git pull` ne le déplace pas : après chaque exécution d'extraction, `powershell -ExecutionPolicy Bypass -File tools\Update-Local.ps1 -Clean -Build` ([conserver les clones](docs/local-development.md#keep-clones-current) actuels).
-- `KenshiRaces/` : le projet du mod et `meitou.json` ; `KenshiRaces/items/races/` : les carrosseries montées (sortie import engagée). `KenshiRaces.Tests/` : ses tests (données synthétiques, aucune installation de jeu nécessaire). `<Mod>.Data/` (facultatif) : un générateur qui écrit `<Mod>.mod` à partir du jeu installé. `<Mod>/Structures/` (facultatif) : modèles `.glb` importés en tant que structures constructibles lors du déploiement ([docs/structures.md](docs/structures.md) ).
-- `meitou.lock.json` : le framework publie les mods construits contre ([framework lock](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md) ); le workflow de mise à jour du Framework le déplace vers les nouvelles versions et le fusionne lorsque CI passe ([framework update](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-update.md) ).
-- `Play/` : créer, déployer et exécuter en un clic.
-- `tools/` : `Update-Local.ps1` , la vérification locale de la traction et des broches du moteur ([conserver les clones](docs/local-development.md#keep-clones-current) actuels) ; `refcheck.sh` et `RefCheck/` , la vérification de référence moteur ([docs/refcheck.md](docs/refcheck.md) ) ; `StructureImport/` , l'import du modèle ([docs/structures.md](docs/structures.md) ) ; `RaceImport/` , le raccord de carrosserie ([docs/race-import.md](docs/race-import.md) ) ; `model-info.py` et `prepare-model.py` , vérifications de modèle et réduction de texture ([docs/model-prep.md](docs/model-prep.md) ).
-- `Directory.Build.props` importe celui du moteur, donc les mods sont construits avec les paramètres du jeu (les avertissements sont des erreurs).
-- `Directory.Build.rsp` tamponne les références du moteur comme la plus ancienne version Meitou du support des mods, égal à chaque étage `gameVersion` : le jeu refuse un mod faisant référence à un tampon moteur plus récent, et le sous-module construit `1.0.0.0` ([versioning](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/versioning.md) ). Le flux de travail de compatibilité Meitou vérifie quotidiennement les mods par rapport aux nouvelles versions de Meitou ([meitou compat](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/meitou-compat.md) ).
+- `engine/` — Sous-module MeitouClient fixé au commit utilisé pour compiler le mod. Après chaque extraction des changements, mettez-le à jour avec la commande ci-dessous. [Update-Local.ps1](docs/local-development.md#keep-clones-current)
+
+  `powershell -ExecutionPolicy Bypass -File tools\Update-Local.ps1 -Clean -Build`
+
+- `KenshiRaces/`, `meitou.json`, `KenshiRaces/items/races/`, `KenshiRaces.Tests/` — Projet et manifeste du mod. Les corps adaptés sont versionnés dans le dépôt. Les tests utilisent des données synthétiques et ne nécessitent pas le jeu.
+- `<Mod>.Data/` → `<Mod>.mod`, `<Mod>/Structures/` — Les projets facultatifs génèrent les données à partir du jeu installé ou importent des modèles GLB en bâtiments au déploiement. [StructureImport](docs/structures.md)
+- `meitou.lock.json` — Verrouille les versions des frameworks. Le workflow de mise à jour passe aux nouvelles versions puis fusionne après réussite de la CI. [Framework lock](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md) · [Framework update](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-update.md)
+- `Play/` — Compiler, déployer et lancer en une étape.
+- `tools/` — Outils de synchronisation, de vérification des références moteur, d’import des bâtiments, d’adaptation des corps et de préparation des textures. [Update-Local.ps1](docs/local-development.md#keep-clones-current) · [refcheck.sh / RefCheck](docs/refcheck.md) · [StructureImport](docs/structures.md) · [RaceImport](docs/race-import.md) · [model-info.py / prepare-model.py](docs/model-prep.md)
+- `Directory.Build.props` — Importe la configuration du moteur. Les avertissements de compilation sont traités comme des erreurs.
+- `Directory.Build.rsp` — Fixe la version des références moteur au minimum accepté par le mod. Le jeu refuse une référence plus récente que son moteur. Le sous-module utilise la version d’assembly par défaut. (`gameVersion`, `1.0.0.0`).  Le contrôle de compatibilité s’exécute chaque jour sur les nouvelles versions de Meitou. [Versioning](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/versioning.md) · [Meitou compatibility](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/meitou-compat.md)
 
 <a id="branches"></a>
-## Succursales
+## Branches
 
-PR dans `beta` ; CI (build et tests) doit réussir. `beta` est promu `main` une fois testé en jeu, et la production passe par un PR vers `release` . Chaque fusion dans `release` balise le `<slug>-v<version>` et publie le zip du mod ( `.github/workflows/release.yml` ) à moins que cette balise n'existe ; `tools\Tag-Release.ps1` est la solution de secours manuelle.
-
-- Protections des branches du nouveau référentiel et révisions permanentes de la version bêta/principale/version : [docs/branch-policy.md](docs/branch-policy.md) . Source de copie des modèles ; GutenStructure applique les paramètres via la réconciliation.
+Envoyez les PR vers beta. Compilation et tests doivent réussir. Après essai en jeu, beta peut être promue vers main. La production passe par une PR vers release. Chaque fusion sur release crée le tag de version et publie le ZIP, sauf si le tag existe déjà. La commande de marquage reste disponible en secours. (`<slug>-v<version>`, `.github/workflows/release.yml`, `tools\Tag-Release.ps1`). [Beta / main / release](docs/branch-policy.md)

@@ -1,16 +1,19 @@
-<a id="permanent-branch-policy-and-repository-onboarding"></a>
-# Politica della filiale permanente e onboarding del repository
+# Protezione dei branch e configurazione dei repository
 
-Tutti i repository Meitou -Modding-Ecosystem utilizzano la [politica permanente centrale](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md) :
+Tutti i repository dell’organizzazione seguono la politica permanente comune. [GutenStructure](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md)
 
-| Ramo | Requisito |
+| Branch | Requisiti |
 | --- | --- |
-| Filiali ordinarie | Non protetto |
-| beta | PR + passante CI ; i super-manutentori possono aggirare la revisione, comprese le auto-fusioni |
-| principale/rilascio | PR + superamento CI + approvazione di un supermanutentore indipendente; nessun bypass di revisione |
+| Branch di lavoro | Senza protezione. |
+| `beta` | PR e CI superata. I super-manutentori possono saltare la revisione, anche per unire le proprie PR. |
+| `main` / `release` | PR, CI superata e approvazione indipendente di un super-manutentore. La revisione è sempre obbligatoria. |
 
-GitHub Actions non ha bypass di revisione. L'eccezione del team Beta si applica solo alle revisioni: la sicurezza obbligatoria PR / CI non ha bypass. CODEOWNERS non aggiunge ulteriori requisiti di approvazione.
+GitHub Actions non dispone di deroghe. Su beta la deroga riguarda soltanto la revisione. La PR e i controlli obbligatori rimangono necessari. CODEOWNERS non richiede un’approvazione aggiuntiva.
 
-I modelli GitHub copiano l'origine, non le regole del ramo, le autorizzazioni del team, gli ambienti o i segreti.  La funzione Configura protezioni dei rami di rilascio di GutenStructure rileva nuovi repository dell'organizzazione pubblica ogni ora al minuto 17, assegna l'accesso in scrittura al repository del team se mancante e applica la policy. Per configurare immediatamente un nuovo repository, chiedi a un manutentore GutenStructure autorizzato di visualizzare in anteprima e quindi applicare il flusso di lavoro all'organizzazione principale di destinazione. Fatelo prima di affidarvi a unioni o pubblicazioni protette. Mantenere Release readiness nel chiamante CI e verificare gli effettivi passaggi di passaggio; i controlli previsti senza flusso di lavoro corrispondente attenderanno per sempre.
+I modelli GitHub copiano il codice sorgente. Regole, permessi dei team, ambienti e segreti si configurano separatamente. Al minuto 17 di ogni ora il workflow centrale rileva i nuovi repository pubblici, concede al team l’accesso in scrittura se necessario e applica la politica. Per procedere subito, un manutentore autorizzato di GutenStructure (`Configure release branch protections`) deve eseguire da main l’anteprima e poi l’applicazione del workflow, indicando l’organizzazione. Farlo prima di pubblicare o fare affidamento sulle protezioni.
 
-Crea principale/release dalla fonte stabile rivista quando è pronto; la politica li prende di mira ancor prima che esistano. Mantieni i pin del flusso di lavoro centrale revisionati e immutabili di questo modello, aggiornando insieme sia il gate di rilascio che l'editore del pacchetto tramite PR. I pronti contro termine privati ​​richiedono una convalida separata del piano/protezione; nessun accesso ad Azure viene concesso tramite l'individuazione. I segreti della piattaforma esterna rimangono negli ambienti di proprietà dell'autore e non vengono mai copiati da questo modello.
+Mantenere Release readiness nella CI chiamante e verificare che le esecuzioni riescano. Un controllo atteso senza il relativo workflow resta in sospeso. Creare main e release da sorgenti stabili e revisionati. Le regole si applicano anche prima della creazione.
+
+Conservare i riferimenti immutabili e revisionati ai workflow centrali. Aggiornare insieme tramite PR il controllo di rilascio e la pubblicazione dei pacchetti. Per i repository privati verificare separatamente piano e protezioni. Il rilevamento non concede accesso ad Azure. I segreti delle piattaforme rimangono negli ambienti dei rispettivi autori.
+
+[English](../../../docs/branch-policy.md) · [Kenshi Races](../README.md)

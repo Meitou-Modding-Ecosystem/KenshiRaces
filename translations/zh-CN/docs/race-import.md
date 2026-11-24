@@ -1,5 +1,5 @@
 <a id="race-import-fitting-a-body-onto-the-games-skeleton"></a>
-# 种族导入：将身体安装到游戏的骨架上
+# 将GLB身体模型适配到游戏骨骼
 
 `tools/RaceImport` 将已装备的 `.glb` 身体（ Meshy 、 Hi3D ：“3ds Max Biped”装备，关节 `Bip001 ...` ）转换为游戏用其自己的人类动画进行动画处理的身体：链接到 `male_skeleton.skeleton` 或 `female_skeleton.skeleton` 的蒙皮 Ogre 网格、其 DDS 纹理和零件贴图。它从游戏安装中读取装备的骨架、人体和零件图，因此它在 Kenshi 的机器上运行，而不是在 CI 中运行；其输出已提交。
 
@@ -13,10 +13,10 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - `<Kenshi folder>` ：游戏文件夹（里面有 `data/` ），例如 `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"` 。
 - 词干命名文件，并且在模组中必须是唯一的（游戏通过裸名称查找文件）： `<modfolder lower case>_<race>` 。
 - `male` / `female` ：装备，默认男性。将女性身体安装到 `female_skeleton` 上，并与 `human_female.mesh` 和 `FemaleMask_Default.png` 进行测量（游戏中的女性动画和声音，编辑器的胸围滑块）；男一为 `male_skeleton` 、 `human_male.mesh` 和 `MaleMask_Default.png` 。
-- `slim` : 0 到 1，默认 1 ([瘦身](#slimming) );参加比衣服更笨重的比赛时，请将其降低。
+- `slim` : 0 到 1，默认 1 ([瘦身](#slimming));参加比衣服更笨重的比赛时，请将其降低。
 - 写入 `<stem>.mesh` 、 `<stem>_d.dds` 、 `<stem>_n.dds` （仅当模型有法线贴图时）和 `<stem>_parts.png` ；对数线给出了顶点数、比例、边界以及有多少顶点落在可隐藏部分中。
 - 将 `.glb` 保留在存储库之外（数十个 MB ）；提交四个输出。 `.gitignore` 让 `*/items/races/*.mesh` 和 `*.dds` 通过。
-- 依赖 mod 从 KenshiRaces 克隆运行它，具有自己的输出文件夹 ( `<Mod>/items/races` ) 和茎。
+- 依赖 mod 从 KenshiRaces 克隆运行它，具有自己的输出文件夹 (`<Mod>/items/races`) 和茎。
 
 <a id="what-the-model-needs"></a>
 ## 模型需要什么
@@ -51,7 +51,7 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 <a id="human-only-bones"></a>
 ## 人类独有的骨骼
 
-女性骨骼具有 `L Boob` 和 `R Boob` （编辑器的乳房尺寸、高度和间距比例并移动它们，engine docs/animation.md），这是 Biped 装备所缺少的。瘦身后，最重骨骼为 `Spine1` 或 `Spine2` 的每个顶点均采用最近的人类顶点的仅人类权重，该权重在 1 单位内按 1 - 距离缩放；它自身的重量会缩小以腾出空间。 **观察** ( `human_female.mesh` )：胸部顶点由两块骨头承载（994 个前胸部顶点中的 892 个）。骨骼（ `L Boob` 28、 `R Boob` 29）和女性装备的其他手柄与男性的不同（ `R Clavicle` 23 与 25；男性有 `Bip01 Jaw` ），因此网格体总是针对其自己的装备手柄写入。
+女性骨骼具有 `L Boob` 和 `R Boob` （编辑器的乳房尺寸、高度和间距比例并移动它们，engine docs/animation.md），这是 Biped 装备所缺少的。瘦身后，最重骨骼为 `Spine1` 或 `Spine2` 的每个顶点均采用最近的人类顶点的仅人类权重，该权重在 1 单位内按 1 - 距离缩放；它自身的重量会缩小以腾出空间。 **观察**(`human_female.mesh`)：胸部顶点由两块骨头承载（994 个前胸部顶点中的 892 个）。骨骼（ `L Boob` 28、 `R Boob` 29）和女性装备的其他手柄与男性的不同（ `R Clavicle` 23 与 25；男性有 `Bip01 Jaw` ），因此网格体总是针对其自己的装备手柄写入。
 
 <a id="part-map"></a>
 ## 零件图
@@ -65,3 +65,5 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 
 - `_d` ：基色，alpha=光泽度=（255-粗糙度）/2（没有贴图时粗糙度为200）； 2048²，BC3，带 mips。
 - `_n` ：游戏的角色布局，X为alpha，Y为绿色，Y从glTF的+Y向上翻转；红色和蓝色 0.
+
+[English](../../../docs/race-import.md) · [Kenshi Races](../README.md)
