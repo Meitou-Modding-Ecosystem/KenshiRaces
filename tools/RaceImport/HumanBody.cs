@@ -30,6 +30,11 @@ public sealed class HumanBody
     public required Dictionary<ushort, float>[] Weights { get; init; }
 
     /// <summary>
+    /// The skinned vertices' triangles, three indices each.
+    /// </summary>
+    public required int[] Indices { get; init; }
+
+    /// <summary>
     /// The body of <paramref name="rig"/> in the game in <paramref name="kenshiFolder"/>. Throws when it is missing or has no skinned geometry.
     /// </summary>
     public static HumanBody Load(string kenshiFolder, HumanRig rig)
@@ -38,7 +43,9 @@ public sealed class HumanBody
         var positions = new List<Vector3>();
         var uvs = new List<Vector2>();
         var weights = new List<Dictionary<ushort, float>>();
-        foreach (var sub in mesh.SubMeshes) AddSubMesh(mesh, sub, positions, uvs, weights);
+        var indices = new List<int>();
+        var added = new Dictionary<OgreVertexData, Dictionary<uint, int>>();
+        foreach (var sub in mesh.SubMeshes) AddSubMesh(mesh, sub, positions, uvs, weights, added, indices);
 
         if (positions.Count == 0) throw new InvalidDataException($"{rig.Body}: no vertices");
 
@@ -48,30 +55,59 @@ public sealed class HumanBody
             Uvs = [.. uvs],
             Bones = [.. weights.Select(w => w.MaxBy(p => p.Value).Key)],
             Weights = [.. weights],
+            Indices = [.. indices],
         };
     }
 
     /// <summary>
-    /// Adds a submesh's skinned vertices with their bone weights (shared geometry is read once, with the first submesh using it).
+    /// Adds a submesh's skinned vertices with their bone weights (a vertex buffer shared by submeshes is read once) and its triangles whose
+    /// three vertices are skinned.
     /// </summary>
-    static void AddSubMesh(OgreMesh mesh, OgreSubMesh sub, List<Vector3> positions, List<Vector2> uvs, List<Dictionary<ushort, float>> weights)
+    static void AddSubMesh(OgreMesh mesh, OgreSubMesh sub, List<Vector3> positions, List<Vector2> uvs, List<Dictionary<ushort, float>> weights,
+        Dictionary<OgreVertexData, Dictionary<uint, int>> added, List<int> indices)
     {
         var data = sub.UseSharedVertices ? mesh.SharedVertexData : sub.VertexData;
-        if (data is null || (sub.UseSharedVertices && sub != mesh.SubMeshes.First(s => s.UseSharedVertices))) return;
+        if (data is null) return;
 
-        var assignments = sub.UseSharedVertices ? mesh.BoneAssignments : sub.BoneAssignments;
+        if (!added.TryGetValue(data, out var map))
+        {
+            var assignments = sub.UseSharedVertices ? mesh.BoneAssignments : sub.BoneAssignments;
+            added[data] = map = AddVertices(data, assignments, positions, uvs, weights);
+        }
+
+        var source = sub.Indices.Indices;
+        for (int i = 0; i + 2 < source.Length; i += 3)
+        {
+            if (!map.TryGetValue(source[i], out int a) || !map.TryGetValue(source[i + 1], out int b) || !map.TryGetValue(source[i + 2], out int c)) continue;
+
+            indices.Add(a);
+            indices.Add(b);
+            indices.Add(c);
+        }
+    }
+
+    /// <summary>
+    /// Adds a vertex buffer's skinned vertices; returns each added vertex's new index by its index in the buffer.
+    /// </summary>
+    static Dictionary<uint, int> AddVertices(OgreVertexData data, List<OgreBoneAssignment> assignments, List<Vector3> positions, List<Vector2> uvs,
+        List<Dictionary<ushort, float>> weights)
+    {
         var byVertex = assignments.GroupBy(a => a.VertexIndex).ToDictionary(g => g.Key, g => g.GroupBy(a => a.BoneIndex).ToDictionary(b => b.Key, b => b.Sum(a => a.Weight)));
         var points = data.ReadPositions() ?? [];
         var uvElement = data.Find(OgreVertexSemantic.TextureCoordinates);
         var uvFloats = uvElement is null ? null : data.ReadFloats(uvElement);
         int stride = uvElement?.Type.ComponentCount() ?? 0;
+        var map = new Dictionary<uint, int>();
         for (uint v = 0; v < points.Length; v++)
         {
             if (!byVertex.TryGetValue(v, out var own)) continue;
 
+            map[v] = positions.Count;
             positions.Add(points[v]);
             uvs.Add(uvFloats is null ? Vector2.Zero : new Vector2(uvFloats[v * stride], uvFloats[v * stride + 1]));
             weights.Add(own);
         }
+
+        return map;
     }
 }

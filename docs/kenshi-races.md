@@ -83,5 +83,6 @@ action 18 (join squad) adds the character to the player's squad.
 ## Clothing
 
 Armour shares the body's skeleton, so it moves with these bodies, but it is modelled around the human body. The part map hides the skin
-under items with `hide parts` (coats, robes, jackets); slimming pulls in what is bulkier than a human elsewhere
-([race import](race-import.md#slimming)). Shapes far from human (shells, claws) still poke through tight armour.
+under items with `hide parts` (coats, robes, jackets); slimming and the skin conform pull the torso, hips, legs and feet onto the human's skin
+([race import](race-import.md#slimming), [skin conform](race-import.md#skin-conform)). Shapes far from human (tails, manes, shells, claws) still
+poke through tight armour.

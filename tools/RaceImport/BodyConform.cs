@@ -101,7 +101,7 @@ public sealed class BodyConform
     /// <summary>
     /// Scales each offset by a smoothstep of its vertex's distance to the nearest kept vertex, from 0 (at it) to 1 (<see cref="KeptReach"/> away).
     /// </summary>
-    static void Spare(Vector3[] offsets, Vector3[] positions, bool[] kept)
+    internal static void Spare(Vector3[] offsets, Vector3[] positions, bool[] kept)
     {
         var keptPoints = positions.Where((_, v) => kept[v]).ToArray();
         if (keptPoints.Length == 0) return;
@@ -118,7 +118,7 @@ public sealed class BodyConform
     /// The offsets averaged with their neighbours' <see cref="SmoothingRounds"/> times; vertices at one position (uv seams) are welded first, so
     /// a seam moves as one.
     /// </summary>
-    static Vector3[] Smoothed(Vector3[] offsets, Vector3[] positions, int[] indices)
+    internal static Vector3[] Smoothed(Vector3[] offsets, Vector3[] positions, int[] indices, int rounds = SmoothingRounds)
     {
         var weld = Surface.Weld(positions);
         int count = weld.Max() + 1;
@@ -133,7 +133,7 @@ public sealed class BodyConform
         }
 
         for (int w = 0; w < count; w++) welded[w] /= members[w];
-        for (int round = 0; round < SmoothingRounds; round++)
+        for (int round = 0; round < rounds; round++)
             welded = [.. Enumerable.Range(0, count).Select(w => (welded[w] + neighbours[w].Aggregate(Vector3.Zero, (s, n) => s + welded[n])) / (1 + neighbours[w].Count))];
 
         return [.. weld.Select(w => welded[w])];

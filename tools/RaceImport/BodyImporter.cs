@@ -28,7 +28,8 @@ public static class BodyImporter
         var (fitted, normals, weights) = fit.Repose();
         var (lifted, lift) = BustLift.Apply(fitted, weights, kenshi, bustHuman);
         var tail = HumanWeights.MoveTails(lifted, body.Indices, weights, kenshi, human);
-        var positions = new BodyConform(kenshi, human).Apply(lifted, weights, body.Indices, options.Slim, tail);
+        var slimmed = new BodyConform(kenshi, human).Apply(lifted, weights, body.Indices, options.Slim, tail);
+        var (positions, conformed) = new SkinConform(kenshi, human).Apply(slimmed, weights, body.Indices, options.Slim, tail);
         int copied = HumanWeights.Apply(positions, body.Indices, weights, tail, kenshi, human);
         var mesh = new SkinnedMesh(positions, normals, body.Uvs, Tangents(positions, normals, body.Uvs, body.Indices), body.Indices, weights);
 
@@ -40,7 +41,7 @@ public static class BodyImporter
         var min = positions.Aggregate(Vector3.Min);
         var max = positions.Aggregate(Vector3.Max);
         return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {positions.Length} vertices, {body.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
-            $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts";
+            $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts";
     }
 
     /// <summary>
