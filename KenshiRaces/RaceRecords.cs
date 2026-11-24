@@ -1,4 +1,5 @@
 using Meitou.Data;
+using Meitou.Data.Gameplay.Bodies;
 using Meitou.Data.Fcs;
 using Meitou.Modding;
 
@@ -68,7 +69,7 @@ public static class RaceRecords
     /// <summary>
     /// Fills a new RACE: Greenlander's fields and lists, then each gender's body files (a single-gender race wears its one body for both), no
     /// heads or hair (the body has its own), no body morphs, no shirts (they paint the human body's uv layout), playable in the character
-    /// editor with <see cref="EditorLimits"/>, and the animation library linked (<see cref="AnimationRecords"/>).
+    /// editor with <see cref="EditorLimits"/>, the animation library linked (<see cref="AnimationRecords"/>) and the subrace's traits.
     /// </summary>
     public static void FillRace(FcsRecord race, GameDatabase game, Subrace subrace)
     {
@@ -83,7 +84,82 @@ public static class RaceRecords
 
         race.References["hairs"] = [];
         AnimationRecords.Link(race);
+        if (subrace.Traits is { } traits) SetTraits(race, game, traits);
     }
+
+    /// <summary>
+    /// The RACE fields <see cref="RaceRules"/> reads back: head gear allowed by name, footwear refused by name, no weapons, damage taken.
+    /// </summary>
+    public const string HatsOnlyField = "kenshi races hats only", NoFootwearField = "kenshi races no footwear",
+        NoWeaponsField = "kenshi races no weapons", DamageTakenField = "kenshi races damage taken";
+
+    /// <summary>
+    /// Writes <paramref name="traits"/> into a new RACE (docs/kenshi-races.md "Traits"): the aptitude lists (replacing the Greenlander's), part
+    /// health, the slot flags, the fists and the fields <see cref="RaceRules"/> reads.
+    /// </summary>
+    static void SetTraits(FcsRecord race, GameDatabase game, RaceTraits traits)
+    {
+        SetAptitudes(race, traits);
+        if (traits.Health is { } health) SetHealth(race, game, health);
+        race.Bools["no hats"] = traits.NoHats;
+        race.Bools["no shoes"] = traits.NoShoes;
+        if (traits.Fists is { } fists)
+        {
+            race.References["fists lv1"] = [new FcsReference(fists, 0, 0, 0)];
+            race.References["fists lv100"] = [new FcsReference(fists, 0, 0, 0)];
+        }
+
+        race.Strings[HatsOnlyField] = string.Join('|', traits.HatsOnly ?? []);
+        race.Strings[NoFootwearField] = string.Join('|', traits.NoFootwear ?? []);
+        race.Bools[NoWeaponsField] = traits.NoWeapons;
+        race.Floats[DamageTakenField] = traits.DamageTaken;
+    }
+
+    /// <summary>
+    /// The RACE's <c>stats good&lt;N&gt;</c> and <c>stats bad&lt;N&gt;</c> (x1.2 and x0.8), and <c>strength</c> for the strength entry, which the game
+    /// lays over the lists (engine docs/game/character-stats.md "Races").
+    /// </summary>
+    static void SetAptitudes(FcsRecord race, RaceTraits traits)
+    {
+        foreach (string key in race.Ints.Keys.Where(k => k.StartsWith("stats good") || k.StartsWith("stats bad")).ToList()) race.Ints.Remove(key);
+
+        var good = traits.Good.Where(s => s != StatsEnumerated.Strength).ToList();
+        var bad = traits.Bad.Where(s => s != StatsEnumerated.Strength).ToList();
+        for (int i = 0; i < good.Count; i++) race.Ints[$"stats good{i}"] = (int)good[i];
+        for (int i = 0; i < bad.Count; i++) race.Ints[$"stats bad{i}"] = (int)bad[i];
+
+        race.Floats["strength"] = traits.Good.Contains(StatsEnumerated.Strength) ? 1.2f
+            : traits.Bad.Contains(StatsEnumerated.Strength) ? 0.8f
+            : 1;
+    }
+
+    /// <summary>
+    /// Each <c>combat anatomy</c> entry's value 1 (the part's base hit points) by its LOCATIONAL_DAMAGE record's name; the hit weights stay.
+    /// </summary>
+    static void SetHealth(FcsRecord race, GameDatabase game, PartHealth health)
+    {
+        if (!race.References.TryGetValue("combat anatomy", out var parts)) return;
+
+        for (int i = 0; i < parts.Count; i++)
+        {
+            string name = game.Find(parts[i].TargetStringId)?.Name ?? "";
+            parts[i] = parts[i] with { Value1 = HitPoints(name, health, parts[i].Value1) };
+        }
+    }
+
+    /// <summary>
+    /// A body part's hit points by its record's name (Head, Chest, Stomach, Left/Right Arm, Left/Right Leg); another part keeps
+    /// <paramref name="current"/>.
+    /// </summary>
+    static int HitPoints(string part, PartHealth health, int current) => part switch
+    {
+        "Head" => health.Head,
+        "Chest" => health.Chest,
+        "Stomach" => health.Stomach,
+        _ when part.EndsWith(" Arm") => health.Arms,
+        _ when part.EndsWith(" Leg") => health.Legs,
+        _ => current,
+    };
 
     /// <summary>
     /// Fills a new CHARACTER: Drifter's fields and lists, of the character's gender, no kit, money or bounty, of the subrace, with
@@ -128,7 +204,7 @@ public static class RaceRecords
     /// <summary>
     /// Copies every field and reference list of a loaded record into a new one.
     /// </summary>
-    static void CopyFrom(GameRecord from, FcsRecord to)
+    internal static void CopyFrom(GameRecord from, FcsRecord to)
     {
         foreach (var (key, value) in from.Bools) to.Bools[key] = value;
         foreach (var (key, value) in from.Floats) to.Floats[key] = value;

@@ -14,8 +14,8 @@ In a repo made from [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosys
 {
   "id": "kenshi.races",
   "repo": "Meitou-Modding-Ecosystem/KenshiRaces",
-  "tag": "kenshi-races-v0.6.0",
-  "asset": "KenshiRaces-0.6.0.zip",
+  "tag": "kenshi-races-v0.7.0",
+  "asset": "KenshiRaces-0.7.0.zip",
   "sha256": "<Zip SHA-256 from the notes>",
   "folder": "KenshiRaces",
   "engine": "<Submodule engine commit from the notes>"
@@ -31,7 +31,7 @@ In a repo made from [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosys
 ```json
 "apiVersion": 2,
 "gameVersion": ">=0.22.2",
-"dependencies": [{ "id": "kenshi.races", "version": ">=0.6.0 <0.7.0" }]
+"dependencies": [{ "id": "kenshi.races", "version": ">=0.7.0 <0.8.0" }]
 ```
 
 - Before 1.0 a minor version may break the API, so cap the range at the next minor.
@@ -83,6 +83,9 @@ public void EditData(ModDataContext c)
 - Subraces are `playable` with Kenshi Races' editor limits (`RaceRecords.EditorLimits`); `FillRace` / `FillCharacter` fill records you add
   yourself (`c.Add`) when you want to change more fields after.
 - The ids are yours: records of your own `.mod` file name.
+- Traits: `new Subrace(..., Traits: new RaceTraits(good, bad) { Health = ..., NoHats, NoShoes, HatsOnly, NoFootwear, NoWeapons, Fists,
+  DamageTaken })` sets aptitudes (x1.2 / x0.8), part hit points, gear limits, fists and the share of each blow that lands
+  ([kenshi-races.md](kenshi-races.md#traits)); a ghost crab can reuse `Races.CrabfolkTraits`. Without traits a subrace keeps the Greenlander's.
 
 ## 6. Play its animations
 

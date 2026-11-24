@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="KenshiRaces.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="meitou.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

@@ -4,8 +4,8 @@ using Meitou.Modding;
 namespace KenshiRaces;
 
 /// <summary>
-/// Kenshi Races' entry (docs/kenshi-races.md): adds the recruit talk and every race of <see cref="Races"/> in the data phase, from the loaded
-/// game's own records, so the shipped KenshiRaces.mod is empty. Dependents add their own races with <see cref="RaceRecords"/>
+/// Kenshi Races' entry (docs/kenshi-races.md): adds the recruit talk, the Crabfolk's fists and every race of <see cref="Races"/> in the data
+/// phase, from the loaded game's own records, so the shipped KenshiRaces.mod is empty; then the races' gear and damage rules (<see cref="RaceRules"/>). Dependents add their own races with <see cref="RaceRecords"/>
 /// (docs/depending-on-kenshi-races.md).
 /// </summary>
 public sealed class KenshiRacesMod : IMod, IModDataPhase
@@ -19,12 +19,14 @@ public sealed class KenshiRacesMod : IMod, IModDataPhase
     {
         RecruitTalk.Add(c);
         AnimationRecords.Add(c);
+        RaceFists.Add(c);
         foreach (var group in Races.Groups) RaceRecords.AddGroup(c, group);
     }
 
     public void Initialize(ModContext c)
     {
         c.AddDebugCommand("Kenshi Races: races", _ => Describe(c));
+        RaceRules.Register(c);
         if (c.Data.Find(Races.LeomaRace) is null) c.LogError("Kenshi Races' records are missing: the data phase did not add them (see the log).");
     }
 

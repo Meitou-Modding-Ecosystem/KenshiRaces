@@ -54,7 +54,9 @@ public sealed record RaceCharacter(string Name, string Id, bool Female);
 /// <param name="Male">The male body, null for none.</param>
 /// <param name="Female">The female body, null for none.</param>
 /// <param name="Characters">The subrace's CHARACTERs.</param>
-public sealed record Subrace(string Name, string RaceId, RaceBody? Male, RaceBody? Female, IReadOnlyList<RaceCharacter> Characters)
+/// <param name="Traits">What sets it apart from a Greenlander (aptitudes, health, gear limits); null for none.</param>
+public sealed record Subrace(string Name, string RaceId, RaceBody? Male, RaceBody? Female, IReadOnlyList<RaceCharacter> Characters,
+    RaceTraits? Traits = null)
 {
     /// <summary>
     /// Whether the race has one gender: the editor shows "-" for gender and every character wears the one body.

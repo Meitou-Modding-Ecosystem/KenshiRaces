@@ -68,7 +68,7 @@ A `needs-release` label means the merged change only reaches players after promo
 - Kenshi Races (`kenshi.races`, folder `KenshiRaces/`, slug `kenshi-races`), a framework: races fitted onto the human skeleton, records added in
   the data phase (`KenshiRaces.mod` ships empty). No frameworks: `engine` pins an upstream release tag (a nightly one until a release has the
   data phase). Docs `docs/kenshi-races.md`, `docs/race-import.md`, `docs/animations.md`.
-- Its API (`Races`, `RaceRecords`, `RaceBody`/`Subrace`/`RaceGroup`, `RaceAnimations`, `AnimationRecords`) is the dependent contract: a
+- Its API (`Races`, `RaceRecords`, `RaceBody`/`Subrace`/`RaceTraits`/`RaceGroup`, `RaceAnimations`, `AnimationRecords`) is the dependent contract: a
   change updates `docs/depending-on-kenshi-races.md` and `.claude/skills/kenshi-races-dependent`, and bumps the minor version.
 - `tools/RaceImport` and `tools/AnimationExport` need the game install, so their output (`KenshiRaces/items/races/`, `items/animations/`) is
   committed; rerun them when a body, the fit or a clip changes.
