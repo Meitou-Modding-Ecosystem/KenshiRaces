@@ -1,16 +1,16 @@
 <a id="permanent-branch-policy-and-repository-onboarding"></a>
-# 永久分支政策和存储库的登机
+# 永久分支政策和存储库加入
 
-所有 Meitou-Modding-Ecosystem 存储库使用 [中央永久政策](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md):
+所有 Meitou -Modding-Ecosystem 存储库都使用 [中央永久策略](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md) ：
 
 | 分支 | 要求 |
 | --- | --- |
-| 常规分支 | 不受保护 |
-| 贝塔 | PR + 通过 CI; 超级维持人可以通过评论,包括自我调整 |
-| 主 / 释放 | PR + 通过 CI 加以一个独立的超级维持人批准; 没有评论过渡 |
+| 普通分支机构 | 无保护 |
+| 贝塔 | PR + 传递 CI ；超级维护者可能会绕过审查，包括自我合并 |
+| 主要/发布 | PR +通过 CI +一名独立超级维护者认可；没有审核绕过 |
 
-GitHub 活动没有评论过渡。 Beta 的团队例外仅适用于评论:强制性 PR/CI 安全没有过渡。 CODEOWNERS 没有额外的批准要求。
+GitHub Actions 没有审核绕过。 Beta 的团队例外仅适用于审核：强制 PR / CI 安全无旁路。 CODEOWNERS 不增加额外的批准要求。
 
-GitHub 模板复制来源,而不是分支规则,团队许可,环境或秘密。 GutenStructure的配置分支保护,每小时在17分钟内发现新的机关存储器,如果缺乏,则将其分配到团队存储器中。 要立即设置一个新功能,请授权的GutenStructure维护器预览,然后将该工作流应用于主要的目标组织。 在依靠保护合并或出版之前,做这件事。 保持在呼叫器的准备,并检查实际的通行;没有匹配的工作流的预期将永远等待。
+GitHub 模板复制源代码，而不是分支规则集、团队权限、环境或机密。 GutenStructure 的配置发布分支保护每小时在第 17 分钟发现新的公共组织存储库，分配团队存储库写入权限（如果丢失），并应用策略。要立即配置新的存储库，请要求授权的 GutenStructure 维护人员预览，然后将该工作流程应用于主要目标组织。在依赖受保护的合并或发布之前执行此操作。将 Release readiness 保留在调用者 CI 中并验证实际的传递运行；没有匹配工作流程的预期检查将永远等待。
 
-创建 main/release 从审查的稳定来源,当准备好;政策针对它们之前,它们存在。 保持这个模板的不可改变的中央工作流,更新发布门和包装出版商通过PR。 个人休息需要分开 plan/protection 验证; 未经发现的 Azure 访问。 外部平台的秘密仍然存在于作者所拥有的环境中,并且从这个模板中永远不会复制。
+准备好后，从经过审查的稳定源创建主/版本；政策甚至在它们存在之前就针对它们。保持此模板的不可变的已审核中央工作流程引脚，通过 PR 一起更新发布门和包发布者。私人回购需要单独的计划/保护验证；发现不会授予任何 Azure 访问权限。外部平台机密保留在作者拥有的环境中，并且永远不会从此模板复制。

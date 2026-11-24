@@ -1,45 +1,41 @@
 <a id="agents-working-across-repos"></a>
-# 휴식과 함께 일하는 멤버들
+# 저장소 전반에 걸쳐 작업하는 에이전트
 
-각각의 리포트를 제공하고, 각각의 레포트를 소유하고, 그것은 중독 순서에있다 : 엔진, 그 다음 프레임, 그 다음 모드. 변수에 한 명의 에이전트 세션, 리포에 한 명이 아니다.
+변경 사항이 적용되는 모든 저장소마다 하나의 에이전트를 제공하고, 어느 저장소가 각 부분을 소유하는지 알려주고, PR을 종속성 순서(엔진, 프레임워크, 모드)로 지정하도록 합니다. 리포지토리당 하나가 아닌 변경당 하나의 에이전트 세션입니다.
 
 <a id="give-the-agent-the-repos"></a>
-## 공무원에게 휴식을 주어
+## 에이전트에게 저장소 제공
 
-- **클라우드 세션 :** 각 리포는 세션이나 프로젝트에 연결되어야합니다. 에이전트는 그들을 측면에서 측면으로 클론하고 자신의 지점에서 작업합니다.
-각각에 있는
-- **원격 컨트롤 (Remote Control) :** 폴더에 있는 클론은 [local-development.md](local-development.md). 그럼에도 불구하고 공무원은 무엇을 할 수 있는가.
-클라우드 세션은 할 수 없습니다, 예를 들어 `gh repo create`.
+- **클라우드 세션:** 각 저장소는 세션 또는 프로젝트에 연결되어야 합니다. 에이전트는 이를 나란히 복제하고 각각의 자체 분기에서 작동합니다.
+- ** PC (원격 제어):** [local-development.md](local-development.md) 의 폴더에 있는 복제본입니다. 에이전트는 `gh repo create` 와 같이 클라우드 세션에서 할 수 없는 작업도 수행할 수 있습니다.
 
 <a id="where-each-part-goes"></a>
-## 각 부분이 가는 곳
+## 각 부분이 어디로 가는지
 
-| 변화 | 리포 | PR에 들어가기 |
+| 변화 | 레포 | PR 안으로 |
 | --- | --- | --- |
-| 엔진 호크 ( 이벤트, 저장 필드, 명령) | MeitouClient | `fork` |
-| 리버트 코어 API 또는 행동 | 리얼리 코어 | `beta` |
-| Logistics Core (노드, 옆구리, 소유자, 주식, 운송) | 로지스틱 코어 | `beta` |
-| 전쟁 오케스트라 (로지스틱에 대한 전투 시나리오, 이야기 또는 캐릭터 없음) | 전쟁기구 | `beta` |
-| 전선 | 바스트프론트 | `beta` |
-| 모드 코드, 데이터 생성기, 테스트, 도크 | 이 모드의 리포 | `beta` |
-| 공유 CI, 포장, 출시 포트, 잠금 목표 | 혜택 | `beta` |
+| 엔진 후크(이벤트, 저장된 필드, 명령) | MeitouClient | `fork` |
+| 라이벌리 코어 API 또는 동작 | 라이벌리코어 | `beta` |
+| 물류 핵심(노드, 에지, 소유자, 재고, 운송) | 물류핵심 | `beta` |
+| 전쟁 조율(물류 전투 시나리오, 스토리나 캐릭터 없음) | 전쟁오케스트레이션 | `beta` |
+| 바스트 프론트 근접전 | 바스트프론트 | `beta` |
+| 모드의 코드, 데이터 생성기, 테스트, 문서 | 그 모드 저장소 | `beta` |
+| 공유 CI , 패키징, 릴리스 게이트, 잠금 대상 | GutenStructure | `beta` |
 
 <a id="order-for-a-change-that-crosses-repos"></a>
-## 휴식을 통과하는 변화에 대한 명령
+## 저장소를 넘어서는 변경 주문
 
-1. PR를 입력합니다. `fork`융합된 엔진 핀은 오프 스트림 출시 태그로만 이동하므로 프레임 워크와 모드 PR가 필요합니다.
-오프화이트 (VlcekM/MeitouClient3) 변화를 풀어주고 있다. 그럼에도 불구하고, 그들은 현지에 있는 엔진에 대하여 구축 ([local-development.md](local-development.md#change-the-engine-and-a-mod-together)).
-2. 프레임 워크 PR는 변화를 일으키는 (그리고 그것을 움직이는) `engine` 핀은 그것이 필요로하는 것을 가지고있는 해방을위한 것입니다), 합병 `beta`. 이 출판
-베타 프리레일러
-3. 움직이는 모드 PR `meitou.lock.json` 그 후에 그들은 (그리고 그들은) `engine` 엔진의 잠금에 묶여있다), 융합 `beta`.
-4. 프레임 워크 릴리스가 홍보되고 표시되면 : 잠금을 움직이는 모드 PR `<framework>-v<version>`.
+1. 엔진 PR 가 `fork` 로 병합되었습니다. 엔진 핀은 업스트림 릴리스 태그로만 이동하므로 이를 필요로 하는 프레임워크 및 모드 PR은 업스트림(VlcekM/ MeitouClient )이 변경 사항을 릴리스할 때까지 기다립니다. 그때까지는 엔진 브랜치를 로컬로 빌드하세요([local-development.md](local-development.md#change-the-engine-and-a-mod-together) ).
+2. 변경을 수행하고 `engine` 핀을 필요한 릴리스로 이동하는 프레임워크 PR 가 `beta` 로 병합되었습니다. CI 는 베타 시험판을 게시합니다.
+3. `meitou.lock.json` 를 해당 시험판으로 이동하고 `engine` 를 잠금 엔진 커밋으로 이동하는 Mod PR 가 `beta` 로 병합되었습니다.
+4. 프레임워크 릴리스가 승격되고 태그가 지정된 후: 잠금을 `<framework>-v<version>` 로 이동하는 모드 PR .
 
-각 PR는 그것보다 먼저 연결되어 있습니다. 깨진 프레임 워크 API 변화는 프레임의 작은 버전을 삽입하고 각각의 의존 리포를 목록; 각각은 자신의 잠금 PR를 얻습니다.
+각 PR 그 앞의 것을 연결합니다. 파괴적인 틀 API 변경은 프레임워크의 부 버전을 범프하고 모든 종속 저장소를 나열합니다. 각 종속 항목은 자체 잠금을 갖습니다. PR .
 
-체인에서, 단계 2는 층에 한 번 반복됩니다 : 로지스틱 코어는 땅을 바꾸고, 전쟁 오케스트라 PR는 로지스티크가 건설하고 출판하는 것을 닫습니다.
+체인에서 2단계는 계층당 한 번씩 하향식으로 반복됩니다. Logistics Core 변경이 적용된 다음 War Orchestration PR 가 Logistics가 자체적으로 구축하고 게시하는 것을 잠근 다음 Bast Front PR 가 두 가지를 모두 잠급니다.
 
 <a id="rules-to-paste-into-the-agents-instructions"></a>
-## 에이전트의 지시에 붙어있는 규칙
+## 상담원 지시사항에 붙여넣을 규칙
 
 ```markdown
 - Repos and owners: engine hooks -> MeitouClient (PR into fork); Rivalry Core -> RivalryCore (beta);
@@ -65,7 +61,7 @@
 ```
 
 <a id="prompt-template"></a>
-## 즉시 템플릿
+## 프롬프트 템플릿
 
 ```text
 Change: <what the player should see>

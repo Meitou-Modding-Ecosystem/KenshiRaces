@@ -1,16 +1,16 @@
 <a id="permanent-branch-policy-and-repository-onboarding"></a>
-# Ständige Branchpolitik und Aufbewahrungsanlage
+# Permanente Branch-Richtlinie und Repository-Onboarding
 
-Alle Meitou-Modding-Ecosystem-Rezeptorien nutzen die [Zentral permanente Politik](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md):
+Alle Meitou -Modding-Ecosystem-Repositories verwenden die [zentrale permanente Richtlinie](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md) :
 
-| Branchen | Anforderung |
+| Zweig | Erfordernis |
 | --- | --- |
-| Regelmäßige Branchen | Unschützte |
-| Beta | PR + durchlaufen CI; Super-Hersteller können die Überprüfung durchlaufen, einschließlich Selbsterkämpfe |
-| Haupt / Release | PR + durchsetzte CI + eine unabhängige Super-Mainstream-Anerkennung; keine Überprüfung bypass |
+| Gewöhnliche Zweige | Ungeschützt |
+| Beta | PR + vorbei an CI ; Super-Maintainer können die Überprüfung umgehen, einschließlich Selbstzusammenführungen |
+| Haupt- / Veröffentlichung | PR + Bestehen von CI + eine unabhängige Super-Maintainer-Genehmigung; Kein Review-Bypass |
 
-GitHub-Aktionen haben keine Bewertung. Beta-Team-Ausnahme gilt nur für Bewertungen: Pflicht PR/CI Die Sicherheit hat keinen Bypass. CODEOWNERS Es gibt keine zusätzlichen Genehmigungsanforderungen.
+GitHub Actions verfügt über keine Überprüfungsumgehung. Die Beta-Team-Ausnahme gilt nur für Bewertungen: Die obligatorische PR -/ CI -Sicherheit hat keinen Bypass. CODEOWNERS fügt keine zusätzliche Genehmigungspflicht hinzu.
 
-GitHub-Template kopieren Quelle, nicht Abteilungsregeln, Teamverträge, Umgebungen oder Geheimnisse. Die Konfigurationsdienste der GutenStructure enthüllen neue Organschlüsselungen pro Stunde, die dem Team zugreifen, wenn er fehlt. Um einen neuen Repo sofort zu konfigurieren, bitten Sie einen autorisierten GutenStructure-Händler, um den Arbeitsfluss dann auf die Hauptzielorganisation anzuwenden. Dies tun, bevor Sie sich auf geschützte Mischungen oder Veröffentlichungen verlassen. Halten Sie die Release-Vorbereitschaft im Caller und überprüfen Sie die tatsächlichen Durchgänge; erwartete Prüfungen ohne entsprechende Arbeitsflüsse werden für immer warten.
+GitHub-Vorlagen kopieren die Quelle, nicht Zweigregelsätze, Teamberechtigungen, Umgebungen oder Geheimnisse. GutenStructure s „Release-Branch-Schutz konfigurieren“ erkennt stündlich in Minute 17 neue öffentliche Organisations-Repositorys, weist dem Team-Repository Schreibzugriff zu, falls dieser fehlt, und wendet die Richtlinie an. Um ein neues Repo sofort zu konfigurieren, bitten Sie einen autorisierten GutenStructure -Betreuer, eine Vorschau anzuzeigen und diesen Workflow dann auf die Haupt- und Zielorganisation anzuwenden. Tun Sie dies, bevor Sie sich auf geschützte Zusammenführungen oder Veröffentlichungen verlassen. Behalten Sie Release readiness im Anrufer CI und überprüfen Sie die tatsächlichen Passläufe. erwartete Prüfungen ohne passenden Workflow warten ewig.
 
-Schaffung main/release von überprüften stabilen Quellen, wenn sie bereit sind; die Politik zielt auf sie, bevor sie existieren. Halten Sie die unveränderlichen zentralen Workflow-Pins, aktualisieren Sie sowohl den Release-Port als auch den Paketverlag durch PRs. Die private Ruhe erfordert separate plan/protection Validierung; kein Azure-Zugang wird durch Entdeckung erteilt. Die äußeren Plattformen bleiben in den Eigentumsbereichen und werden nie aus diesem Template kopiert.
+Erstellen Sie die Haupt-/Releaseversion aus der überprüften stabilen Quelle, wenn Sie fertig sind. Die Politik nimmt sie ins Visier, noch bevor sie existieren. Behalten Sie die unveränderlichen, überprüften zentralen Workflow-Pins dieser Vorlage bei und aktualisieren Sie sowohl das Release-Gate als auch den Paketherausgeber gemeinsam durch PRs. Private Repos erfordern eine separate Plan-/Schutzvalidierung; Durch die Erkennung wird kein Azure-Zugriff gewährt. Externe Plattformgeheimnisse verbleiben in Umgebungen, die dem Autor gehören, und werden niemals aus dieser Vorlage kopiert.

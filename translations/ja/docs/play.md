@@ -1,42 +1,41 @@
 <a id="build-and-run-locally"></a>
-# 地元で構築・実行
+# ローカルで構築して実行する
 
-建物 `Play` エンジンを構築し、このリポのすべてのモードをコピーし、モードとフレームをコピーします。 `meitou.lock.json` ゲームのモードフォルダーに名前を入れて、ゲームが始まります。 好きなツールを使用する:Visual Studio、VSコード、または同じ構造を実行します。
+Building `Play` builds the engine and every mod in this repo, copies the mods and the frameworks `meitou.lock.json` names into the game's mods folder, and then starts the game.好きなツールを使用してください: Visual Studio 、 VS Code 、またはターミナルはすべて同じビルドを実行します。
 
-3人とも必要です。NET 11 SDK () (し)`git clone --recurse-submodules <repo URL>`あるいは `git submodule update --init --recursive` 既存のクローンで。 建物がなくなったので、 `MEITOU001`その命令を呼ぶ。
+3 つすべてに が必要です。 NET 11 SDK とそのサブモジュールを含むクローン ( `git clone --recurse-submodules <repo URL>` 、または既存のクローンの `git submodule update --init --recursive` )。これらがないと、ビルドは `MEITOU001` で停止し、そのコマンドに名前が付けられます。
 
 <a id="visual-studio"></a>
-## ビジュアルスタジオ
+## Visual Studio
 
-1. リポのオープン `.slnx`.
-2. セット `Play` プログラミング プロジェクト で は あり た 場合 で あり ませ ん で でしょ う (右クリック > スタートアップ プロジェクションとして設定)
-3. スタートボタンの隣のダウンロードボタンでプロフィールを選択し、F5(デボグ)またはCtrl+F5を押します。
+1. リポジトリの `.slnx` を開きます。
+2. Visual Studio が選択しなかった場合は、 `Play` をスタートアップ プロジェクトとして設定します (右クリック > [スタートアップ プロジェクトとして設定])。
+3. [スタート] ボタンの横にあるドロップダウンでプロファイルを選択し、F5 (デバッグ) または Ctrl+F5 を押します。
 
-| プロフィール | レース | 使用するために |
+| プロフィール | 走る | 用途: |
 | --- | --- | --- |
-| ゲーム(エンジン + モード) | `MeitouClient.exe` このレポの建て方 `engine` サブモジュール | テストおよびモードのデビュー; モードコードのパラスポイント |
-| Meitou Launcher(インストール) | メイツからインストールされたリリースは、 `%LOCALAPPDATA%\MeitouLauncher\current\meitou-launcher.exe` | モードリストまたはロードオーダーを変更し、新しいモードコードを信頼する |
+| プレイ (エンジン + MOD) | このリポジトリの `engine` サブモジュールからビルドされた `MeitouClient.exe` | MOD のテストとデバッグ。改造コードのブレークポイントが機能する |
+| Meitou ランチャー（インストール済み） | Meitou リリース、 `%LOCALAPPDATA%\MeitouLauncher\current\meitou-launcher.exe` からインストールされたランチャー | MOD リストまたはロード順序を変更し、新しい MOD のコードを信頼する |
 
 <a id="vs-code"></a>
-## コード対コード
+## VS Code
 
-1. C# Dev Kit 拡張子をインストールする (VS コードがそれを提供すると、フォルダーを開きます。 `.vscode/extensions.json`).
-2. リポのルートフォルダーを開く(ファイル > オープンフォルダー)
-3. 実行とデブグ(Ctrl+Shift+D) **ゲーム(エンジン + モード)**F5 プレス 最初に起動し、エンジンを起動させる。
-デブギャー:モードコード作業における分断点
-4. インストールされた起動器:ターミナル > Run Task > **Meitou Launcher(インストール)**. それは構築し、配置し、その後、ラウンチャーを開きます。
+1. C# Dev Kit 拡張機能をインストールします (フォルダーを開くと VS Code が提供します。これは `.vscode/extensions.json` にあります)。
+2. リポジトリのルート フォルダーを開きます ([ファイル] > [フォルダーを開く])。
+3. 実行してデバッグ (Ctrl+Shift+D) し、**再生 (エンジン + MOD)** を選択して、F5 を押します。最初にビルドとデプロイが行われ、次にデバッガーでエンジンが開始されます。改造コードのブレークポイントは機能します。
+4. インストールされているランチャーの場合: [ターミナル] > [タスクの実行] > ** Meitou ランチャー (インストール済み)**。ビルドしてデプロイし、ランチャーを開きます。
 
-ターミナル > Run Build タスク (Ctrl+Shift+B) は構築およびリリースのみです。
+[ターミナル] > [ビルド タスクの実行] (Ctrl+Shift+B) はビルドとデプロイのみを行います。
 
 <a id="without-an-editor"></a>
-## 編集者なし
+## エディターなしで
 
-右クリック `tools\Build.ps1` > **・PowerShellで実行**. 作り出し、作り出したように `dotnet build` (サブモジュールを最初にチェックすると、それらが欠けている) ウィンドウを開いて、結果を読むことができます。 `-Test` テストも実施しています。 `-Run` その後、エンジンが始まる。
+[ `tools\Build.ps1` ] を右クリックし、[**PowerShell で実行**] をクリックします。 `dotnet build` のようにビルドしてデプロイし (サブモジュールが欠落している場合は最初にサブモジュールをチェックアウトします)、結果を読めるようにウィンドウを開いたままにします。 `-Test` もテストを実行します。  次に、 `-Run` がエンジンを始動します。
 
 <a id="terminal"></a>
 ## ターミナル
 
-レポのルートフォルダー:
+リポジトリのルート フォルダー内:
 
 ```powershell
 dotnet build
@@ -44,9 +43,9 @@ dotnet test
 dotnet run --project Play
 ```
 
-- `dotnet build` そして、 `dotnet test` すべてのプロジェクトを構築し、テストする。
-- `dotnet run --project Play` エンジンを構築し、起動し、「Play(エンジン+モード)」プロフィールを開始します。
-- 代わりにインストールされたラウンサーを使用するには、エンジンを起動せずに、ラウンサーを開きます。
+- `dotnet build` と `dotnet test` は、すべてのプロジェクトをビルドしてテストします。
+- `dotnet run --project Play` は、エンジン (「Play (エンジン + MOD)」プロファイル) をビルド、デプロイ、および開始します。
+- 代わりにインストールされているランチャーを使用するには、エンジンを起動せずにデプロイし、ランチャーを開きます。
 
 ```powershell
 dotnet build Play
@@ -54,26 +53,21 @@ dotnet build Play
 ```
 
 <a id="what-a-play-build-does"></a>
-## ゲーム構築とは
+## プレイビルドの機能
 
-- モードを見つける:各トップレベルのフォルダーを保有する `meitou.json` そして、 `<Folder>/<Folder>.csproj`. 新しいモードは変更は必要ありません。 `Play`.
-- エンジンを構築し、それぞれのモード **リリース**どんな設定でも選んだ: デビューエンジンが構築する 投げ込み `TaskStart.CheckStarts`
-キャラクターの仕事が始まるとき。 モードコードのスケッチがまだ動作します(リリースシンボルが配置されています)。
-- 各モードのコピー `<Mod>.dll`, `<Mod>.pdb` そして、 `meitou.json` へへへへ `<Kenshi>\mods\<Mod>\`. ゲームを閉じる:実行ゲームがDLLを閉じます。
-- 各フレームワークをコピーする `meitou.lock.json` ダウンロードされたリリースフォルダーから、 `<Kenshi>\mods\<Framework>\`あるいは、構築された枠組み
-クローン([local-development.md](local-development.md)) 生産を構築する。
-- データ発電機(データ生成機)`<Mod>.Data/<Mod>.Data.csproj`走るように `<generator> <Kenshi folder> <output .mod>`(得られる) `<Mod>.mod`
-インストールされたゲームから生成され、失敗は構築警告であり、モードはそれなしで実行されます。 すべてのモードが空っぽになります。 `<Mod>.mod` 既存のものは、決して置き換えられません。
-- モードとA `Structures` フォルダーが得られる `.glb` 入力されたフォルダーに輸入されたモデル、記録を組み合わせた。 `.mod`
-([structures.md](structures.md)).
-- モードフォルダーが存在しない場合、何もコピーされず、構築はそう言います。
-- ラウンチャーのプレイボタンは、このレポのエンジンではなく、インストールされたリリースを開始します。 閉じて「Play(エンジン + モード)」を実行して、
-建設する
+- MOD を検索します: `meitou.json` および `<Folder>/<Folder>.csproj` を含むすべての最上位フォルダー。新しい MOD では `Play` を変更する必要はありません。
+- 選択した構成に関係なく、**リリース**でエンジンと各 MOD をビルドします。MOD がキャラクターのタスクを開始すると、デバッグ エンジン ビルドは `TaskStart.CheckStarts` をスローします。改造コード内のブレークポイントは引き続き機能します (リリース シンボルが展開されます)。
+- 各 MOD の `<Mod>.dll` 、 `<Mod>.pdb` 、 `meitou.json` を `<Kenshi>\mods\<Mod>\` にコピーします。まずゲームを閉じます。実行中のゲームにより DLL がロックされます。
+- `meitou.lock.json` の各フレームワークを、ダウンロードしたリリース フォルダーから `<Kenshi>\mods\<Framework>\` にコピーします。または、クローンからビルドされたフレームワーク ([local-development.md](local-development.md) )] の場合は、そのビルド出力をコピーします。
+- データ ジェネレーターを備えた MOD ( `<Mod>.Data/<Mod>.Data.csproj` 、 `<generator> <Kenshi folder> <output .mod>` として実行) は、インストールされたゲームから生成された `<Mod>.mod` を取得します。失敗はビルド警告であり、MOD は警告なしでデプロイされます。他のすべての MOD には空の `<Mod>.mod` がありません。既存のものは決して置き換えられません。
+- `Structures` フォルダーを持つ MOD は、その `.glb` モデルをそのデプロイされたフォルダーにインポートし、レコードはその `.mod` ([ Structures.md](structures.md) )] にマージされます。
+- mods フォルダーが存在しない場合、何もコピーされず、ビルドにその旨が表示されます。
+- ランチャーの [再生] ボタンは、このリポジトリのエンジンではなく、インストールされているリリースを開始します。それを閉じて、「Play (engine + mods)」を実行してビルドをテストします。
 
 <a id="settings"></a>
 ## 設定
 
-欠点:ゲーム `C:\Program Files (x86)\Steam\steamapps\common\Kenshi`モードフォルダー `<game>\mods`. 変えようと、The `KENSHI_PATH` 環境変数(エンジンも読むので、両方とも同意する) `Meitou.user.props` レポのルートフォルダー:
+デフォルト: ゲーム `C:\Program Files (x86)\Steam\steamapps\common\Kenshi` 、mods フォルダー `<game>\mods` 。 `KENSHI_PATH` 環境変数を使用してこれらを変更するか (エンジンも環境変数を読み取るため、両方が一致します)、またはリポジトリのルート フォルダー内の git 無視された `Meitou.user.props` 内のマシンごとに変更します。
 
 ```xml
 <Project>
@@ -87,11 +81,10 @@ dotnet build Play
 </Project>
 ```
 
-エンジンはゲームを自分で見つけます(Steam)。 `KenshiDir` 単に設定する `Meitou.user.props` それに渡されていない。 VS コードのリリース構成はリリースエンジンを実行します; ↓ ↓ `.vscode/launch.json` 地元で変化する場合 `PlayConfiguration`.
+エンジンは独自にゲームを見つけます (Steam)。 `Meitou.user.props` にのみ設定された `KenshiDir` は渡されません。 VS Code の起動構成はリリース エンジンを実行します。 `PlayConfiguration` を変更する場合は、 `.vscode/launch.json` をローカルで編集します。
 
 <a id="first-run"></a>
-## 最初の走り
+## 最初の実行
 
-- インストールされたラウンサーを一度実行する(上記の方法のいずれか):モードとそのフレームワークを有効にし、コードを信頼します。
-- コピーが「アクセス拒否」で失敗した場合、ユーザーに変更権を与える `Kenshi\mods` (セキュリティ > セキュリティ) 代わりにあなたの
-編集者は管理者。
+- インストールしたランチャーを 1 回実行します (上記のいずれかの方法)。MOD とそのフレームワークを有効にし、そのコードを信頼します。
+- コピーが「アクセス拒否」で失敗した場合は、エディタを管理者として実行するのではなく、 `Kenshi\mods` に対する変更権限をユーザーに付与します ([プロパティ] > [セキュリティ])。

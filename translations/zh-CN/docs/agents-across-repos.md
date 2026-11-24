@@ -1,45 +1,41 @@
 <a id="agents-working-across-repos"></a>
-# 工作者在休闲中
+# 跨存储库工作的代理
 
-给一个代理,每个转换,告诉它哪个部分,并在依赖的顺序:发动机,然后框架,然后模式。 每個變化,而不是每個轉換。
+为每个涉及更改的存储库提供一个代理，告诉它哪个存储库拥有每个部分，并让它按照依赖顺序放置 PR：引擎，然后是框架，然后是 mod。每次更改一个代理会话，而不是每个存储库一个代理会话。
 
 <a id="give-the-agent-the-repos"></a>
-## 让代理人休息
+## 向代理提供存储库
 
-- **天空云:** 每個重點都必須附上會議或項目。 代理人把它们一边克隆,并在自己的分支上工作。
-在每一个。
-- **您的PC(远程控制):** 以便在文件夹中的克隆 [local-development.md](local-development.md). 代理人也可以做什么
-云会不会,如 `gh repo create`.
+- **云会话：** 每个存储库必须附加到会话或项目。代理并排克隆它们，并在每个分支各自的分支上工作。
+- **您的 PC （远程控制）：** [local-development.md](local-development.md) 文件夹中的克隆。代理还可以执行云会话无法执行的操作，例如 `gh repo create` 。
 
 <a id="where-each-part-goes"></a>
-## 每個地方都會走
+## 每个部分去哪里
 
-| 改變 | 休息 | PR 入口 |
+| 改变 | 回购协议 | PR 进 |
 | --- | --- | --- |
-| 发动机(事件、保存字段、命令) | MeitouClient | `fork` |
-| 雷达 雷达 API 或行为 | 里瓦利 | `beta` |
-| 物流核心(节点、边缘、所有者、库存、运输) | 物流中心 | `beta` |
-| 战争乐队(战斗场景,没有故事或角色) | 战争 | `beta` |
-| 直前 直前 | 巴斯特前 | `beta` |
-| 一个模式代码,数据发明器,测试,DOCS | 此分類上一篇: Mod's Repo | `beta` |
-| 共享 CI,包装,释放门,锁定目标 | 天文结构 | `beta` |
+| 引擎挂钩（事件、保存字段、命令） | MeitouClient | `fork` |
+| Rivalry Core API 或行为 | 竞争核心 | `beta` |
+| 物流核心（节点、边缘、所有者、库存、运输） | 物流核心 | `beta` |
+| 战争编排（后勤作战场景，无故事或人物） | 战争编排 | `beta` |
+| 韧皮前线近战 | 韧皮前线 | `beta` |
+| mod 的代码、数据生成器、测试、文档 | 该模组的回购协议 | `beta` |
+| 共享 CI ，包装，释放门，锁定目标 | GutenStructure | `beta` |
 
 <a id="order-for-a-change-that-crosses-repos"></a>
-## 命令交往休息的变化
+## 跨存储库的更改订单
 
-1. 引进PR `fork`混合了。 发动机点只移动到上流发布标签,因此需要等待的框架和模式的PR
-( )VlcekM/MeitouClient释放变革。 到目前为止,将对发动机的分支建立在本地([local-development.md](local-development.md#change-the-engine-and-a-mod-together)).
-2. 框架 PR 使变革(并移动其 `engine` 到释放的,它有需要的东西),合并到 `beta`. 以便出版
-这是Beta预告片。
-3. 移动的PR模式 `meitou.lock.json` 以此为主, `engine` 到锁的发动机承诺),合并到 `beta`.
-4. 框架发布后,将推广和标签:一个模式 PR 将锁转到 `<framework>-v<version>`.
+1. 发动机 PR 变为 `fork` ，合并。引擎引脚仅移动到上游发布标签，因此需要它的框架和 mod PR 会等到上游 (VlcekM/ MeitouClient ) 发布更改。在那之前，在本地针对引擎分支进行构建（[local-development.md](local-development.md#change-the-engine-and-a-mod-together) ）。
+2. 进行更改的框架 PR （并将其 `engine` 引脚移至具有所需内容的版本），合并到 `beta` 中。 CI 发布 Beta 预发行版。
+3. Mod PR 将 `meitou.lock.json` 移动到该预发布（并将 `engine` 移动到锁的引擎提交），并合并到 `beta` 中。
+4. 框架版本升级并标记后：将锁移至 `<framework>-v<version>` 的 mod PR 。
 
-每个人都把它放在前面。 破裂的框架 API 改变框架的较小版本,并列出每个依赖者;每个依赖者的自己的锁定。
+每个 PR 都链接它前面的一个。一个破坏性的框架 API 更改会影响框架的次要版本并列出每个依赖的存储库；每个依赖者都有自己的锁 PR 。
 
-在一个链条上,步骤2重复一次,上下:一个物流核心改变,然后一个战争组织的PR锁定,物流建立和发布自己的,然后Bast前的PR锁。
+在一条链中，步骤 2 每层自上而下重复一次：后勤核心变更落地，然后战争编排 PR 锁定后勤构建并发布自己的，然后堡垒前线 PR 锁定两者。
 
 <a id="rules-to-paste-into-the-agents-instructions"></a>
-## 规则 按代理人的指示
+## 粘贴到代理指令中的规则
 
 ```markdown
 - Repos and owners: engine hooks -> MeitouClient (PR into fork); Rivalry Core -> RivalryCore (beta);
@@ -65,7 +61,7 @@
 ```
 
 <a id="prompt-template"></a>
-## 即时 template
+## 提示模板
 
 ```text
 Change: <what the player should see>

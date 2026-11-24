@@ -1,121 +1,109 @@
 <a id="structures-from-3d-models"></a>
 # Strukturen aus 3D-Modellen
 
-Einstellen A `.glb` Das Modell (Meshy, Hi3D, ein Blender Export) in Ihrem Mod `Structures` Die Folge und das Spielbau verwandeln sie in ein Gebäude, das Sie aus dem Baumenü setzen können: Ogre-Mess, komprimierte Texturen, Kollision und die Aufzeichnungen `<Mod>.mod`. nicht FCS, keine Blender, keine Installation erforderlich für die Einfuhr selbst.
+Legen Sie ein `.glb` -Modell ( Meshy , Hi3D , ein Blender -Export) in den `Structures` -Ordner Ihres Mods und der Play-Build verwandelt es in ein Gebäude, das Sie über das Build-Menü platzieren können: Ogre-Mesh, komprimierte Texturen, Kollision und die Datensätze in `<Mod>.mod` . Kein FCS , kein Blender , keine Spielinstallation für den Import selbst erforderlich.
 
 <a id="quick-start"></a>
-## Schnell beginnt
+## Schnellstart
 
-1. Geben Sie das Modell `<Mod>/Structures/`und g. `MyMod/Structures/watch-tower.glb`.
-2. Optionell: Neben ihm `watch-tower.json` Mit jedem [Einrichtungen](#settings)und g.
+1. Legen Sie das Modell in `<Mod>/Structures/` ab, z.B. `MyMod/Structures/watch-tower.glb` .
+2. Optional: daneben `watch-tower.json` mit beliebigen [Einstellungen](#settings) , z.B.
 
    ```json
    { "name": "Watch Tower", "height": 6, "materials": 20, "description": "A lookout of scrap and rope." }
    ```
 
-3. Erstellen und installieren wie gewöhnlich ([play.md](play.md)• Visual Studio F5, VS Code F5, oder `dotnet run --project Play`. Das Gebäude zeigt einen
-`Structure ...` Linie pro Modell.
-4. In dem Spiel: Bauen von Menüs, Kategorie `EXTERIOR` (oder dem, den du gesetzt hast) Mit dem Default `"research": "start"` Es ist seit Beginn des
-Spiel, und in bestehenden Sparen auch (Meitou arbeitet aus der fertigen Forschung, die immer `_Default Start`).
-5. Das Modell, sein `.json` und `Structures/ids.json` (Wie auf der ersten Einfuhr geschrieben) Die erzeugten Dateien erzeugen Ausgang und sind nicht
-Verpflichtet ist.
+3. Erstellen und bereitstellen Sie wie gewohnt ([play.md](play.md) ): Visual Studio F5, VS Code F5 oder `dotnet run --project Play` . Das Build-Protokoll zeigt eine `Structure ...` -Zeile pro Modell.
+4. Im Spiel: Build-Menü, Kategorie `EXTERIOR` (oder die von Ihnen festgelegte). Mit dem Standard- `"research": "start"` ist es vom Start eines Spiels an bekannt, und auch in vorhandenen Speicherungen ( Meitou berechnet Freischaltungen aus der abgeschlossenen Forschung, die immer `_Default Start` umfasst).
+5. Übernehmen Sie das Modell, seine `.json` und `Structures/ids.json` (beim ersten Import geschrieben). Die generierten Dateien sind Build-Ausgaben und werden nicht festgeschrieben.
 
-Ohne Spiele: `dotnet run --project tools/StructureImport -- <Mod>/Structures <Kenshi>/mods/<Mod>`.
+Ohne Spiel: `dotnet run --project tools/StructureImport -- <Mod>/Structures <Kenshi>/mods/<Mod>` .
 
 <a id="settings"></a>
-## Die Settings
+## Einstellungen
 
-Alle Optionen (`<model>.json`, Kommentare erlaubt; ein unbekanntes Name ist ein Fehler, so dass Typos nicht unnachmerkt gehen).
+Alles optional ( `<model>.json` , Kommentare erlaubt; ein unbekannter Name ist ein Fehler, sodass Tippfehler nicht unbemerkt bleiben).
 
-| Setzen | Default | Bedeutung |
+| Einstellung | Standard | Bedeutung |
 | --- | --- | --- |
-| `name` | Datei Name , `-`/`_` als Räume | Name im Baumenü |
-| `description` | `""` | Erstellen von Menü Text |
-| `height` | Die eigene Größe des Modells | Fertighöhung in Metern; das Modell ist gleichmäßig zu ihm geschnitten. AI-Modelle kommen in arbiträren Größen, so setzen Sie dies |
-| `sink` | `0` | Meter in den Boden fallen (schützt es vor, auf Schlössern zu schwimmen) |
-| `yaw` | `0` | Grade drehen sich um die vertikale Axe |
-| `category` | `EXTERIOR` | Die Liste der Menü (`building category`Das Spiel ist (`BUILDINGS`, `CAMPING`, `FARMING`... oder ein neuer Name |
-| `group` | `""` | `building group`: Gebäude teilen ein sind Varianten eines Eingangs |
-| `materials` | `5` | Bauausgaben kostet es |
-| `buildSpeed` | `2` | `build speed mult` (Spielstände 5, Häuser 1 bis 2) |
-| `research` | `start` | `start`: von Anfang an bekannt; `none`Nichts wird es (eine eigene Aufzeichnung macht) enthüllen oder eine RESEARCH String ID und e.g. `96564-rebirth.mod` |
-| `placement` | `outdoor` | `outdoor`, `indoor` oder `both` |
-| `createsTown` | `true` | Die Einrichtung außerhalb einer Stadt beginnt mit einem Outpost. |
-| `collision` | `mesh` | `mesh` (eine vereinfachte Kopie des Modells) `box` (Sie sind die Grenzbox) oder `none` (Sie gehen durch sie) |
-| `collisionTriangles` | `2000` | Die meisten Dreieckstücke `mesh` Kollision hält (12 bis 50 000) |
-| `textureSize` | `2048` | größte Texturseite in Pixeln (eine Leistung von zwei, bei maximal 8192) |
+| `name` | Dateiname, `-` / `_` als Leerzeichen | Namen im Build-Menü |
+| `description` | `""` | Menütext erstellen |
+| `height` | Eigengröße des Models | Fertighöhe in Metern; das Modell wird gleichmäßig darauf skaliert. AI -Modelle gibt es in beliebigen Größen, also stellen Sie diese ein |
+| `sink` | `0` | Meter im Boden versenkt (verhindert das Aufschwimmen an Hängen) |
+| `yaw` | `0` | Grad um die vertikale Achse gedreht |
+| `category` | `EXTERIOR` | Build-Menükategorie ( `building category` ): das Spiel ( `BUILDINGS` , `CAMPING` , `FARMING` , ...) oder ein neuer Name |
+| `group` | `""` | `building group` : Gebäude, die sich einen Eintrag teilen, sind Varianten eines Eintrags |
+| `materials` | `5` | Baumaterialien es kostet |
+| `buildSpeed` | `2` | `build speed mult` (die Zelte 5 des Spiels, die Häuser 1 bis 2) |
+| `research` | `start` | `start` : von Anfang an bekannt; `none` : nichts entsperrt es (Ihre eigenen Aufzeichnungen schon); oder eine RESEARCH -String-ID, z. B. `96564-rebirth.mod` |
+| `placement` | `outdoor` | `outdoor` , `indoor` oder `both` |
+| `createsTown` | `true` | Wenn man es außerhalb einer Stadt platziert, entsteht ein Außenposten |
+| `collision` | `mesh` | `mesh` (eine vereinfachte Kopie des Modells), `box` (sein Begrenzungsrahmen) oder `none` (durchgehen) |
+| `collisionTriangles` | `2000` | die meisten Dreiecke behält die `mesh` -Kollision bei (12 bis 50.000) |
+| `textureSize` | `2048` | größte Texturseite in Pixel (eine Zweierpotenz, höchstens 8192) |
 
 <a id="item-models"></a>
-## Artikel Modelle
+## Artikelmodelle
 
-Ein Modell eines Objekts in `<Mod>/ItemModels/` Stattdessen (`Structures` Das würde ein Gebäude machen). Der Einfuhr schreibt seine Messe und seine Texturen neben den Strukturen und MATERIAL_SPECS_CLOTHING Aufzeichnung: Ihr Mod ITEM Die Aufzeichnungen weisen darauf hin. Das Gebäude zeigt einen `Item ...` Line per Model mit den Namen zu verwenden.
+Fügen Sie stattdessen das Modell eines Gegenstands in `<Mod>/ItemModels/` ein ( `Structures` würde daraus ein Gebäude machen). Der Import schreibt sein Netz und seine Texturen neben die Strukturen und einen MATERIAL_SPECS_CLOTHING -Datensatz. Der ITEM -Datensatz Ihres Mods zeigt dann auf sie. Das Build-Protokoll zeigt eine `Item ...` -Zeile pro Modell mit den zu verwendenden Namen.
 
-1. `MyMod/ItemModels/lantern.glb`Optionell `lantern.json`: `{ "size": 0.3 }`.
-2. In Ihrem Element-Register (Datengenerator oder Datenphase) setzen Sie fest:
+1. `MyMod/ItemModels/lantern.glb` , optional `lantern.json` : `{ "size": 0.3 }` .
+2. Legen Sie in Ihrem Artikeldatensatz (Datengenerator oder Datenphase) Folgendes fest:
 
-Das ist die Wertschätzung des
+| Feld | Wert |
    | --- | --- |
-| `mesh` und `ground mesh` (Filenamen) Die `<mod>_<model>.mesh`und g. `mymod_lantern.mesh` | | `material` (Referenz) Die `<950000 + 100 × block>-<Mod>.mod`Block von `ItemModels/ids.json`und g. `950000-MyMod.mod` |
+| `mesh` und `ground mesh` (Dateinamen) | `<mod>_<model>.mesh` , z.B. `mymod_lantern.mesh` | | `material` (Referenz) | `<950000 + 100 × block>-<Mod>.mod` , Block aus `ItemModels/ids.json` , z.B. `950000-MyMod.mod` |
 
-Schauen Sie sich das Material zuerst an (`GameDatabase.Find`Und halten Sie den Blick, wenn es fehlt: eine freie Zip, und Tests, die das Spiel ohne die eingesetzte Modus lesen, haben Sie es nicht.
-3. Das Modell, sein `.json` und `ItemModels/ids.json`.
+Schlagen Sie zuerst das Material nach ( `GameDatabase.Find` ) und behalten Sie das Aussehen des Ersatzes bei, wenn es fehlt: Eine veröffentlichte Zip-Datei und Tests, die das Spiel ohne den bereitgestellten Mod lesen, sind nicht vorhanden.
+3. Übernehmen Sie das Modell, seine `.json` und `ItemModels/ids.json` .
 
-| Setzen | Default | Bedeutung |
+| Einstellung | Standard | Bedeutung |
 | --- | --- | --- |
-| `name` | Datei Name , `-`/`_` als Räume | Der Name des Materialregisteres |
-| `size` | Die eigene Größe des Modells | die längste Seite in Metern; das Modell ist gleichmäßig zu ihm skaliert |
-| `yaw` | `0` | Grade drehen sich um die vertikale Axe |
-| `textureSize` | `1024` | größte Texturseite in Pixeln (eine Leistung von zwei, bei maximal 8192) |
+| `name` | Dateiname, `-` / `_` als Leerzeichen | der Name des Materialdatensatzes |
+| `size` | Eigengröße des Models | längste Seite in Metern; das Modell wird gleichmäßig darauf skaliert |
+| `yaw` | `0` | Grad um die vertikale Achse gedreht |
+| `textureSize` | `1024` | größte Texturseite in Pixel (eine Zweierpotenz, höchstens 8192) |
 
-- Ein Material pro Element (ein ITEM Namen 1 `material`); das Modell steht auf seinem niedrigsten Punkt, zentralisiert, wie das Spiel-Objekt-Messen tun.
-- Das Spiel zieht ein Element auf den Boden, in einer Hand und in einem Auto-Ikon mit `mesh` (`ground mesh` Erst auf der Erde) und
-MATERIAL_SPECS_CLOTHING Seine `material` Die Namen des Motors `docs/formats/runtime-materials.md` „Kallern“ `WorldObjectLayout.ItemMesh`).
-- Die Inventory-Ikon wird vom Modell abgeholt, es sei denn, die Aufzeichnungen `auto icon image` Falsch und seine eigene `icon`.
+- Ein Material pro Artikelmodell (der ITEM nennt einen `material` ); Das Modell steht auf seinem tiefsten Punkt, zentriert, wie es bei den Item-Meshs des Spiels der Fall ist.
+- Das Spiel zeichnet einen Gegenstand auf dem Boden, in einer Hand und in einem Auto-Symbol mit seinem `mesh` ( `ground mesh` zuerst auf dem Boden) und dem MATERIAL_SPECS_CLOTHING mit seinem `material` -Namen (Motor `docs/formats/runtime-materials.md` „Anrufer“, `WorldObjectLayout.ItemMesh` ).
+- Das Inventarsymbol wird aus dem Modell gezogen, es sei denn, der Datensatz setzt `auto icon image` auf „false“ und seinen eigenen `icon` .
 
 <a id="getting-a-good-model"></a>
-## Ein gutes Modell zu bekommen
+## Ein gutes Modell bekommen
 
-- Fragen Sie Meshy oder Hi3D Für A PBR- texturierte Modelle und herunterladen als GLB. Ein paar Dutzende von Tausenden von Dreieckern sind reich; die Log-Flagge sind ein Modell
-Über 150.000 Schneiden Sie das Polycount, wählen Sie die Größe und verkürzen Sie die Texturen: [model-prep.md](model-prep.md).
-- Das Vordergrund des Modells zeigt +Z in der Datei (glTFÜbereinkommen); Verwendung `yaw` Um es zu drehen.
-- Jedes Material wird zu seinem eigenen Teil. Generatoren geben in der Regel eine; bei maximal 49.
-- Das Modell steht auf seinem niedrigsten Punkt, zentralisiert.
+- Fragen Sie Meshy oder Hi3D nach einem PBR -texturierten Modell und laden Sie es als GLB herunter. Ein paar Zehntausend Dreiecke sind ausreichend; Das Protokoll markiert ein Modell mit mehr als 150.000. Polycount reduzieren, Größe auswählen und Texturen verkleinern: [model-prep.md](model-prep.md) .
+- Die Vorderseite des Modells zeigt in der Datei auf +Z (Konvention von glTF); Verwenden Sie `yaw` , um es zu drehen.
+- Jedes Material wird zu einem eigenen Teil. Generatoren geben normalerweise einen ab; höchstens 49.
+- Das Modell steht auf seinem tiefsten Punkt, zentriert.
 
 <a id="what-it-writes"></a>
 ## Was es schreibt
 
-In der eingesetzten Mod-Folder (`<Kenshi>/mods/<Mod>/`):
+In den bereitgestellten Mod-Ordner ( `<Kenshi>/mods/<Mod>/` ):
 
-- `structures/<mod>_<model>.mesh` (ein für das Material, `_1`, `_2`, ... wenn mehrere): Ogre `[MeshSerializer_v1.8]`, Position, normal, UV und
-tangent mit handedness in w, die layout des spiels eigener baum.
-- `structures/<mod>_<model>_d.dds`, `_n.dds`, `_m.dds`: diffuse (BC3), normal (BC1, BC3 wenn abgeschnitten), metallische (BC1), mit Mips.
-- `structures/<mod>_<model>_col.xml`Die Kollision ist.
-- Für ein Element Modell: `structures/<mod>_<model>.mesh` und seine Texturen, keine Kollision.
-- Die Aufzeichnungen werden eingeführt `<Mod>.mod` Neben dem, was in ihm enthalten wird, werden die Aufzeichnungen eines Datengenerators gespeichert; eine frühere Import wird ersetzt:
-BUILDING, eine BUILDING_PART und MATERIAL_SPEC Das Material und die Unlock (die Forschung) `enable buildings` Das Gebäude gewinnt; eine MATERIAL_SPECS_CLOTHING Nach dem Modell.
+- `structures/<mod>_<model>.mesh` (einer pro Material, `_1` , `_2` , ... wenn mehrere): Ogre `[MeshSerializer_v1.8]` , Position, Normal, UV und Tangente mit Händigkeit in w, das Layout der spieleigenen Gebäudenetze.
+- `structures/<mod>_<model>_d.dds` , `_n.dds` , `_m.dds` : diffus (BC3), normal (BC1, BC3 beim Ausschneiden), Metall (BC1), mit Mips.
+- `structures/<mod>_<model>_col.xml` : die Kollision.
+- Für ein Artikelmodell: `structures/<mod>_<model>.mesh` und seine Texturen, keine Kollision.
+- In `<Mod>.mod` zusammengeführte Datensätze neben allem anderen darin (die Datensätze eines Datengenerators bleiben erhalten; die eines früheren Imports werden ersetzt): ein BUILDING , ein BUILDING_PART und MATERIAL_SPEC pro Material und die Freischaltung (der `enable buildings` der Forschung erhält das Gebäude); ein MATERIAL_SPECS_CLOTHING pro Artikelmodell.
 
-Die Dateinamen beginnen mit dem Namen des Mods, da das Spiel Ressourcen durch den Dateinamen über jedes Mods zeigt.
+Dateinamen beginnen mit dem Namen des Mods, da das Spiel in jedem Mod nach Ressourcen anhand des bloßen Dateinamens sucht.
 
-Die Rekord-IDs sind `<n>-<Mod>.mod` mit n von 900000 bis m m m m, m m m und m m m ein Blok von 100 pro Modell (Bau +0, Teile +1, Materialien +50); Artikelmodelle zählen von 950000 (Material +0) in `ItemModels/ids.json`. `Structures/ids.json` hält den Block jedes Modells so, dass sich die IDs nie ändern: ein Speicher nennt ein gepostetes Gebäude durch das ID seines Rekords. Keine Bearbeitung oder Entfernung eines Blocks; das Entfernen eines Modells entfernt sein Gebäude aus den Spielen, die es platziert.
+Datensatz-IDs sind `<n>-<Mod>.mod` mit n von 900000 aufwärts, ein Block von 100 pro Modell (Gebäude +0, Teile +1, Materialien +50); Artikelmodelle zählen ab 950000 (Material +0) in `ItemModels/ids.json` . `Structures/ids.json` behält den Block jedes Modells bei, sodass sich die IDs nie ändern: Ein Speicherort benennt ein platziertes Gebäude anhand der ID seines Datensatzes. Bearbeiten oder entfernen Sie niemals einen Block; Durch das Entfernen eines Modells wird sein Gebäude aus den Spielen entfernt, in denen es platziert wurde.
 
 <a id="facts-the-import-relies-on"></a>
-## Der Einfuhr beruht auf
+## Fakten, auf die sich der Import stützt
 
-Die Datei des Spiels werden überprüft (Kenshi 1.0.68 Daten) und mit den Lesern des Motors:
+Mit den Dateien des Spiels ( Kenshi 1.0.68-Daten) und mit den Lesegeräten der Engine verglichen:
 
-- **Einheiten**: die Welt-Einheit ist 0,1 m, Y up; glTF ist Meter, Y auf, so dass die Skala 10 ist (die Kollision-Dateien des Spiels verwenden die Gravitation 98.1).
-- **Materialien**Der Ausblick eines Gebäudes ist sein MATERIAL_SPEC (`texture map`, `normal map`, `metalness map`, `material type`Nicht die Messe
-Material Name (Motor) `docs/formats/runtime-materials.md`). Das Spiel der Schatten (`data/materials/deferred/objects.hlsl`Lesen diffuse RGB als Farbe und A als Gloss (Times) `specular mult`• Normaler RGB als die tangent-space normal und a als die cut-out mask (`material type` 1, `alpha threshold`) Metall aus R. Der Import schreibt gloss = 1 - glTF Schmutz und Metallität von glTFder blauen Kanal; glTF MASK und BLEND Es wird ein Cut-out.
-- **Tangentum**: der Schwerpunkt des Schaches binormal ist cross(Tangent, normal) × w, und auf den Messen des Spiels zeigt es entlang der Erhöhung V (**Überprüft**:
-`prisoner_pole.mesh` 86 von 86 Dreieck `Camp_tent1.mesh` 1858 und 1865). glTF Normale Karten grünen Bild (verringert V), so dass die Einfuhr der grünen Kanal dreht und die Art des Spiels festlegt.
-- **Kollision**: ein Teil der `xml collision` ist eine PhysX NxuStream2 Datei; eine manuell geschriebene minimale Datei-Ladung (die `Camp_tent1_COL.xml` Es ist
-Ein Kasten) PhysX ist Z up und die Spielkarte (x, y, z) zu (x, z, -y), so dass der Import die Punkte des Teils als (x, -z, y) schreibt. Der Dreieck geht wie reine Punkte und Dreieck; das Spiel kocht es auf, Meitou las es wie es ist (Motor) `docs/formats/collision.md`).
-- **Felder**: BUILDING und BUILDING_PART mit dem vollständigen Feldset des Spiels Camping Tint 1 (`18026-small_changes_otto.mod`So nichts
-Es ist ein Verfall; nicht `functionality`Es ist also ein reines Gebäude.
-- **Unlockung**: ein Gebäude befindet sich im Baumenü, sobald eine fertige Forschung es in `enable buildings`Jedes Spiel beginnt mit
-`_Default Start` (`5359-gamedata.base`) abgeschlossen ist. **Überprüft** Mit dem Motoren `GameDatabase`, `ResearchGate` und `BuildingBuildData` Über das Basisspiel sowie einen importierten Modus: Die Strukturen sind unbegrenzt und die Kosten für die Baumausrüstung.
+- **Einheiten**: Die Welteinheit ist 0,1 m, Y aufwärts; glTF ist Meter, Y nach oben, daher beträgt die Skala 10 (die Kollisionsdateien des Spiels verwenden die Schwerkraft 98,1).
+- **Materialien**: Das Aussehen eines Gebäudeteils ist sein MATERIAL_SPEC ( `texture map` , `normal map` , `metalness map` , `material type` ), nicht der Materialname des Netzes (Motor `docs/formats/runtime-materials.md` ). Der Gebäude-Shader des Spiels ( `data/materials/deferred/objects.hlsl` ) liest diffuses RGB als Farbe und A als Glanz (mal `specular mult` ), normales RGB als Tangentenraumnormale und A als Ausschnittmaske ( `material type` 1, `alpha threshold` ), Metallheit aus R. Der Import schreibt Glanz = 1 – glTF-Rauheit und Metallheit aus dem blauen Kanal von glTF; glTF MASK und BLEND werden zum Ausschnitt.
+- **Tangenten**: Die Binormale des Shaders ist Kreuz(Tangente, Normal) × w, und auf den Netzen des Spiels zeigt sie entlang zunehmender V (**Verifiziert**: `prisoner_pole.mesh` 86 von 86 Dreiecken, `Camp_tent1.mesh` 1858 von 1865). glTF-Normalkarten zeigen grün nach oben im Bild (verringerndes V), sodass der Import den grünen Kanal umdreht und den Weg des Spiels festlegt.
+- **Kollision**: `xml collision` eines Teils ist eine PhysX NxuStream2-Datei; Eine handgeschriebene minimale Datei lädt (das `Camp_tent1_COL.xml` des Spiels ist eine Box). PhysX ist Z hoch und das Spiel ordnet (x, y, z) auf (x, z, -y) zu, sodass der Import die Punkte des Teils als (x, -z, y) schreibt. Das Dreiecksnetz besteht aus einfachen Punkten und Dreiecken. Das Spiel kocht es unter Last, Meitou liest es so wie es ist (Engine `docs/formats/collision.md` ).
+- **Felder**: BUILDING und BUILDING_PART verfügen über den gesamten Feldsatz des Campingzelts 1 ( `18026-small_changes_otto.mod` ) des Spiels, sodass nichts auf eine Standardeinstellung zurückfällt; kein `functionality` , also ein schlichtes Gebäude.
+- **Freischalten**: Ein Gebäude befindet sich im Baumenü, sobald eine abgeschlossene Forschung es in `enable buildings` auflistet; Jedes Spiel beginnt mit `_Default Start` ( `5359-gamedata.base` ) und endet. **Verifiziert** mit den Engines `GameDatabase` , `ResearchGate` und `BuildingBuildData` gegenüber dem Basisspiel plus einem importierten Mod: Die Strukturen sind freigeschaltet und kosten Baumaterialien wie festgelegt.
 
 <a id="not-covered-yet"></a>
-## noch nicht abgedeckt
+## Noch nicht abgedeckt
 
-Innenräume, Türen, Funktionen (Speicher, Betten, Werkstatt) und Drehpartikel.
+Innenräume, Türen, Funktionen (Aufbewahrung, Betten, Basteln) und Drehteile.

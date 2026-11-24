@@ -1,12 +1,12 @@
 <a id="depending-on-kenshi-races"></a>
-# Dependendo da Kenshi raças
+# Dependendo de Kenshi Races
 
-Como um código mod usa Kenshi As raças e animações de Races, adiciona subraças a elas ou adiciona suas próprias raças (`kenshi.races`). Regras de carregamento: motor [modding-dependencies.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md). Uma habilidade de agente passa pelos mesmos passos: [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md).
+Como um mod de código usa corridas e animações de Kenshi Races , adiciona sub-raças a elas ou adiciona suas próprias corridas ( `kenshi.races` ). Regras do carregador: mecanismo [modding-dependencies.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md) . Uma habilidade do agente segue as mesmas etapas: [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md) .
 
 <a id="1-reference-it-at-build-time-never-ship-it"></a>
-## 1. Referir-se ao tempo de construção, nunca enviá-lo
+## 1. Faça referência no momento da construção, nunca envie
 
-Em um repo feito de [MeitouModTemplado](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate)e adicionar Kenshi Races' release Zip para `meitou.lock.json`O edifício descarga, verifica e refere-se a ele, e o jogo o desloca. Todos os valores são derivados das notas da publicação (`kenshi-races-v<version>`):
+Em um repositório feito a partir de [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate) , adicione Kenshi Races ' release zip a `meitou.lock.json` ; a compilação baixa, verifica e faz referência a ela, e o Play a implanta. Cada valor vem das notas de lançamento ( `kenshi-races-v<version>` ):
 
 ```json
 {
@@ -20,12 +20,11 @@ Em um repo feito de [MeitouModTemplado](https://github.com/Meitou-Modding-Ecosys
 }
 ```
 
-- O seu `engine/` Pin mover para aquele motor composta (GutenStructure
-[Figura do framework lock](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md)).
-- Nunca lista `KenshiRaces.dll` Em seu próprio `assemblies`O carregado `kenshi.races` servem os tipos.
+- Seu pino `engine/` se move para esse commit do mecanismo ( GutenStructure [framework lock](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md) ).
+- Nunca liste `KenshiRaces.dll` em seu próprio `assemblies` ; o `kenshi.races` carregado atende aos tipos.
 
 <a id="2-declare-it-in-meitoujson"></a>
-## 2. Declaração em `meitou.json`
+## 2. Declare em `meitou.json`
 
 ```json
 "apiVersion": 2,
@@ -33,13 +32,13 @@ Em um repo feito de [MeitouModTemplado](https://github.com/Meitou-Modding-Ecosys
 "dependencies": [{ "id": "kenshi.races", "version": ">=0.4.0 <0.5.0" }]
 ```
 
-- Antes de 1.0 uma versão menor pode quebrar o APIEm seguida, coloque a faixa no próximo menor.
-- Kenshi As raças devem estar acima do seu modo de `data/mods.cfg` (O arranjo do lançador faz isso), então seus registros existem quando a sua fase de dados está em andamento.
+- Antes de 1.0, uma versão secundária pode quebrar o API , então limite o intervalo na próxima versão secundária.
+- Kenshi Races deve ficar acima do seu mod em `data/mods.cfg` (o Arrange do inicializador faz isso), para que seus registros existam quando sua fase de dados for executada.
 
 <a id="3-use-its-races"></a>
 ## 3. Use suas corridas
 
-Conheça os IDs em `Races` dos seus registros, por exemplo, na sua fase de dados:
+Consulte os ids em `Races` de seus registros, por exemplo. na sua fase de dados:
 
 ```csharp
 public void EditData(ModDataContext c)
@@ -51,19 +50,16 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- RACEs ( em submissão ) `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`.
-- CHARACTERs (Não é possível recrutá-lo) `LeomaMaleCharacter`, `LeomaFemaleCharacter`, `CrevanMaleCharacter`, `CrevanFemaleCharacter`,
-`CrabmanCharacter`, `CrabQueenCharacter`.
-- RACE_GROUPs (a corrida do editor) `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`. `Races.Recruit` É a palavra “junto a nós”.
-- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen` (`Subrace`e) e `Races.Groups` Descreva os A mesa é:
-[Kenshi-races.md “Razes”](kenshi-races.md#races).
+- RACEs (sub-raças): `Races.LeomaRace` , `CrevanRace` , `CrabmanRace` , `CrabQueenRace` .
+- PERSONAGENS (sem kit, recrutáveis): `LeomaMaleCharacter` , `LeomaFemaleCharacter` , `CrevanMaleCharacter` , `CrevanFemaleCharacter` , `CrabmanCharacter` , `CrabQueenCharacter` .
+- RACE_GROUPs (as corridas do editor): `LeomaGroup` , `CrevanGroup` , `CrabfolkGroup` . `Races.Recruit` é o "Junte-se a nós". falar.
+- `Races.Leoma` , `Crevan` , `Crabman` , `CrabQueen` ( `Subrace` ) e `Races.Groups` os descrevem. Tabela: [kenshi-races.md "Corridas"](kenshi-races.md#races) .
 
 <a id="4-add-a-subrace-or-a-race"></a>
-## 4. Adicione uma subraça ou uma corrida
+## 4. Adicione uma sub-raça ou corrida
 
-1. Cada um dos seus corpos tem a [A corrida importação](race-import.md) de um clone KenshiRaces, para o seu mod `items/races` Com sua própria voz
-(`mymod_<character>`; `female` como a rig para um corpo feminino), e comete os arquivos. Adicionar `!/<Mod>/items/races/*.mesh` e `!/<Mod>/items/races/*.dds` Para `.gitignore`.
-2. Descreva-o e adicione seus registros na fase de dados do seu mod (as implementações de entrada `IModDataPhase`):
+1. Coloque cada corpo com o [race import](race-import.md) de um clone KenshiRaces, no `items/races` do seu mod com sua própria haste ( `mymod_<character>` ; `female` como equipamento para um corpo feminino) e envie os arquivos. Adicione `!/<Mod>/items/races/*.mesh` e `!/<Mod>/items/races/*.dds` a `.gitignore` .
+2. Descreva-o e adicione seus registros na fase de dados do seu mod (a entrada implementa `IModDataPhase` ):
 
 ```csharp
 static readonly Subrace GhostCrab = new("ghostcrab", "30-MyMod.mod",
@@ -77,17 +73,16 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- Uma subraça com a `Male` e a `Female` O corpo recebe a armadura de gênero do editor; com um é gênero único e cada personagem a usa.
-- `RaceRecords.Add(c, subrace, talk)`: `talk` É a DIALOGUE ID para os personagens, `null` Para ninguém.
-- Uma corrida do seu: `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` Adicione o RACE_GROUP e todas as subrasas.
-- Substâncias são `playable` com Kenshi Apresentação de limites de editora (`RaceRecords.EditorLimits`); `FillRace` / `FillCharacter` Preencha os registros que você adiciona
-Você mesmo (`c.Add`Quando você quiser mudar mais campos depois.
-- Os IDs são seus: registros de seus próprios `.mod` Nome do arquivo.
+- Uma sub-raça com corpo `Male` e `Female` recebe a seta de gênero do editor; com um é do mesmo gênero e todos os personagens o usam.
+- `RaceRecords.Add(c, subrace, talk)` : `talk` é um ID DIALOGUE para os personagens, `null` para nenhum.
+- Uma corrida própria: `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` adiciona o RACE_GROUP e todas as sub-raças.
+- As sub-raças são `playable` com limites do editor Kenshi Races ( `RaceRecords.EditorLimits` ); `FillRace` / `FillCharacter` preenche os registros que você mesmo adiciona ( `c.Add` ) quando deseja alterar mais campos posteriormente.
+- Os ids são seus: registros do seu próprio nome de arquivo `.mod` .
 
 <a id="6-play-its-animations"></a>
-## 6. Jogue suas animações
+## 6. Reproduza suas animações
 
-Cada clipe de [animations.md](animations.md) está ligado a cada corrida sobre os esqueletos humanos do jogo (uma subraça adicionada com `RaceRecords` Também), então um mod só o joga. Um movimento de combate de modo simples é apenas animação, perguntada sempre que o jogo não joga nada de si próprio (motor) docs/modding.md“O combate se move” :
+Cada clipe de [animations.md](animations.md) está vinculado a todas as raças dos esqueletos humanos do jogo (uma sub-raça adicionada com `RaceRecords` também), então um mod apenas o reproduz. Um movimento de combate mod é apenas uma animação, solicitado sempre que o jogo não executa nada próprio (engine docs/modding.md, "Movimentos de combate"):
 
 ```csharp
 CombatTechnique? _wave;
@@ -99,11 +94,11 @@ public void Initialize(ModContext c)
 }
 ```
 
-- `Waving` É seu: um barato, thread-safe, leitura-somente resposta de seu próprio estado, o progresso do clipe de 0 a 1 (secundos / `clip.Length`).
-- Os clipes estão no local e estão em frente; um clipe mais curto do que o seu movimento mantém o seu último quadro, a menos que você abraça o progresso.
-- As animações precisam apenas da dependência (segundos 1 e 2), sem registros próprios.
+- `Waving` é seu: uma resposta barata, segura para threads e somente leitura do seu próprio estado, o progresso do clipe de 0 a 1 (segundos / `clip.Length` ).
+- Os clipes são reproduzidos no lugar e voltados para frente; um clipe mais curto que o seu movimento mantém seu último quadro, a menos que você finalize o progresso.
+- As animações precisam apenas da dependência (seções 1 e 2), sem registros próprios.
 
 <a id="5-check-it"></a>
-## 5. Verifique isso
+## 5. Verifique
 
-`dotnet build`O jogo, em seguida, F10 **Kenshi Race: A Race** A sua corrida é com a sua messa, e `spawn <name>` espalhou isso. Nome de subrases e CHARACTERs Uma palavra inferior, por exemplo. `ghostcrab`Então a consola os leva sem citações; o editor de um novo jogo lista sua subraça.
+`dotnet build` , seus testes, então no jogo F10 ** Kenshi Races : races** lista sua raça com sua malha e `spawn <name>` a gera. Nomeie sub-raças e PERSONAGENS com uma palavra minúscula, por ex. `ghostcrab` , então o console os aceita sem aspas; o editor de um novo jogo lista sua sub-raça.

@@ -1,45 +1,41 @@
 <a id="agents-working-across-repos"></a>
-# Agentes que trabalham em repouso
+# Agentes trabalhando em repositórios
 
-Dê um agente para cada toque de mudança, diga que o repo possui cada parte, e tem o PR em ordem de dependência: o motor, então o quadro, então o mod. Uma sessão por mudança, não uma por repo.
+Dê a um agente cada repositório que a mudança toca, diga qual repositório possui cada parte e faça com que ele receba PRs em ordem de dependência: mecanismo, depois estrutura e, em seguida, mod. Uma sessão de agente por mudança, não uma por repositório.
 
 <a id="give-the-agent-the-repos"></a>
-## Dê ao agente o repouso
+## Dê ao agente os repositórios
 
-- **Sessão em nuvem:** Cada repo deve ser anexado à sessão ou ao projeto. O agente clona-os de lado para lado e trabalha em sua própria rama
-em cada um.
-- **O seu PC (Controle remoto):** Os clones nas folhas de [local-development.md](local-development.md). O agente também pode fazer
-As sessões de nuvem não podem ser, como `gh repo create`.
+- **Sessão na nuvem:** cada repositório deve ser anexado à sessão ou projeto. O agente os clona lado a lado e trabalha em sua própria filial em cada um.
+- **Seu PC (Controle Remoto):** os clones nas pastas de [local-development.md](local-development.md) . O agente também pode fazer o que as sessões na nuvem não podem, como `gh repo create` .
 
 <a id="where-each-part-goes"></a>
-## Onde cada parte vai
+## Para onde vai cada parte
 
-| Mudança | Repo | PR em |
+| Mudar | Repositório | PR em |
 | --- | --- | --- |
-| Motor hook (evento, campo salvo, comando) | MeitouClient | `fork` |
-| Rivalry Core API ou comportamento | Rivalho | `beta` |
-| Logística Core (node, bordas, proprietários, estoque, transporte) | LogísticaCore | `beta` |
-| Orquestração de guerra (escenários de luta sobre a logística, sem história ou personagens) | WarOrquestração | `beta` |
-| Bast Frente Melee | O BastFront | `beta` |
-| Código de um mod, gerador de dados, testes, docs | O repo do mod | `beta` |
-| CI compartilhado, embalagem, porta de libertação, alvo de fechamento | Gutenstrutura | `beta` |
+| Gancho do mecanismo (evento, campo salvo, comando) | MeitouClient | `fork` |
+| Rivalry Core API ou comportamento | RivalidadeCore | `beta` |
+| Núcleo Logístico (nós, arestas, proprietários, estoque, transportes) | Núcleo de Logística | `beta` |
+| Orquestração de Guerra (cenários de combate em logística, sem história ou personagens) | Orquestração de Guerra | `beta` |
+| Corpo a corpo Bast Front | BastFront | `beta` |
+| Código de um mod, gerador de dados, testes, documentos | o repositório desse mod | `beta` |
+| CI compartilhado, embalagem, portão de liberação, alvo de bloqueio | GutenStructure | `beta` |
 
 <a id="order-for-a-change-that-crosses-repos"></a>
-## Uma mudança que atravessa o descanso
+## Pedido de uma mudança que cruza repositórios
 
-1. O PR entra em `fork`E que se misturam. Os pins de motor vão apenas para os tags de lançamento, então os PRs de frame e modos que precisam esperar até
-Apresentação (VlcekM/MeitouClientlibertação da mudança. Até então, construir contra a faixa de motor localmente ([local-development.md](local-development.md#change-the-engine-and-a-mod-together)).
-2. PR Framework que faz a mudança (e move a `engine` Pin para a libertação que tem o que precisa), unido em `beta`. Publicou
-A premiação beta.
-3. O PR que se move `meitou.lock.json` A partir daí, a primeira (e `engine` para o motor do lock compromete), misturado em `beta`.
-4. Após o lançamento do framework é promovido e marcado: um mod PR que mova o bloqueio para `<framework>-v<version>`.
+1. Motor PR em `fork` , mesclado. Os pinos do mecanismo se movem apenas para tags de lançamento upstream, portanto, os PRs de estrutura e mod que precisam deles aguardam até que o upstream (VlcekM/ MeitouClient ) libere a alteração. Até então, construa localmente na ramificação do mecanismo ([local-development.md](local-development.md#change-the-engine-and-a-mod-together) ).
+2. Framework PR que faz a alteração (e move seu pino `engine` para a versão que tem o que precisa), mesclado em `beta` . CI publica o pré-lançamento beta.
+3. Mod PR que move `meitou.lock.json` para esse pré-lançamento (e `engine` para o commit do mecanismo de bloqueio), mesclado em `beta` .
+4. Após o lançamento do framework ser promovido e marcado: um mod PR que move o bloqueio para `<framework>-v<version>` .
 
-Todos os PR ligam-se a um antes. Um quadro quebrantado API A mudança é a versão mais pequena do quadro e lista cada repo; cada dependente recebe seu próprio PR.
+Cada PR liga o anterior. Uma alteração significativa na estrutura API ultrapassa a versão secundária da estrutura e lista todos os repositórios dependentes; cada dependente recebe seu próprio bloqueio PR .
 
-Em uma cadeia, o passo 2 repete uma vez por camada, para baixo: uma mudança de logística, então uma Orquestração de PR fecha que a Logística cria e publica, então a Bast Front PR fecha ambos.
+Em uma cadeia, a etapa 2 se repete uma vez por camada, de cima para baixo: uma mudança no Núcleo de Logística ocorre, em seguida, uma Orquestração de Guerra PR bloqueia essa construção de Logística e publica a sua própria, e então a Frente Bast PR bloqueia ambos.
 
 <a id="rules-to-paste-into-the-agents-instructions"></a>
-## Regras para inserir nas instruções do agente
+## Regras para colar nas instruções do agente
 
 ```markdown
 - Repos and owners: engine hooks -> MeitouClient (PR into fork); Rivalry Core -> RivalryCore (beta);
@@ -65,7 +61,7 @@ Em uma cadeia, o passo 2 repete uma vez por camada, para baixo: uma mudança de 
 ```
 
 <a id="prompt-template"></a>
-## Temporada Imediatamente
+## Modelo de prompt
 
 ```text
 Change: <what the player should see>

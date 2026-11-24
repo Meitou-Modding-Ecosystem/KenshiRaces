@@ -1,9 +1,9 @@
 <a id="publishing-to-the-steam-workshop"></a>
-# スティーブ・ワークショップ
+# Steam ワークショップに公開する
 
-あなたは、モードのワークショップのアイテムを一度、手元に、リリースから作成します。 ZIP. その後、 [ワークショップウォッチャー](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/workshop-watcher.md) Windows PC で実行され、新しい GitHub リリースがスケジュールでその項目にアップロードされます。 すべてのステップは、 **Windows パワーシェル** あなたのPCでは、アイテムを所有するSteamアカウントにサインインします。
+MOD のワークショップ アイテムは、リリース ZIP から手動で 1 回作成します。その後、[Workshop Watcher](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/workshop-watcher.md) が Windows PC 上で実行され、新しい GitHub リリースがスケジュールに従ってそのアイテムにアップロードされます。すべての手順は、アイテムを所有する Steam アカウントにサインインした PC 上の **Windows PowerShell** で実行されます。
 
-コマンドはこれらの値を使用します。 PowerShell ウィンドウで 1 回設定し、モードのフォルダー名( `release.yml` `mod-folder`初版版:
+コマンドではこれらの値が使用されます。 Mod のフォルダー名 ( `release.yml`  `mod-folder` など) とその最初のリリース バージョンを使用して、PowerShell ウィンドウごとに 1 回設定します。
 
 ```powershell
 $Mod = "ExampleMod"
@@ -13,21 +13,20 @@ $Watcher = "$env:LOCALAPPDATA\WorkshopWatcher\WorkshopWatcher.ps1"
 ```
 
 <a id="1-release-the-mod"></a>
-## 1. モードをリリース
+## 1.MODをリリースします
 
-1. 合併 `beta` 入り口 `main`開いてPRを組み合わせる。 `main` 入り口 `release` ([部門](../README.md#branches)).
-2. リリースワークフローを待つ `release`. 合併を表す `<slug>-v<version>` バージョンは、 `meitou.json` (例えば、
-`example-mod-v0.1.0`解放を創り出し、 `<Mod>-<version>.zip` そして、 `<Mod>-<version>.zip.sha256`. たとえば、前回の試合で失敗した場合、 `powershell -ExecutionPolicy Bypass -File tools\Tag-Release.ps1` 手でタグを押す(`-DryRun` コマンドを押すだけです。
+1. `beta` を `main` にマージし、次に `main` から PR を開いて `release` にマージします ([ブランチ](../README.md#branches) ])。
+2. `release` のリリース ワークフローを待ちます。マージ `<slug>-v<version>` に `meitou.json` のバージョン (たとえば、 `example-mod-v0.1.0` ) をタグ付けし、 `<Mod>-<version>.zip` および `<Mod>-<version>.zip.sha256` でリリースを作成します。タグ付けする前にその実行が失敗した場合、 `powershell -ExecutionPolicy Bypass -File tools\Tag-Release.ps1` はタグを手動でプッシュします ( `-DryRun` はコマンドを出力するだけです)。
 
 <a id="2-install-workshop-watcher-and-sign-in-to-steam"></a>
-## 2. ワークショップウォッチャーをインストールしてSteamにサインイン
+## 2. Workshop Watcherをインストールし、Steamにサインインします。
 
-フォロー [インストール](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/workshop-watcher.md#install) ワークショップウォッチャーガイド インストラクターがSteamCMDをダウンロード `%LOCALAPPDATA%\WorkshopWatcher\steamcmd` あなたのSteamアカウントにサインインします。 尋ねるとき `Add a mod to watch now?`答えは `n`物件はまだ存在しない。 ワークショップウォッチャーがすでにインストールされている場合、このステップを中止します。
+[Workshop Watcher ガイドの](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/workshop-watcher.md#install) をインストールします。インストーラーは steamcmd を `%LOCALAPPDATA%\WorkshopWatcher\steamcmd` にダウンロードし、Steam アカウントにサインインします。 `Add a mod to watch now?` と尋ねられたら、 `n` と答えます: アイテムはまだ存在しません。 Workshop Watcher がすでにインストールされている場合は、この手順をスキップしてください。
 
 <a id="3-prepare-the-items-files"></a>
-## 3. アイテムのファイルの準備
+## 3. アイテムのファイルを準備する
 
-1. リリースダウンロード ZIP そして、それを包み込む。 `$Work`:
+1. リリース ZIP をダウンロードし、 `$Work` に解凍します。
 
    ```powershell
    New-Item -ItemType Directory -Force $Work
@@ -35,13 +34,13 @@ $Watcher = "$env:LOCALAPPDATA\WorkshopWatcher\WorkshopWatcher.ps1"
    Expand-Archive "$Work\$Mod.zip" -DestinationPath $Work
    ```
 
-`$Work\$Mod` 今は持っている `$Mod.dll`, `meitou.json` そして、 `$Mod.mod`.
-2. アイテムのプレビュー画像を保存する `$Work\preview.png`: PNG あるいは JPG1MB未満、平方メートル(512×512ピクセル)
+`$Work\$Mod` は、 `$Mod.dll` 、 `meitou.json` 、および `$Mod.mod` を保持するようになりました。
+2. 項目のプレビュー画像を `$Work\preview.png` : PNG または JPG 、 1 MB の下、正方形 (512 x 512 ピクセルで機能します) として保存します。
 
 <a id="4-write-the-vdf"></a>
-## 4. 書く → VDF
+## 4. VDF を書き込みます
 
-steamcmd は、アイテムを a から作成します。 VDF ファイル: テキストファイル `"key" "value"` 内側のカップルA `"workshopitem"` ブロック この命令は、 `$Work\create.vdf` 満たされた道のり 編集 `title` そして、 `description` まず:
+steamcmd は、 VDF ファイル ( `"workshopitem"` ブロック内の `"key" "value"` ペアのテキスト ファイル) からアイテムを作成します。このコマンドは、パスが入力された `$Work\create.vdf` を書き込みます。最初に `title` と `description` を編集します。
 
 ```powershell
 $Dir = $Work.Replace('\', '/')
@@ -60,56 +59,55 @@ $Dir = $Work.Replace('\', '/')
 "@ | Set-Content "$Work\create.vdf" -Encoding ASCII
 ```
 
-| キー | 価値 |
+| 鍵 | 価値 |
 | --- | --- |
-| `appid` | `233860`, KenshiSteam アプリ ID |
-| `publishedfileid` | `0` 新しいアイテムを作る。 既存の項目を更新する他の番号 |
-| `contentfolder` | ファイルがアイテムのコンテンツになるフォルダーへの完全なパスワード:モードフォルダーから ZIP親ではない。 |
-| `previewfile` | プレビュー画像への完全な道 |
-| `visibility` | `0` 公衆、 `1` 友人だけ、 `2` プライベート、 `3` 未分類 まずは、 `2` 項目のページで変更します。 |
-| `title` | ワークショップの名称です。 始まるのは、 `[Meitou]`他のMeitouコードモードと同じように。 |
-| `description` | テキストの一行。 次のページに詳細を書き、その後(Steam のサポート) BBCode). |
-| `changenote` | 項目の変更のタブの最初の入力です。 |
+| `appid` | `233860` 、 Kenshi の Steam アプリ ID 。 |
+| `publishedfileid` | `0` は新しいアイテムを作成します。他の番号を指定すると、その既存の項目が更新されます。 |
+| `contentfolder` | ファイルがアイテムのコンテンツとなるフォルダーへのフルパス: ZIP の mod フォルダーであり、その親ではありません。 |
+| `previewfile` | プレビュー画像へのフルパス。 |
+| `visibility` | `0` 公開、 `1` 友達のみ、 `2` 非公開、 `3` 非公開。 `2` から始めて、アイテムのページで変更します。 |
+| `title` | ワークショップ上のアイテムの名前。他の Meitou コード MOD と同様に、 `[Meitou]` で開始します。 |
+| `description` | 1 行のテキスト。その後、アイテムのページに完全な説明を書きます (Steam の BBCode をサポートしています)。 |
+| `changenote` | アイテムの「変更ノート」タブの最初のエントリ。 |
 
-価値観のルール:
+値の規則:
 
-- は  で は あり ます が(`C:/Users/me/Downloads/...`). バックグラスはダブル(`C:\\Users\\me\\...`).
-- 値段内の二重引用が書かれています。 `\"`.
-- ファイルを保存 ASCII.
+- パスはスラッシュ ( `C:/Users/me/Downloads/...` ) で記述します。バックスラッシュは 2 つ付ける必要があります ( `C:\\Users\\me\\...` )。
+- 値内の二重引用符は `\"` と書かれます。
+- ファイル ASCII を保持します。
 
 <a id="5-create-the-item"></a>
-## 5. アイテムを作る
+## 5. アイテムを作成する
 
 ```powershell
 & "$env:LOCALAPPDATA\WorkshopWatcher\steamcmd\steamcmd.exe" +login <steam account name> +workshop_build_item "$Work\create.vdf" +quit
 ```
 
-`<steam account name>` Steam にサインインしている名前は、インストラクターに与えられたように、Steamcmd は保存されたログインを使用しています。 パスワードまたは Steam Guard コードを要求する場合は、実行してください。 `powershell -ExecutionPolicy Bypass -File $Watcher login`そして、再びコマンドを実行します。
+`<steam account name>` は、インストーラーに与えられた、Steam へのサインインに使用する名前です。 steamcmd は保存されたログインを使用します。パスワードまたは Steam ガード コードを要求された場合は、 `powershell -ExecutionPolicy Bypass -File $Watcher login` を実行してから、コマンドを再度実行します。
 
-レースは終わり `Success.`. スティーブ > プロフィール > ワークショップ アイテムを開き、次に番号をコピーします。 `?id=` 彼女の URLこれがアイデンティティです。
+実行は `Success.` で終了します。 Steam > プロフィール > ワークショップ アイテムを開き、新しいアイテムを開き、その URL の `?id=` の後の番号をコピーします。つまり、アイテム ID です。
 
 <a id="6-finish-the-items-page"></a>
-## 6. 記事のページを終了
+## 6. アイテムのページを終了します
 
-Steam の記事のページ:
+Steam のアイテムページ:
 
-1. Steam Workshop の法的契約を受け入れ、ページにバナーが表示されます。 あなたがそれを行うまで、あなただけがアイテムを見ることができます。
+1. ページにバナーが表示されている場合は、Steam ワークショップの法的契約に同意します。そうするまでは、そのアイテムはあなただけが見ることができます。
 2. 完全な説明を書きます。
-3. 他のワークショップモード(例えば、Rivalry Core)が必要になります。 **Add/Remove 必要な物件**. サブスクリプションは、
-こちらもサブスクリプションをお願いします。 依存性は、 `meitou.json` `dependencies`ラウンチャーの順序は、最初にロードの順序に置かれます。
-4. 見通しを変更する **公務員** ページが完成したとき。
+3. MOD に別のワークショップ MOD (Rivalry Core など) が必要な場合は、**必要なアイテムの追加/削除** の下に追加します。その後、購読者も購読するように求められます。 `meitou.json`  `dependencies` の依存関係により、ランチャーのアレンジによりロード順序の最初に配置されます。
+4. ページの準備ができたら、公開設定を **パブリック** に変更します。
 
 <a id="7-watch-the-item"></a>
-## 7. 項目を見る
+## 7. アイテムを見る
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File $Watcher add-item -Repo <owner>/<repo> -AppId 233860 -ItemId <item ID> -Asset "$Mod-*.zip"
 powershell -ExecutionPolicy Bypass -File $Watcher run -DryRun
 ```
 
-乾燥は、すでにアップロードされている現在のリリースを報告します。 削除 `$Work` 一度やったら。
+ドライランでは、現在のリリースがすでにアップロードされていると報告されます。 `$Work` が削除されたら、削除します。
 
 <a id="each-release-after-that"></a>
-## その後、それぞれの解放
+## その後のリリースごとに
 
-ステップ1 に記載されているようにモードをリリースします。 次回のウォーチャーの予定通りダウンロード ZIPそのチェック SHA-256 と エピソード に アップ し て 、 リリース タイトル と リンク を 変更 ノート と し ます。 アイテムのタイトル、説明、見通しを決して変更する:アイテムページの変更。 `powershell -ExecutionPolicy Bypass -File $Watcher status` スケジュール、次のラウンド、そして最後のアップロードを表示します。
+ステップ 1 と同様に MOD をリリースします。ウォッチャーの次回のスケジュールされた実行では、 ZIP をダウンロードし、その SHA -256 をチェックして、リリース タイトルとリンクを変更ノートとしてアイテムにアップロードします。アイテムのタイトル、説明、プレビュー、表示設定は変更されません。アイテムのページで変更してください。 `powershell -ExecutionPolicy Bypass -File $Watcher status` には、スケジュール、次回の実行、最後のアップロードが表示されます。

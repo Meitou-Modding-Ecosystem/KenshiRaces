@@ -1,39 +1,33 @@
 <a id="animations"></a>
 # アニメーション
 
-Kenshi レースはアニメーション図書館を送り、レースのソースモデルのすべてのクリップ(Meshyアニメーションライブラリ、59クリップ)は、ゲームの男性と女性のスケールにリターゲットされ、それらのスケールのすべてのキャラクターは、人間、シェック、冬、スケール、および装備のレースをプレイすることができます。 モットーが遊ぶ Kenshi レース API ([depending-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations)).
+Kenshi Races にはアニメーション ライブラリが同梱されています。種族のソース モデル ( Meshy のアニメーション ライブラリ、59 個のクリップ) のすべてのクリップがゲームの男性と女性のスケルトンにリターゲットされているため、これらのスケルトン上の任意のキャラクター (人間、シェク、ハイバー、スケルトン、および適合した種族) が再生できます。 MOD は Kenshi Races および API ([dending-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations) ]) を通じてそれらを再生します。
 
 <a id="files-and-records"></a>
-## ファイルと記録
+## ファイルとレコード
 
-- `KenshiRaces/items/animations/kenshiraces_anims_male.skeleton` そして、 `_female.skeleton`: 各がゲームの骨のビートで始まります
-ビート(アニメーションファイルのトラックは骨のハンドルによって適用され、女性のハンドルの違い)は、その後、クリップは、30キーを秒で使用します。
-- ANIMATION_FILE `40-KenshiRaces.mod` (`AnimationRecords.File`二人の名前。 データの段階は、それを結びつける。 `animation files` 各レース
-誰の `male mesh` 下にあり `data/character/meshes/` 主人公(主人公)は、自分(じぶん)の身(み)を身(むか)め、`/items/races/`)と、 `RaceRecords.FillRace` 新たなサブレースに結びついて、依存者にも。
-- 障害者 COMBAT_TECHNIQUE クリップ(`100-` へへへへ `158-KenshiRaces.mod`名称の命令、 `anim name` = クリップ:障害者ですので、戦いはそれをピックしない。
-モードはモード戦闘動作として演奏する(エンジン) docs/modding.md「闘争が動く」
+- `KenshiRaces/items/animations/kenshiraces_anims_male.skeleton` および `_female.skeleton` : それぞれ、ゲーム スケルトンのボーンからバイトごとに始まり (アニメーション ファイルのトラックはボーン ハンドルによって適用され、女性リグのハンドルは異なります)、次にクリップ、1 秒あたり 30 キーです。
+- ANIMATION_FILE `40-KenshiRaces.mod` ( `AnimationRecords.File` ) 両方の名前を付けます。データフェーズはそれを `animation files` あらゆる人種の `male mesh` 下にあります `data/character/meshes/` (独自のスケルトンを持つハイブ クイーンを除く)、またはフィットしたボディ ( `/items/races/` ）、 そして `RaceRecords.FillRace` それを新しいサブレース、つまり依存するサブレースにリンクします。
+- クリップごとに無効化された COMBAT_TECHNIQUE ( `100-` から `158-KenshiRaces.mod` 、名前順)、 `anim name` = クリップ: 無効化されているため、戦いは選択しません。 MOD はそれを MOD 戦闘移動として再生します (engine docs/modding.md、「戦闘移動」)。
 
 <a id="making-them"></a>
 ## 作る
 
-`tools/AnimationExport` A とともに [動作ラボ](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) クローン(`MOTIONLAB`デフォルト `../PZAKenshiMotionLab`)とゲームの `data/character/meshes`:
+`tools/AnimationExport` と [ Motion Lab ](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) クローン ( `MOTIONLAB` 、デフォルト `../PZAKenshiMotionLab` ) およびゲームの `data/character/meshes` :
 
-1. `python tools/AnimationExport/split.py <model.glb> <clips folder>` 原題:One Reference per Clip `Bip001` 改名の関連
-ミクサモの役割は、Motion Labが読む。 後期モデルは、以前のモデルに与えられたクリップを過小評価する。 LeomaSは最後です。
-2. 性別によって、 `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference
-<clip>.glb ...` (各クリップ):それらをゲームの体(約59分)にリターゲットします。
-3. パイソン tools/AnimationExport/export.py <out>/human_<gender>_rigged.glb <Gender>_skeleton.skeleton
-KenshiRaces/items/animations/kenshiraces_anims_<セックス>.スケルトン <クリップ>.json`: names them `kr_<clip lower case>` とファイルを書く。
+1. ソース モデルごとの `python tools/AnimationExport/split.py <model.glb> <clips folder>` : クリップごとに 1 つのリファレンス、 `Bip001` ジョイントの名前が Motion Lab が読み取る Mixamo ロールに変更されます。新しいモデルは、以前のモデルが提供したクリップを上書きします。男性の Leoma が最後になります。
+2. 性別ごとに、 `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference <clip>.glb ...` (すべてのクリップ): ゲーム本体にターゲットを変更します (59 で約 1 分)。
+3. `python tools/AnimationExport/export.py <out>/human_<gender>_rigged.glb <gender>_skeleton.skeleton KenshiRaces/items/animations/kenshiraces_anims_<gender>.skeleton <clips>.json` : `kr_<clip lower case>` という名前を付けてファイルを書き込みます。
 
-すべてのクリップは、ソースクリップ(旅行コラム、メートル)が移動した場所で、直線として取り出されます。 ゲームの前向きに、すべてのスウェーデン: 根のヤウは、ゲームのアイドルが行うように、結合ポーズの -90°と一致します(**検証**, `idle_stand_normal` で、 `male_skeleton.skeleton`). 新たなキャラクターは、そのラインも必要です。 `RaceAnimations`次の無料テクニカルID(159上)とその順番はこちら。
+すべてのクリップは所定の位置で再生されます。ソース クリップが移動した場所 (トラベル列、メートル)、ルートの地面の移動が直線として取り出され、揺れとボブが維持されます。すべてがゲームの前方を向いています。ゲーム自体のアイドルと同様に、ルートのヨーはバインド ポーズの -90 度に一致します (**検証済み**、 `male_skeleton.skeleton` の `idle_stand_normal` )。新しいクリップには、次の無料テクニック ID (159 以降) を含む `RaceAnimations` の行と、ここにその行が必要です。
 
 <a id="clips"></a>
 ## クリップ
 
-| クリップ | `RaceAnimations.` | テクニック | 源泉 | 秒間 | 旅行移行(m) |
+| クリップ | `RaceAnimations.` | 技術 | ソース | 秒 | 除去されたトラベル (m) |
 | --- | --- | --- | --- | --- | --- |
-| `kr_360_power_spin_jump` | `PowerSpinJump360` | `100-` | _360_パワー_スピン_ジャンプ | 3.00 | 2.5 |
-| `kr_alert` | `Alert` | `101-` | 警告 | 4.00 |  |
+| `kr_360_power_spin_jump` | `PowerSpinJump360` | `100-` | _360_Power_Spin_Jump | 3.00 | 2.5 |
+| `kr_alert` | `Alert` | `101-` | Alert | 4.00 |  |
 | `kr_all_night_dance` | `AllNightDance` | `102-` | All_Night_Dance | 8.17 |  |
 | `kr_angry_ground_stomp` | `AngryGroundStomp` | `103-` | Angry_Ground_Stomp | 1.37 |  |
 | `kr_angry_ground_stomp_2` | `AngryGroundStomp2` | `104-` | Angry_Ground_Stomp_2 | 1.77 |  |
@@ -46,8 +40,8 @@ KenshiRaces/items/animations/kenshiraces_anims_<セックス>.スケルトン <�
 | `kr_bicep_curl` | `BicepCurl` | `111-` | bicep_curl | 5.87 |  |
 | `kr_bicycle_crunch` | `BicycleCrunch` | `112-` | bicycle_crunch | 1.10 |  |
 | `kr_big_heart_gesture` | `BigHeartGesture` | `113-` | Big_Heart_Gesture | 6.17 |  |
-| `kr_block1` | `Block1` | `114-` | ブロック1 | 3.47 |  |
-| `kr_block2` | `Block2` | `115-` | ブロック2 | 1.60 |  |
+| `kr_block1` | `Block1` | `114-` | Block1 | 3.47 |  |
+| `kr_block2` | `Block2` | `115-` | Block2 | 1.60 |  |
 | `kr_breakdance_1990` | `Breakdance1990` | `116-` | Breakdance_1990 | 0.50 |  |
 | `kr_carry_heavy_object_walk_inplace` | `CarryHeavyObjectWalkInplace` | `117-` | Carry_Heavy_Object_Walk_inplace | 6.50 |  |
 | `kr_casual_walk` | `CasualWalk` | `118-` | Casual_Walk | 4.17 |  |
@@ -60,7 +54,7 @@ KenshiRaces/items/animations/kenshiraces_anims_<セックス>.スケルトン <�
 | `kr_climb_stairs` | `ClimbStairs` | `125-` | Climb_Stairs | 2.90 | 0.4 |
 | `kr_climb_up_rope` | `ClimbUpRope` | `126-` | Climb_Up_Rope | 2.57 | 0.2 |
 | `kr_confident_strut` | `ConfidentStrut` | `127-` | Confident_Strut | 2.67 |  |
-| `kr_counterstrike` | `Counterstrike` | `128-` | コントストライキ | 6.50 |  |
+| `kr_counterstrike` | `Counterstrike` | `128-` | Counterstrike | 6.50 |  |
 | `kr_fast_lightning` | `FastLightning` | `129-` | Fast_Lightning | 10.80 |  |
 | `kr_female_bend_over_pick_up_inspect` | `FemaleBendOverPickUpInspect` | `130-` | Female_Bend_Over_Pick_Up_Inspect | 3.80 |  |
 | `kr_flirty_strut_inplace` | `FlirtyStrutInplace` | `131-` | Flirty_Strut_inplace | 3.20 |  |
@@ -71,7 +65,7 @@ KenshiRaces/items/animations/kenshiraces_anims_<セックス>.スケルトン <�
 | `kr_kung_fu_punch` | `KungFuPunch` | `136-` | Kung_Fu_Punch | 7.30 | 1.6 |
 | `kr_monster_walk` | `MonsterWalk` | `137-` | Monster_Walk | 4.07 |  |
 | `kr_prone_reload` | `ProneReload` | `138-` | Prone_Reload | 6.40 |  |
-| `kr_running` | `Running` | `139-` | 走る | 0.60 |  |
+| `kr_running` | `Running` | `139-` | Running | 0.60 |  |
 | `kr_sit_cross_legged_on_floor` | `SitCrossLeggedOnFloor` | `140-` | Sit_Cross_Legged_on_Floor | 2.50 |  |
 | `kr_stand_and_chat` | `StandAndChat` | `141-` | Stand_and_Chat | 5.17 |  |
 | `kr_stand_and_drink` | `StandAndDrink` | `142-` | Stand_and_Drink | 8.87 |  |
@@ -86,7 +80,7 @@ KenshiRaces/items/animations/kenshiraces_anims_<セックス>.スケルトン <�
 | `kr_texting_walk` | `TextingWalk` | `151-` | Texting_Walk | 2.00 |  |
 | `kr_victory_fist_pump` | `VictoryFistPump` | `152-` | Victory_Fist_Pump | 1.50 |  |
 | `kr_walk_backward_with_gun_inplace` | `WalkBackwardWithGunInplace` | `153-` | Walk_Backward_with_Gun_inplace | 1.00 |  |
-| `kr_walking` | `Walking` | `154-` | 歩く | 1.00 |  |
+| `kr_walking` | `Walking` | `154-` | Walking | 1.00 |  |
 | `kr_walking_2_inplace` | `Walking2Inplace` | `155-` | walking_2_inplace | 1.17 |  |
 | `kr_walking_woman` | `WalkingWoman` | `156-` | Walking_Woman | 0.97 |  |
 | `kr_wall_push_jump_and_flip` | `WallPushJumpAndFlip` | `157-` | Wall_Push_Jump_and_Flip | 2.00 | 1.3 |

@@ -1,12 +1,12 @@
 <a id="depending-on-kenshi-races"></a>
-# 依据 Kenshi 赛事
+# 取决于 Kenshi Races
 
-如何使用代码 Kenshi 种族的种族和动画,添加主种或添加自己的种族(`kenshi.races`). 加载器规则: 摩托车 [modding-dependencies.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md). 代理技能通过相同的步骤: [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md).
+代码 mod 如何使用 Kenshi Races 的种族和动画，向其中添加子种族或添加自己的种族 ( `kenshi.races` )。加载器规则：引擎 [modding-dependency.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md) 。代理技能经历相同的步骤： [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md) 。
 
 <a id="1-reference-it-at-build-time-never-ship-it"></a>
-## 1. 把它提到建造时间,永远不会发送。
+## 1. 在构建时引用它，而不是发布它
 
-在一个由 [模特模特](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate)添加 Kenshi Races’ 释放 Zip 到 `meitou.lock.json`构建下载,检查和参考它,并播放它。 每個價值都來自發布的筆記(`kenshi-races-v<version>`):
+在由 [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate) 制作的存储库中，将 Kenshi Races ' 发布 zip 添加到 `meitou.lock.json` ；构建会下载、检查并引用它，然后 Play 会部署它。每个值都来自发行版注释 ( `kenshi-races-v<version>` )：
 
 ```json
 {
@@ -20,12 +20,11 @@
 }
 ```
 
-- 你的 `engine/` 将 pin 移动到该发动机承诺(GutenStructure)
-[框架锁](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md)).
-- 永远不会列出 `KenshiRaces.dll` 在你自己的 `assemblies`其余的负载 `kenshi.races` 服务于类型。
+- 您的 `engine/` 引脚将移动到该引擎提交（ GutenStructure [框架锁](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md) ）。
+- 切勿将 `KenshiRaces.dll` 列在您自己的 `assemblies` 中；加载的 `kenshi.races` 服务类型。
 
 <a id="2-declare-it-in-meitoujson"></a>
-## 2. 宣布它在 `meitou.json`
+## 2.在 `meitou.json` 中声明
 
 ```json
 "apiVersion": 2,
@@ -33,13 +32,13 @@
 "dependencies": [{ "id": "kenshi.races", "version": ">=0.4.0 <0.5.0" }]
 ```
 
-- 在 1.0 之前,一个小版本可能会破坏 API接下来,你要把小小的距离放在下一个小小的位置上。
-- Kenshi 赛车必须坐在你的模式上 `data/mods.cfg` (启动器的安排),所以它的记录在您的数据阶段运行时存在。
+- 在 1.0 之前，次要版本可能会破坏 API ，因此请在下一个次要版本中限制范围。
+- Kenshi Races 必须位于 `data/mods.cfg` 中 mod 的上方（启动器的 Arrange 会做到这一点），因此当您的数据阶段运行时，它的记录就存在。
 
 <a id="3-use-its-races"></a>
-## 3. 使用自己的赛车
+## 3.利用它的种族
 
-提到 IDS 中的 `Races` 从您的记录中,例如在您的数据阶段:
+请参阅您记录中 `Races` 中的 ID，例如在你的数据阶段：
 
 ```csharp
 public void EditData(ModDataContext c)
@@ -51,19 +50,16 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- RACEs (重定向): `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`.
-- CHARACTERs (重定向自招聘): `LeomaMaleCharacter`, `LeomaFemaleCharacter`, `CrevanMaleCharacter`, `CrevanFemaleCharacter`,
-`CrabmanCharacter`, `CrabQueenCharacter`.
-- RACE_GROUPs (编辑的作品): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`. `Races.Recruit` 是“加入我们”的谈话。
-- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen` (`Subrace`)和 `Races.Groups` 描述它们。 桌子:
-[Kenshi-races.md “种族”](kenshi-races.md#races).
+- 种族（亚种）： `Races.LeomaRace` 、 `CrevanRace` 、 `CrabmanRace` 、 `CrabQueenRace` 。
+- 角色（无套件，可招募）： `LeomaMaleCharacter` 、 `LeomaFemaleCharacter` 、 `CrevanMaleCharacter` 、 `CrevanFemaleCharacter` 、 `CrabmanCharacter` 、 `CrabQueenCharacter` 。
+- RACE_GROUPs （编辑的种族）： `LeomaGroup` 、 `CrevanGroup` 、 `CrabfolkGroup` 。 `Races.Recruit` 是“加入我们”。讲话。
+- `Races.Leoma` 、 `Crevan` 、 `Crabman` 、 `CrabQueen` ( `Subrace` ) 和 `Races.Groups` 描述它们。表：[kenshi-races.md“种族”](kenshi-races.md#races) 。
 
 <a id="4-add-a-subrace-or-a-race"></a>
-## 4. 添加一种子或一种种子
+## 4. 添加子种族或种族
 
-1. 每個身體都與 [赛车进口](race-import.md) 从一个KenshiRaces克隆,进入你的模式 `items/races` 用自己的声音
-(`mymod_<character>`; `female` 像一个女人的身体一样),并承诺文件。 添加 `!/<Mod>/items/races/*.mesh` 和 `!/<Mod>/items/races/*.dds` 到 `.gitignore`.
-2. 将其描述并将其记录添加到您的模式的数据阶段(输入应用程序) `IModDataPhase`):
+1. 使用来自 KenshiRaces 克隆的 [race import](race-import.md) ] 将每个身体安装到带有您自己的茎的 mod 的 `items/races` 中（ `mymod_<character>` ； `female` 作为女性身体的装备），然后提交文件。将 `!/<Mod>/items/races/*.mesh` 和 `!/<Mod>/items/races/*.dds` 添加到 `.gitignore` 。
+2. 描述它并将其记录添加到 mod 的数据阶段（该条目实现 `IModDataPhase` ）：
 
 ```csharp
 static readonly Subrace GhostCrab = new("ghostcrab", "30-MyMod.mod",
@@ -77,17 +73,16 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- 一种与A `Male` 和A `Female` 身体得到编辑的性别箭头,一个是单性,每个角色都穿着它。
-- `RaceRecords.Add(c, subrace, talk)`: `talk` 是A DIALOGUE 对于这些人物来说, `null` 為沒有人。
-- 一个自己的赛事: `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` 添加到 RACE_GROUP 每种种族。
-- 物品 `playable` 与 Kenshi 编辑器的限制(`RaceRecords.EditorLimits`); `FillRace` / `FillCharacter` 填写你添加的记录
-自己( )`c.Add`)当你想更改更多的字段之后。
-- IDs 是你的:记录是你的 `.mod` 文件名称
+- 具有 `Male` 和 `Female` 身体的亚种将获得编辑器的性别箭头；其中一个是单一性别，每个角色都穿着它。
+- `RaceRecords.Add(c, subrace, talk)` ： `talk` 是字符的 DIALOGUE id， `null` 是无字符。
+- 您自己的种族： `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` 添加了 RACE_GROUP 和每个子种族。
+- 子种族为 `playable` 和 Kenshi Races ' 编辑器限制 ( `RaceRecords.EditorLimits` );  当您之后想要更改更多字段时， `FillRace` / `FillCharacter` 填写您自己添加的记录（ `c.Add` ）。
+- ids 是你的：你自己的 `.mod` 文件名的记录。
 
 <a id="6-play-its-animations"></a>
 ## 6. 播放动画
 
-每张剪辑 [animations.md](animations.md) 与游戏中的每一个人体骨骼的赛车相连(添加一个子种与 `RaceRecords` 也),所以一个模式只会玩它。 一个模式的战斗动作仅仅是动画,每当游戏中没有自己的动作时,都会被问及(发动机) docs/modding.md“战斗运动”):
+[animations.md](animations.md) 的每个剪辑都链接到游戏人体骨骼上的每个种族（也添加了 `RaceRecords` 的子种族），因此 mod 只播放它。 Mod 战斗动作只是动画，每当游戏没有播放任何自己的内容时就会被询问（引擎文档/modding.md，“战斗动作”）：
 
 ```csharp
 CombatTechnique? _wave;
@@ -99,11 +94,11 @@ public void Initialize(ModContext c)
 }
 ```
 
-- `Waving` 是你的:一个廉价的,线条安全的,从自己的状态阅读的答案,剪辑的进展 0 到 1 (秒 / `clip.Length`).
-- 剪辑在现场播放,面对前方;一个比你的动作更短的剪辑保持了最后的框架,除非你抓住进展。
-- 动画只需要依赖(第1和第2节),没有自己的记录。
+- `Waving` 是你的：来自你自己状态的廉价、线程安全、只读答案，剪辑的进度从 0 到 1（秒 / `clip.Length` ）。
+- 剪辑在原地播放并面向前方；比您的移动短的剪辑将保留其最后一帧，除非您包裹进度。
+- 动画只需要依赖项（第 1 节和第 2 节），不需要您自己的记录。
 
 <a id="5-check-it"></a>
-## 5. 查看它
+## 5.检查一下
 
-`dotnet build`,你的测试,然后在游戏F10 **Kenshi 赛事:赛事** 以你的手,以你的手。 `spawn <name>` 把它擦去。 名称 和 CHARACTERs 一个低点的词,例如 `ghostcrab`因此,控制台不会引用它们;一个新的游戏编辑列出你的分类。
+`dotnet build` ，您的测试，然后在游戏 F10 ** Kenshi Races ：种族** 中列出您的种族及其网格，然后 `spawn <name>` 生成它。用一个小写单词命名子种族和字符，例如 `ghostcrab` ，因此控制台将它们不带引号；新游戏的编辑器会列出您的子种族。

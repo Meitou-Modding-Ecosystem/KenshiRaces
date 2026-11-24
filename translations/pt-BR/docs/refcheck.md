@@ -1,16 +1,16 @@
 <a id="engine-references-refcheck"></a>
-# Referências de motores (RefCheck)
+# Referências do motor ( RefCheck )
 
-Um mod é construído contra um motor (este repo `engine` Submode) e jogado em qualquer Meitou libertação o jogador tem. Quando uma versão muda a assinatura de algo que o mod chama, a fonte do mod ainda pode compilar, mas o DLL que já foi construído e que pede o jogo para o velho membro e falha no tempo com `MissingMethodException`.
+Um mod é construído em um mecanismo (o submódulo `engine` deste repositório) e reproduzido em qualquer versão Meitou que o jogador tenha. Quando um lançamento altera a assinatura de algo que o mod chama, a fonte do mod ainda pode ser compilada, mas o DLL que já foi compilado solicita ao jogo o membro antigo e falha em tempo de execução com `MissingMethodException` .
 
-Isso não é hipotético. Meitou 0.21 dá `Inventory.Add(ItemInstance)` O segundo parâmetro é opcional (`Add(ItemInstance, bool mainShut = false)`). Fonte que chama `bag.Add(item)` Compreendendo as versões, mas a DLL Construído contra 0.20 ou mais chama o método de um parâmetro, que 0.21 não tem mais. Em The Wasteland Remembers que rompeu os guardas em jogo, e a exceção parou um sistema para o resto da sessão. Nenhum teste o capturou: os testes compilam contra um motor.
+Isto não é hipotético. Meitou 0.21 deu a `Inventory.Add(ItemInstance)` um segundo parâmetro opcional ( `Add(ItemInstance, bool mainShut = false)` ). A fonte que chama `bag.Add(item)` compila em qualquer uma das versões, mas um DLL construído em 0.20 ou anterior chama o método de um parâmetro, que 0.21 não possui mais. Em The Wasteland Remembers isso quebrou as lembranças em jogo, e a exceção parou todo um sistema pelo resto da sessão. Nenhum teste detectou: os testes são compilados em um mecanismo.
 
 <a id="what-it-checks"></a>
 ## O que verifica
 
-`tools/RefCheck` Leia um Modo DLLOs metadados e listas de cada membro do motor que ele se refere (metódicos, construtores, campos em tipos de `Meitou*.dll`Por nome e parâmetros, que um dado não tem. Nada do modo ou do jogo funciona.
+`tools/RefCheck` lê os metadados de um mod DLL construído e lista todos os membros do mecanismo que ele faz referência (métodos, construtores, campos em tipos em `Meitou*.dll` ), por nome e tipos de parâmetros, que uma determinada versão não possui. Nada do mod ou do jogo funciona.
 
-`tools/refcheck.sh` Construa todos os modos no repo (cada pasta de nível superior com `meitou.json` e `<Folder>/<Folder>.csproj`Descarregar uma versão win-x64 zip uma vez (só `Meitou*.dll` e `0Harmony.dll`e verifica cada assembléia do mod `meitou.json` As listas .
+`tools/refcheck.sh` cria todos os mods no repositório (cada pasta de nível superior com `meitou.json` e `<Folder>/<Folder>.csproj` ), baixa o zip win-x64 de uma versão uma vez (mantendo apenas `Meitou*.dll` e `0Harmony.dll` ) e verifica cada montagem nas listas `meitou.json` do mod.
 
 ```
 tools/refcheck.sh                   # the newest full Meitou release
@@ -18,13 +18,13 @@ tools/refcheck.sh v0.21.0 v0.20.1   # given releases, e.g. the oldest your meito
 CACHE=<dir> tools/refcheck.sh       # where downloaded release DLLs are kept
 ```
 
-A saída, uma linha por lançamento e assembléia:
+Saída, uma linha por versão e montagem:
 
 ```
 v0.21.0 ExampleMod/ExampleMod.dll: 1 engine references checked, 0 missing
 ```
 
-Ou, para uma pausa:
+ou, para uma pausa:
 
 ```
 MISSING Meitou.Simulation.Items.Inventory::Add(Meitou.Simulation.Items.ItemInstance)
@@ -33,11 +33,11 @@ MISSING Meitou.Simulation.Items.Inventory::Add(Meitou.Simulation.Items.ItemInsta
 <a id="in-ci"></a>
 ## Em CI
 
-O que `Engine references` Trabalho correndo `tools/refcheck.sh` contra a mais recente publicação em cada PR e pressão, e `Release readiness` Aguardando por isso. Um barco que embarca em um DLL O motor que se encontra em frente a um motor deve ser controlado DLL Para cada libertação `meitou.json` permitindo o
+A tarefa `Engine references` executa `tools/refcheck.sh` na versão mais recente em cada PR e push, e `Release readiness` aguarda por ela. Um mod que envia um DLL construído em um mecanismo mais antigo também deve verificar esse DLL em cada versão que seu `meitou.json` permite.
 
 <a id="when-it-finds-something"></a>
-## Quando encontramos algo
+## Quando encontra algo
 
-Chame o membro de uma maneira que funciona em cada lançamento que você suporta: reconstruir contra o motor mais novo, ou encontrar o membro por reflexão e preencher os parâmetros que você não passa com seus padrões. O deserto se lembra `InventoryCompat` O último para `Inventory.Add`.
+Chame o membro de uma maneira que funcione em todas as versões que você suporta: reconstrua no mecanismo mais recente se você descartar os mais antigos ou encontre o membro por reflexão e preencha os parâmetros que você não passa com seus padrões. " `InventoryCompat` do Wasteland Remembers faz o último para `Inventory.Add` " .
 
-As chamadas de reflexão para o motor não são verificadas: elas falham suavemente onde você os escreveu.
+As chamadas de reflexão para o mecanismo não são verificadas: elas falham suavemente onde você as escreveu.

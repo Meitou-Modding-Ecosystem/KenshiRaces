@@ -1,29 +1,29 @@
 <a id="local-development-setup"></a>
-# 地元開発の仕組み
+# ローカル開発セットアップ
 
-あなたが働いているリポのみを一つのフォルダーにクローンします。 各自で構築する。 `dotnet build`ダウンロードする必要があるフレームワークとハッシュチェック自体
+作業するリポジトリのみを 1 つのフォルダーにクローン作成します。それぞれは `dotnet build` を使用して独自に構築され、必要なフレームワークはダウンロードしてハッシュ チェック自体を行います。
 
 <a id="repos"></a>
-## リラックス
+## リポジトリ
 
-各モードのリポは、モードに従って名付けられています。
+各 MOD リポジトリには、その MOD にちなんで名前が付けられます。
 
-| リポー | ハンドル | PRは、 |
+| リポ | ホールド | PR は次の場所に移動します |
 | --- | --- | --- |
-| MeitouClient | エンジンとモードハウス | `fork` |
-| リバリーコア | リバリー・コア・フレームワークとそのエージェント・スキル | `beta` |
-| ロジスティクスコア | ロジスティック・コア・フレームワーク | `beta` |
-| 戦略 | ・戦争・オーケストラーション・フレームワーク(ロジスティクス・コアを使用) | `beta` |
-| バストフロント | () (し)  ()  (せ)  し (か) | `beta` |
-| アシュンハンド | ( ) ( )の() | `beta` |
-| 夫婦 | 夫婦 | `beta` |
-| スカウト | SquadArena モードとチーム評価ツール | `beta` |
-| グローバル・グローブ(TheIvoryDisaster) | パッケージ、リリースゲート、フレームロックターゲット | `beta` |
+| MeitouClient | エンジンとそのMODフック | `fork` |
+| ライバルコア | Rivalry Core フレームワークとそのエージェント スキル | `beta` |
+| 物流コア | 物流コアフレームワーク | `beta` |
+| 戦争組織化 | War Orchestration フレームワーク (Logistics Core を使用) | `beta` |
+| バストフロント | バストフロントの近接攻撃（戦争オーケストレーションと兵站コアを使用） | `beta` |
+| アシェンハンド | アシェンハンド（ライバルコア使用） | `beta` |
+| 畜産業 | 畜産業 | `beta` |
+| 分隊アリーナ | SquadArena MOD と分隊評価ツール | `beta` |
+| GutenStructure (象牙災害) | 共有 CI 、パッケージ化、リリース ゲート、フレームワーク ロック ターゲット | `beta` |
 
 <a id="folders"></a>
 ## フォルダー
 
-このステップは、8つのフォルダーを使用します。 各新しい PowerShell ウィンドウで変数として設定し、以下のコマンドを貼り付けます。
+これらの手順では 8 つのフォルダーを使用します。新しい PowerShell ウィンドウごとにこれらを変数として設定し、以下のコマンドをそのまま貼り付けます。
 
 ```powershell
 $Repos     = "C:\Users\<you>\source\repos"
@@ -37,12 +37,11 @@ $Bast      = "$Repos\BastFront"
 ```
 
 <a id="prerequisites"></a>
-## 原則
+## 前提条件
 
-- .NET 11 SDK (すべてのレポー) `global.json` バージョンの名前)とGit。
-- 編集者:Visual Studio、VSコード、C# Dev Kit、またはRider。 ターミナルだけが動作します。
-- Kenshi 設置。 もし、その中にないなら、 `C:\Program Files (x86)\Steam\steamapps\common\Kenshi`設定する → set the `KENSHI_PATH` 環境変動
-フォルダーに
+- 。 NET 11 SDK (各リポジトリの `global.json` にバージョン名が付けられます) と Git。
+- エディタ: C# 開発キットを備えた Visual Studio 、 VS Code 、または Rider。端末単体でも動作します。
+- Kenshi を取り付けました。 `C:\Program Files (x86)\Steam\steamapps\common\Kenshi` にない場合は、 `KENSHI_PATH` 環境変数をそのフォルダーに設定します。
 
 <a id="clone"></a>
 ## クローン
@@ -57,12 +56,12 @@ git clone --recurse-submodules https://github.com/Meitou-Modding-Ecosystem/BastF
 git clone https://github.com/Meitou-Modding-Ecosystem/MeitouClient.git $Engine
 ```
 
-すべてのモード・レポには、それぞれの `engine` サブモジュールは、 `$Engine` エンジンハウスを書くだけです。
+すべての MOD リポジトリには独自の `engine` サブモジュールがあるため、 `$Engine` はエンジン フックを記述する場合にのみ必要です。
 
 <a id="build-and-play-one-mod"></a>
-## 作成して1つのモードをプレイ
+## 1 つの MOD を構築してプレイする
 
-**モードのリポに変更する:**
+**MOD のリポジトリに変更します:**
 
 ```powershell
 cd $Ashen
@@ -70,87 +69,78 @@ dotnet build
 dotnet run --project Play
 ```
 
-- 最初の構築は、それぞれのフレームをダウンロードします。 `meitou.lock.json` 入り口 `deps` 止まるならば、その SHA256は合わない。
-- `dotnet run --project Play` 閉鎖されたフレームワークとモードをコピーする `Kenshi\mods` エンジンが始まる。 ビデオ・スタジオ VS コード
-インストールしたラウンサー: [play.md](play.md).
-- ラウンサーのモードの上のフレームを可能にし、いかなる依存性にも適用されます。
+- 最初のビルドは、 `meitou.lock.json` で指定された各フレームワークを `deps` にダウンロードし、その SHA -256 が一致しない場合は停止します。
+- `dotnet run --project Play` は、ロックされたフレームワークと MOD を `Kenshi\mods` にコピーし、エンジンを開始します。 Visual Studio 、 VS Code およびインストールされているランチャー: [play.md](play.md) .
+- 依存関係については、ランチャーの MOD の上にあるフレームワークを有効にします。
 
 <a id="change-a-framework-and-a-mod-together"></a>
-## フレームワークとモードを組み合わせる
+## フレームワークとMODを一緒に変更する
 
-フレームワーククローンにモードレポを指定する:
+MOD リポジトリをフレームワーク クローンに指定します。
 
 ```powershell
 Set-Content "$Ashen\Meitou.user.props" "<Project><PropertyGroup><MeitouFrameworkSources>$Rivalry\RivalryCore\RivalryCore.csproj</MeitouFrameworkSources><MeitouEngineDir>$Rivalry\engine\</MeitouEngineDir></PropertyGroup></Project>"
 ```
 
-- 建てられた `$Ashen` リバリー・コアをコピーする `$Rivalry` エンジンを使用して、 `$Rivalry\engine`リバリー・コアが作るゲームをプレイする。
-- `Meitou.user.props` 無視されている。 もし、あなたがすでにあなたの Kenshi 設定、内側に2つのラインを追加 `PropertyGroup` 代わりに
-- `MeitouFrameworkSources` プロジェクトの枠組みを分離して、 `;`☆☆☆☆ `$Logistics\LogisticsCore\LogisticsCore.csproj`.
-`MeitouEngineDir` フレームクローンが構築するエンジンの名前。
-- 線を削除して閉鎖に戻る ZIP.
+- `$Ashen` のビルドは `$Rivalry` の Rivalry Core をコンパイルし、 `$Rivalry\engine` のエンジンを使用するようになり、Play はその Rivalry Core ビルドをデプロイします。
+- `Meitou.user.props` は git 無視されます。すでに Kenshi 設定が保持されている場合は、代わりに `PropertyGroup` 内に 2 行を追加します。
+- `MeitouFrameworkSources` は、 `;` で区切られたフレームワーク プロジェクト パスを受け取ります。 `$Logistics\LogisticsCore\LogisticsCore.csproj` 。 `MeitouEngineDir` は、フレームワーク クローンが構築されるエンジンに名前を付けます。
+- 行を削除して、ロックされた ZIP に戻ります。
 
-**フレームワークチェーン** フロントのバスト `meitou.lock.json` 戦争オーケストラとロジスティクスコア 両方のフレームワークとバストフロントを組み合わせるには、バスト・フロントの両方を組み合わせる。
+**フレームワーク チェーン。** Bast Front の `meitou.lock.json` には、War Orchestration と Logistics Core がリストされています。フレームワークと Bast Front の両方を一緒に変更するには、Bast Front で両方をオーバーライドします。
 
 ```powershell
 Set-Content "$Bast\Meitou.user.props" "<Project><PropertyGroup><MeitouFrameworkSources>$War\WarOrchestration\WarOrchestration.csproj;$Logistics\LogisticsCore\LogisticsCore.csproj</MeitouFrameworkSources><MeitouEngineDir>$Bast\engine\</MeitouEngineDir></PropertyGroup></Project>"
 ```
 
-逆に、オーケストラは戦争に反対する。 `$Logistics` しかも、全体が一つのエンジンを使用している。 戦争オーケストラーションだけを超え、バストフロントのロックで名付けられたロジスティクス・コアに反対する。
+オーバーライドは受け継がれるため、War Orchestration は `$Logistics` に対してもビルドされ、ビルド全体で 1 つのエンジンが使用されます。 War Orchestration のみをオーバーライドすると、Bast Front のロックで指定された Logistics Core に対して構築されます。
 
-送信するには: フレームワーク PR を組み合わせる `beta` ☆☆☆☆ `$Rivalry`予告書を掲載する `rivalry-core-<version>-beta.<commit>`. その後、内 `$Ashen`セット `meitou.lock.json` その資産とその資産は、 SHA-256とエンジンは、リリースノートから取り出し、モードPRを開きます。 チェーンでは、トップダウン: ロジスティック・コア、その後、戦争オーケストラはそれを閉じ、次にバスト・フロントは両方を閉じます。 フレームの生産を解放した後、ロックを移動させる `rivalry-core-v<version>`.
+出荷するには、フレームワーク PR を `$Rivalry` の `beta` にマージし、プレリリース `rivalry-core-<version>-beta.<commit>` を公開します。次に、 `$Ashen` で、 `meitou.lock.json` をそのタグとアセット、リリース ノートの SHA -256 およびエンジン コミットに設定し、mod PR を開きます。チェーンでは、ロジスティック コア、次にそれをロックする War Orchestration ビルド、次に両方をロックするバスト フロントというトップダウンで出荷します。フレームワークの製品リリース後、ロックを `rivalry-core-v<version>` に移動します。
 
 <a id="change-the-engine-and-a-mod-together"></a>
-## エンジンとモードを組み合わせる
+## エンジンとMODを一緒に変更する
 
-モードレポのサブモジュールの内側のエンジン分野をチェック:
+MOD リポジトリのサブモジュール内のエンジン ブランチを確認してください。
 
 ```powershell
 git -C "$Ashen\engine" fetch origin <engine branch>
 git -C "$Ashen\engine" checkout FETCH_HEAD
 ```
 
-- 新しいエンジン指標を採用しないでください:エンジンはアップストリームのタグに移動しますので、変更はアップストリートの後にこのリポに到達します。
-リリースする。
-- フレームを使用するモードには、そのエンジンに再構築されたフレームも必要です。 上のフレームワークを超え、同じようにチェックする。
-エンジンは、 `$Rivalry\engine`.
-- エンジン・PR 入り口 エンジンを入り口にする `fork`アップストリームがリリースされた後、フレームワークPRが動く。 `$Rivalry\engine` その解放、その後、
-モードPRはロックを動かし、 `engine`.
+- 新しいエンジン ポインターをコミットしないでください。エンジン ピンは上流のリリース タグにのみ移動するため、上流でリリースされると変更はこのリポジトリに届きます。
+- フレームワークを使用する MOD には、そのエンジン上で再構築されたフレームワークも必要です。上記のフレームワーク オーバーライドを使用して、 `$Rivalry\engine` の同じエンジン ブランチをチェックアウトします。
+- 着陸の順序: PR を `fork` にエンジンします。アップストリームがリリースした後、フレームワーク PR が `$Rivalry\engine` をそのリリースに移動し、次にモッド PR がロックを移動し、 `engine` を移動します。
 
 <a id="switch-the-engine-to-play-or-test"></a>
-## エンジンを切り替え、試す。
+## エンジンを切り替えて再生またはテストします
 
-最新のアップストリーム、リリース、またはエンジン部門をプレイするには、 `$Engine` スクリプトをリポモードでクローンする:
+最新のアップストリーム、リリース、またはエンジン ブランチを再生するには、任意の MOD リポジトリのスクリプトを使用して `$Engine` クローンを切り替えます。
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "$Ashen\tools\Switch-Engine.ps1" -To Upstream -Path $Engine -Run
 ```
 
-- `-To Upstream`■最新のコミットメント VlcekM/MeitouClient `master` (脚本が追加する) `upstream` 欠席時に遠くへ。
-- `-To Release`最新のアップストリームリリース `vX.Y.Z`.
-- `-To Fork`オーガ・フォークの `fork` 枝、引っ張る。
-- `-Branch <name>`: エンジンPRの分野のようなオーガンフォークの分野。
-- なしで `-Path` 使っているのは、 `MeitouClient` モード・レポの隣にあるフォルダー。 `-Run` ゲームをリリースし、スタートする。 `-Build` しかも、
-建設する。
-- Upstream、リリース、そして `-Branch` クローンを離れたコマンドに置き去りにし、地元の `master` そして、 `fork` 部門は変わらない。 脚本は
-クローンが未定の変化を起こしたときに、何も変えずに止まる。
-- 決してモード・レポに触れることはありません。 `engine` サブモジュール(これは `Update-Local.ps1` そして、ピン。
+- `-To Upstream` : VlcekM/ MeitouClient  `master` の最新のコミット (不足している場合、スクリプトは `upstream` リモートを追加します)。
+- `-To Release` : 最新のアップストリーム リリース タグ `vX.Y.Z` 。
+- `-To Fork` : 組織フォークの `fork` ブランチ、プルされました。
+- `-Branch <name>` : エンジン PR のブランチなど、組織フォークのブランチ。
+- `-Path` を使用しないと、MOD リポジトリの隣にある `MeitouClient` フォルダーが使用されます。 `-Run` は、Release でゲームをビルドして開始します。 `-Build` はビルドするだけです。
+- アップストリーム、リリース、および `-Branch` は、切り離されたコミットにクローンを残します。ローカルの `master` および `fork` ブランチは変更されません。クローンにコミットされていない変更がある場合、スクリプトは何も変更せずに停止します。
+- MOD リポジトリ自体の `engine` サブモジュール (つまり、 `Update-Local.ps1` とピン) には決して触れません。
 
 <a id="keep-clones-current"></a>
-## クローンが流れ
+## クローンを最新の状態に保つ
 
-毎回引っ張った後、エンジンタイプが欠けている場合(たとえば、 `The type or namespace name 'RelationCause' could not be found`)、Visual Studioを閉じて、モードのリポでアップデートスクリプトを実行します。
+プルするたびに、またエンジン タイプが欠落している (例: `The type or namespace name 'RelationCause' could not be found` ) ためにビルドが失敗するたびに、 Visual Studio を閉じて、MOD のリポジトリで更新スクリプトを実行します。
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "$Ashen\tools\Update-Local.ps1" -Clean -Build
 ```
 
-- スイッチ に `beta` 引き出し、更新。 `engine` そして、 `build/gutenstructure` コミットメントについて `beta` ピンク(`git pull` ひとりで
-古いものに置いておく。 `-Branch <name>` もう一つの枝を引っ張る。
-- それはそれぞれのサブモジュールをピンに対してチェックし、エンジンバージョンを印刷します。
-- 国旗 `MeitouEngineDir` そして、 `MeitouFrameworkSources` で、 `Meitou.user.props` あるいは環境:彼らは建物の使用を別の
-repo のエンジンまたはフレームワークは、この repo の ピン の代わりに。 フレームワークとモードを組み合わせて変更しない限り、削除します。
-- `-Clean` 無視されたギットを削除 `bin` そして、 `obj` フォルダーは、古いエンジンの構築は再利用されません。 `-Build` レース `dotnet build`.
-- 結局は、 `Up to date` あるいは、標識されたラインのリスト `FIX`.
+- `beta` に切り替えてプルし、 `engine` と `build/gutenstructure` をコミット `beta` ピンに更新します ( `git pull` のみは古いピンに残します)。 `-Branch <name>` は別のブランチをプルします。
+- 各サブモジュールをピンと照合してチェックし、エンジンのバージョンを出力します。
+- `Meitou.user.props` または環境の `MeitouEngineDir` と `MeitouFrameworkSources` にフラグを立てます。ビルドでこのリポジトリのピンの代わりに別のリポジトリのエンジンまたはフレームワークを使用します。フレームワークと MOD を一緒に変更する場合を除き、これらを削除してください。
+- `-Clean` は、git で無視された `bin` フォルダーと `obj` フォルダーを削除するため、古いエンジンのビルドは再利用されません。 `-Build` は `dotnet build` を実行します。
+- これは、 `Up to date` または `FIX` とマークされた行のリストで終わります。
 
-次の構築は、再びフレームワークをダウンロードするだけで、 `meitou.lock.json` 変更しました。
+次のビルドでは、 `meitou.lock.json` が変更された場合にのみ、フレームワークが再度ダウンロードされます。

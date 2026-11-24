@@ -1,53 +1,51 @@
 <a id="kenshi-races"></a>
-# Kenshi 赛事
+# Kenshi Races
 
-為角色編輯的三個新賽車,每個與超級賽車,在遊戲的人類骨骼(`kenshi.races`,没有依赖性):每个记录添加到负载,装备的身体 [赛车进口](race-import.md). 它还将一艘 [动画图书馆](animations.md) 每场比赛中有59个剪辑。 模特使用赛车和剪辑,添加赛车或添加自己的赛车: [depending-on-kenshi-races.md](depending-on-kenshi-races.md).
+角色编辑器的三个新种族，每个种族都有子种族，位于游戏的人体骨骼上（ `kenshi.races` ，无依赖性）：加载时添加的每个记录，身体由 [race import](race-import.md) ] 安装。它还为这些骨架上的每场比赛提供了一个包含 59 个剪辑的动画库](animations.md) 。模组使用种族和剪辑，添加子种族或添加自己的种族：[depending-on-kenshi-races.md](depending-on-kenshi-races.md) 。
 
 <a id="races"></a>
-## 赛事
+## 比赛
 
-编辑列出每一个 RACE_GROUP 作为一场竞赛和其 RACEs 如  ( ) docs/characters.md “字符编辑器”
+编辑器将每个 RACE_GROUP 列为种族，并将其种族列为子种族（引擎文档/characters.md“角色编辑器”）。
 
-| 赛事(RACE_GROUP) | ( )RACE) | 性别 | CHARACTERs |
+| 比赛 ( RACE_GROUP ) | 亚族 ( RACE ) | 性别 | 人物 |
 | --- | --- | --- | --- |
-| Leoma `30-` | 莱奥马 `10-` | 男子,女子 | 莱奥马尔 `11-`女同性恋 `17-` |
-| Crevan `31-` | 船员 `18-` | 男子,女子 | 克里文马尔 `19-`女士 女士 `21-` |
-| Crabfolk `32-` | 克拉布曼 `12-` | 单身 | 克拉布曼 `13-` |
-| | 克拉布克 `14-` | 单身 | 克拉布克 `15-` |
+| Leoma `30-` | 雷奥马 `10-` | 男、女 | 雄性 `11-` , 雌性 `17-` |
+| Crevan `31-` | 克雷文 `18-` | 男、女 | 公羊 `19-` , 母羊 `21-` |
+| Crabfolk `32-` | 蟹人 `12-` | 单身的 | 蟹人 `13-` |
+|  | 螃蟹皇后 `14-` | 单身的 | 螃蟹皇后 `15-` |
 
-将结束在 `KenshiRaces.mod`. Subrace 和 CHARACTER 名称是低点字,所以控制台的 `spawn` 把它们拿出来,没有引用。 每个身体的文件都是 `KenshiRaces/items/races/kenshiraces_<character>*` (常见地图) Leoma 和 Crevan). 男士的身体是为了 `male_skeleton`女士们在 `female_skeleton`克拉布的身体是男人的匹配,所以克拉布女王是单性与男人的动画和声音。 源模型(Meshy 出口,薄 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman 和 crabqueen "... - 3ds 麦克斯 Biped。glb",其他 `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`.
+Id 以 `KenshiRaces.mod` 结尾。 Subrace 和 CHARACTER 名称是一个小写单词，因此控制台的 `spawn` 将它们不带引号。每个主体的文件都是 `KenshiRaces/items/races/kenshiraces_<character>*` （ Leoma 和 Crevan 上的法线贴图）。公头适用于 `male_skeleton` ，母头适用于 `female_skeleton` ；螃蟹的身体是男性的，所以螃蟹女王是单一性别的，动画和声音都是男性的。源模型（ Meshy 导出，slim 1）：leomamale“Leonid Bare - 3ds Max Biped.glb”，crabman 和crabqueen“... - 3ds Max Biped.glb”，其他 `leonidfemale.glb` 、 `corvidmale.glb` 、 `corvidfemale.glb` 。
 
 <a id="records"></a>
 ## 记录
 
-将其添加到彩票的数据阶段,从加载的游戏自己的记录(`RaceRecords`) ) ) ) `KenshiRaces.mod` 船是空的,CI不需要游戏:
+从加载的游戏自己的记录（ `RaceRecords` ）添加到数据阶段，因此 `KenshiRaces.mod` 为空，而 CI 不需要游戏：
 
-- RACE_GROUP种族的名称和其子种族 RACEs在编辑的命令下。
-- RACE (原文) 以此为副本 Greenlander (`17-gamedata.quack`: 统计,动画,声音) 与每个性别的<unk>,颜色结构,正常地图
-和部分地图(一个单性子种为两者携带一个身体); `single gender` 除非它有兩個身體;沒有頭部或頭髮(一種列表沒有頭部吸引任何;身體有自己的); `morph num` 0; `no shirts` (衬衫和裤子绘制人体的UV布局);身体面具和强度正常地图清洁; `playable` 与 `editor limits` [`kenshiraces_editor.xml`](#character-editor).
-- CHARACTER此分類上一篇: Drifter(`2205-gamedata.base`种族和性别(`female chance` 100或0),没有套件、金钱或奖金,与
-招聘谈话
-- 发动机:A CHARACTER自己的 `mesh` 田野超越了其赛车的身体梅斯。
+- RACE_GROUP ：种族的名称及其子种族的种族，按编辑的顺序。
+- RACE （子种族）：格陵兰人的副本（ `17-gamedata.quack` ：统计数据、动画、声音），包含每个性别的网格、颜色纹理、法线贴图和部分贴图（单性别子种族两者都穿着同一个身体）； `single gender` 除非它有两个实体；没有头或头发（列出没有头的种族就没有头；身体有自己的）； `morph num` 0; `no shirts` （衬衫和裤子画出人体的uv布局）；清除身体遮罩和强度法线贴图； `playable` 与 `editor limits` [ `kenshiraces_editor.xml` ](#character-editor) 。
+- CHARACTER ：亚种和性别（ `female chance` 100或0）的漂流者（ `2205-gamedata.base` ）副本，没有套件，金钱或赏金，与新兵交谈。
+- 引擎： CHARACTER 自己的 `mesh` 场会覆盖其种族的身体网格。
 
 <a id="character-editor"></a>
-## 格拉格编辑
+## 角色编辑器
 
-赛车在角色创作,如游戏本身。 `KenshiRaces/items/races/kenshiraces_editor.xml` 只保留移动骨头的滑板,所以它们像人类一样在装饰的身体上工作。 docs/animation.md,骨架):面部持头尺寸,头形和脖子滑板(没有面部姿势:固定头没有);身体持人人体滑板和皮肤色调,乳房尺寸,高度和宽度为女性,移动女性骨骼 `L Boob` / `R Boob` 女性体重为([赛车进口](race-import.md#bust)). 天下人(人)`data/editor/editor_data_human.xml`).
+比赛是在角色创建时提供的，就像游戏本身一样。 `KenshiRaces/items/races/kenshiraces_editor.xml` 只保留移动骨骼的滑块，因此它们像在人类上一样在安装的身体上工作（引擎文档/动画.md，骨骼比例）：面部保持头部尺寸，头部形状和颈部滑块（没有面部姿势：安装的头部没有）；身体包含人体滑块和肤色，以及女性的乳房尺寸、高度和间距，这会移动女性骨骼的 `L Boob` / `R Boob` 女性身体的权重（[种族导入](race-import.md#bust) ）。范围是人类的范围（ `data/editor/editor_data_human.xml` ）。
 
 <a id="recruiting"></a>
 ## 招聘
 
-DIALOGUE `1-KenshiRaces.mod`字符说“你可以使用另一个手” ,玩家回答“加入我们” ,行动18(加入团队)将字符添加到球员的团队。
+DIALOGUE  `1-KenshiRaces.mod` ：角色说“你看起来可以使用另一双手。”，玩家回答“加入我们”。动作 18（加入小队）将角色添加到玩家的小队中。
 
 <a id="testing-in-game"></a>
-## 在游戏中测试
+## 游戏中测试
 
-1. 允许 Kenshi 发射器中的赛车(或 `data/mods.cfg`).
-2. 安慰: `spawn leomafemale` (或任何 CHARACTER 在桌子上)在通道上旋转;谈到招聘,或F10垃圾招聘。
-3. F10 **Kenshi 赛事:赛事** 列出每個配備的賽車(該模式和依賴者)的   。
-4. 新游戏:编辑的赛车火箭到达 Leoma, Crevan 和 Crabfolk.
+1. 在启动器中启用 Kenshi Races （或 `data/mods.cfg` ）。
+2. 控制台： `spawn leomafemale` （或表中的任何 CHARACTER ）在光标处生成；与Recruit交谈，或F10调试Recruit。
+3. F10 ** Kenshi Races ：种族** 列出加载的每个已安装的种族（此模组和相关者的）。
+4. 新游戏：编辑的种族箭头到达 Leoma 、 Crevan 和 Crabfolk 。
 
 <a id="clothing"></a>
-## 服装
+## 衣服
 
-Armour 分享了身体的骨骼,所以它与这些身体一起移动,但它在人体周围模型。 部分地图隐藏皮肤在物品下 `hide parts` (毛巾,衣服,外套);减肥拖在什么比其他地方的人更大([赛车进口](race-import.md#slimming)). 形状远离人类(<unk>,<unk>)仍然通过紧密的手套冲动。
+盔甲共享身体的骨骼，因此它会随着这些身体一起移动，但它是围绕人体建模的。零件图隐藏了带有 `hide parts` 的物品（外套、长袍、夹克）下的皮肤；减肥会吸收比其他地方的人更笨重的东西（[race import](race-import.md#slimming) ）。远离人类的形状（贝壳、爪子）仍然刺穿严密的盔甲。

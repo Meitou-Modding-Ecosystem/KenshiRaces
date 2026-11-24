@@ -1,73 +1,67 @@
 <a id="race-import-fitting-a-body-onto-the-games-skeleton"></a>
-# Race Import: Ajuste um corpo no esqueleto do jogo
+# Importação de corrida: encaixando um corpo no esqueleto do jogo
 
-`tools/RaceImport` Tornando um rigido `.glb` O corpo (Meshy, Hi3D3ds Max Biped, os joints `Bip001 ...`) em um corpo o jogo se anima com suas próprias animações humanas: uma mesha de Ogre coberta ligada a `male_skeleton.skeleton` ou `female_skeleton.skeleton`A sua DDS Texto e parte do mapa. Ele lê o esqueleto, corpo humano e parte do jogo de instalação, então ele corre em uma máquina com KenshiNunca em CI; a sua produção é comprometida.
+`tools/RaceImport` transforma um corpo `.glb` manipulado ( Meshy , Hi3D : o equipamento "3ds Max Biped", juntas `Bip001 ...` ) em um corpo que o jogo anima com suas próprias animações humanas: uma malha de Ogro esfolada vinculada a `male_skeleton.skeleton` ou `female_skeleton.skeleton` , suas texturas DDS e um mapa parcial. Ele lê o esqueleto do equipamento, o corpo humano e o mapa de partes da instalação do jogo, então roda em uma máquina com Kenshi , nunca em CI ; sua saída está comprometida.
 
 <a id="run-it"></a>
-## Corra isso
+## Execute-o
 
 ```powershell
 dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim]
 ```
 
-- `<Kenshi folder>`Apresentação do jogo (`data/` dentro de si, por exemplo. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
-- Os símbolos nomeam os arquivos e devem ser únicos em mods (o jogo encontra arquivos por só nome): `<modfolder lower case>_<race>`.
-- `male` / `female`O RIG, O MULHER DEFINENTE. Um corpo feminino está preparado para `female_skeleton` Medido contra `human_female.mesh` e
-`FemaleMask_Default.png` (animações femininas e voz no jogo, o editor de pedaços); um homem para `male_skeleton`, `human_male.mesh` e `MaleMask_Default.png`.
-- `slim`0 a 1 (default 1 a 1)[O Slimme](#slimming)( ); reduzi-lo para uma corrida que significava ser mais bulk do que suas roupas.
-- Escritos `<stem>.mesh`, `<stem>_d.dds`, `<stem>_n.dds` (só quando o modelo tem um mapa normal) e `<stem>_parts.png`A linha de log dá a
-Número de vertices, escala, limites e quantas vertices caem em partes escondidas.
-- Mantenha o `.glb` fora do repo (tens de MB); tome as quatro saídas. `.gitignore` Deixe `*/items/races/*.mesh` e `*.dds` através do
-- Um modo dependente, que é executado a partir de um clone KenshiRaces com sua própria pasta de saída (`<Mod>/items/races`e a votação.
+- `<Kenshi folder>` : a pasta do jogo ( `data/` dentro dela), por exemplo. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"` .
+- O radical nomeia os arquivos e deve ser exclusivo entre os mods (o jogo encontra os arquivos pelo nome): `<modfolder lower case>_<race>` .
+- `male` / `female` : o equipamento, macho padrão. Um corpo feminino é ajustado ao `female_skeleton` e medido em relação ao `human_female.mesh` e `FemaleMask_Default.png` (animações e vozes femininas no jogo, os controles deslizantes do busto do editor); um masculino para `male_skeleton` , `human_male.mesh` e `MaleMask_Default.png` .
+- `slim` : 0 a 1, padrão 1 ([Emagrecimento](#slimming) ); abaixe-o para uma corrida que deve ser mais volumosa do que suas roupas.
+- Escreve `<stem>.mesh` , `<stem>_d.dds` , `<stem>_n.dds` (somente quando o modelo possui mapa normal) e `<stem>_parts.png` ; a linha de log fornece a contagem de vértices, escala, limites e quantos vértices caem em partes ocultáveis.
+- Mantenha o `.glb` fora do repositório (dezenas de MB ); comprometer as quatro saídas. `.gitignore` permite a passagem de `*/items/races/*.mesh` e `*.dds` .
+- Um mod dependente o executa a partir de um clone KenshiRaces com sua própria pasta de saída ( `<Mod>/items/races` ) e stem.
 
 <a id="what-the-model-needs"></a>
 ## O que o modelo precisa
 
-- Uma camada cuja pele tem as articulações Biped `Bip001 Pelvis`, `Spine`, `Spine1`, `Spine2`, `Neck`, `Head`Os dois `Clavicle`, `UpperArm`,
-`Forearm`, `Hand`, `Thigh`, `Calf`, `Foot`, `Toe0`e `mixamorig:HeadTop_End` acima da cabeça. As articulações extras (dentes, ombros, ajudantes) seguem o seu ancestral mais próximo. **Verificado** em Leoma, CrevanCobra e a rainha Cobra (Meshy das exportações).
-- Uma textura de cor básica; uma secura metálica e uma textura normal são usados quando presentes.
-- Qualquer posição de descanso: T-posição e A-posição ambos se encaixam (a posição de liga do jogo tem os braços para baixo).
+- Uma malha esfolada cuja pele possui as articulações bípedes `Bip001 Pelvis` , `Spine` , `Spine1` , `Spine2` , `Neck` , `Head` , ambas `Clavicle` , `UpperArm` , `Forearm` , `Hand` , `Thigh` , `Calf` , `Foot` , `Toe0` e `mixamorig:HeadTop_End` acima da cabeça. Articulações extras (dedos, caudas, ajudantes) seguem seu ancestral bípede mais próximo. **Verificado** em Leoma , Crevan , Crabman and the Crab Queen (exportações Meshy ).
+- Uma textura de cor base; uma rugosidade metálica e uma textura normal são usadas quando presentes.
+- Qualquer pose de descanso: pose T e pose A se encaixam (a pose de amarração do jogo tem os braços para baixo).
 
 <a id="how-the-fit-works"></a>
-## Como funciona o Fit
+## Como funciona o ajuste
 
-1. Cada vertex é pintado para o resto da posição dos arquivos (inversamente ligando tempos de repouso joint transform).
-2. Escala: a altura do osso do jogo acima da articulação do modelo acima do seu vertex mais baixo.
-3. Cada espinha, braço e perna é voltada para que ele ponha de sua articulação para o seu filho como o jogo faz, e estendido para o comprimento do jogo.
-de 6 a 1,6 vezes).
-4. Pelvis, espinhas, pescoço e clavicles são equipados como um pedaço rígido (mais quadrados sobre o pescoço, ombro e articulações do jogo), então o peito
-mantém a sua forma; per-bone se encaixa em lá onde a espina e o clavicle pesam misturando. As articulações da cintura são deixadas fora da mesma forma: a cintura do jogo é de nível com as suas cabeças e os lugares de exportação de uma cintura, que caiu no peito em torno de uma unidade.
-5. A cabeça caiu para o meio de onde o torso o leva para a articulação da cabeça, assim que sua camada fica abaixo do seu ossos. O pescoço do jogo sobe
-A partir de então, a cabeça de um estê-lo se estende a cerca de três vezes o seu comprimento (**Observado** No Homem LeomaCrabman e a Rainha Crab: equipados para o pescoço 2.4 unidades, os modelos possuem 0.8, o jogo 1.4).
-6. As pernas estão bem escuras e são esfregadas para que os solos se põem no chão (as pernas e os pés de crab são mais altos do que os pés do jogo).
-7. Cada vertente é a soma pesada das suas articulações; os seus pesos vão para os ossos de jogo, os quatro mais pesados são mantidos.
+1. Cada vértice é revestido na pose de repouso que o arquivo mostra (tempos de ligação inversos, transformação de repouso da junta).
+2. Escala: a altura do osso da cabeça do jogo sobre a articulação da cabeça do modelo, acima do vértice mais baixo.
+3. Cada osso da coluna, braço e perna é girado de modo que aponte de sua articulação para o filho, como faz o jogo, e esticado até o comprimento do jogo (0,6 a 1,6 vezes).
+4. A pélvis, a coluna, o pescoço e as clavículas são encaixados como uma peça rígida (mínimos quadrados nas articulações do pescoço, ombros e quadril do jogo), para que o peito mantenha sua forma; os ajustes por osso cortam-no onde os pesos da coluna e da clavícula se misturam. As articulações da pélvis e da coluna ficam de fora desse ajuste: a pélvis do jogo está no nível dos quadris e um bípede exportado fica acima deles, o que deixa o peito cair cerca de uma unidade.
+5. A cabeça pousa a meio caminho de onde o torso a leva até a articulação da cabeça do jogo, de modo que sua malha fica abaixo do osso. O pescoço do jogo sobe cerca de uma unidade acima de seus ombros e o desses modelos quase não o faz: colocar a cabeça na articulação estica seus pescoços cerca de três vezes seu comprimento (**Observado** no Leoma masculino, Crabman e a Rainha Caranguejo: pescoço ajustado 2,4 unidades, o próprio modelo 0,8, o jogo 1,4).
+6. Os pés ficam em pé e são comprimidos de forma que as solas dos pés pousem no chão (as patas e os pés do caranguejo são mais altos que o pé do jogo).
+7. Cada vértice é a soma ponderada dos ajustes de suas juntas; seus pesos vão para os ossos do jogo, suas articulações seguem, mantendo as quatro mais pesadas.
 
-**Verificado**As mesas da ferramenta C# correspondem ao protótipo original de Python (posições dentro de 1e-5 unidades, pesos ósseos idênticos) em Crabman.
+**Verificado**: as malhas da ferramenta C# correspondem às do protótipo original do Python (posições entre 1e-5 unidades, pesos de ossos idênticos) no Crabman.
 
 <a id="slimming"></a>
-## O Slimme
+## Emagrecimento
 
-A roupa do jogo é modelada em torno do corpo humano da riga, de modo que o corpo é mais bulkier do que ele mostra. Ao redor de cada torso e osso limbico (pélvicos, espinhas, clavículas, braços e pernas superiores e inferiores) a ferramenta mede a extensão mais estreita do corpo humano por um sexto dos ossos e por doze de um giro ao seu redor; um vertex fixado além desse extensão plus 0.15 unidades (1.5 cm de costura) mantém um quinto do seu excesso, sua correção misturada pelos seus pesos ósseos. A correção é entre 1,5 e 2,5 vezes o limite (um apêndice como um cego, só), é zero para uma vertente fora das camadas (uma coluna pendurada abaixo da pelvis), e é suave sobre a superfície (12 rodadas de vizinho, UV seados soldados) para que as vertices vizinhas se movam de forma semelhante. **Observado** ( o homem Leoma• 39% das vertices movem-se, em média, a 1,3 cm e a 9,5 cm no máximo.
+As roupas do jogo são modeladas em torno do corpo humano do equipamento, portanto, um corpo mais volumoso do que aparece. Em torno de cada osso do tronco e dos membros (pelve, coluna vertebral, clavículas, braços e pernas superiores e inferiores), a ferramenta mede a extensão máxima do corpo humano por sexto do osso e por doze avos de volta em torno dele; um vértice ajustado além dessa extensão mais 0,15 unidades (1,5 cm de tecido) mantém um quinto de seu excesso, sua correção mesclada por seus pesos ósseos. A correção desaparece entre 1,5 e 2,5 vezes o limite (além de: um apêndice como uma garra, deixado sozinho), é zero para um vértice fora das fatias do osso (uma cauda pendurada abaixo da pélvis) e é suavizada sobre a superfície (12 rodadas de média vizinha, costuras UV soldadas) para que os vértices vizinhos se movam de maneira semelhante. **Observado** (masculino Leoma ): 39% dos vértices se movem, 1,3 cm em média e 9,5 cm no máximo.
 
 <a id="bust"></a>
-## ônibus
+## Busto
 
-O corpo de uma mulher é elevado para o homem feminino (**Observado**• O Leoma e Crevan As mulheres colocaram seus 2.0 e 1.75 unidades abaixo, debaixo do peito da roupa e da parte do mapa). O busto é o meio do veto de uma unidade quadrado, entre `Spine1` e os ombros e 0.3 a 1.8 unidades ao lado da linha média, cujo vertex mais frontal é o mais próximo. Cada vertente aumenta pela diferença de tempo seu peso torso-bônus, vezes exp(-(dy / 1.5)2) de sua altura do colo, vezes um passo suave da profundidade da espina (0) para o colo (1), para que a parte de trás, os braços e as pernas permanecem. Depois, a Lula corre.
+O busto do corpo feminino é elevado ao do humano feminino (**Observado**: as mulheres Leoma e Crevan sentaram os seus 2,0 e 1,75 unidades mais abaixo, sob o peito da roupa e o busto do mapa parcial). O busto está no meio da fatia de um quarto de unidade, entre `Spine1` e os ombros e 0,3 a 1,8 unidades ao lado da linha média, cujo vértice frontal está mais à frente. Cada vértice sobe pela diferença vezes o peso do tronco, vezes exp(-(dy / 1,5)²) de sua altura do busto, vezes um passo suave da profundidade da coluna (0) até a do busto (1), de modo que as costas, braços e pernas ficam. Depois o emagrecimento corre.
 
 <a id="human-only-bones"></a>
-## Os ossos humanos
+## Ossos apenas humanos
 
-O esqueleto feminino tem `L Boob` e `R Boob` (O tamanho do peito do editor, altura e escala de espaço e mover-os, motor docs/animation.mdque falta um Biped rig. Após a perda de peso, cada vertex cujo osso mais pesado é `Spine1` ou `Spine2` Toma os pesos humanos do vertex humano mais próximo que tem alguns, dentro de 1 unidade, escalado por 1 - distância; seus próprios pesos se reduzem para fazer espaço. **Observado** (`human_female.mesh`): as vertices do estômago são carregadas pelos dois ossos (892 das 994 vertices front-chest). Os ossos (`L Boob` 28, `R Boob` 29) e as outras mãos da rig femininas diferem da do masculino (`R Clavicle` 23 contra 25; o homem tem `Bip01 Jaw`Assim, as mesas são sempre escritas contra as mãos de seu próprio rigo.
+O esqueleto feminino tem `L Boob` e `R Boob` (o tamanho do peito do editor, altura e escala de espaçamento e movê-los, motor docs/animation.md), que falta em um equipamento Biped. Após o emagrecimento, cada vértice cujo osso mais pesado é `Spine1` ou `Spine2` assume os pesos humanos do vértice humano mais próximo que possui alguns, dentro de 1 unidade, dimensionados em 1 distância; seus próprios pesos encolhem para abrir espaço. **Observado** ( `human_female.mesh` ): os vértices do busto são carregados pelos dois ossos (892 dos 994 vértices frontais do tórax). Os ossos ( `L Boob` 28, `R Boob` 29) e as outras alças do equipamento feminino diferem dos masculinos ( `R Clavicle` 23 contra 25; o macho tem `Bip01 Jaw` ), então as malhas são sempre escritas contra as alças de seu próprio equipamento.
 
 <a id="part-map"></a>
-## Parte do mapa
+## Mapa de peças
 
-A corrida da `part map male`/`female` PNG Marcas que corpo parte de cada vertex da Terra pertence; objetos usados' `hide parts` Não deixe de desenhar essas peças (motor docs/characters.md “As partes do corpo escondidas”. A ferramenta dá a parte da vertente mais próxima do corpo humano, levada pelo mesmo osso, lida do mapa da parte do ramo no UV desse vertente, e escreve-a no próprio UV (1024 × 1024), outros tecidos transparentes. Cada parte humana é cultivada com 0,8 unidades (uma parte que toma a parte mais próxima), uma vez que um corpo de bullying clipe sobre uma faixa mais ampla.
+O `part map male` / `female`  PNG da corrida marca a qual parte do corpo cada vértice pertence; O `hide parts` dos itens desgastados para de desenhar essas peças (engine docs/characters.md "Partes ocultas do corpo"). A ferramenta fornece a cada vértice ajustado a parte do vértice do corpo humano mais próximo transportado pelo mesmo osso, lida no mapa de peças da plataforma no uv desse vértice e escreve no próprio uv do vértice ajustado (1024 × 1024, outros texels transparentes). Cada parte humana é primeiro aumentada em 0,8 unidades (um vértice sem uma parte ocupa o vértice marcado mais próximo dentro dessa distância), uma vez que um corpo mais volumoso se estende sobre uma faixa mais larga.
 
-**Observado** (`MaleMask_Default.png`2562, mostrado em `human_male.mesh` UVs como o jogo mostra: 642 de 15 vertices têm uma parte: vermelho o peito e o ombro, bandas brancas em torno dos braços superiores, verde a frente do estômago. `hide parts` em dados de base (rebirth.mod): Drifter e Padded Leather Jacket 1, Sleeveless Longcoat e Dustcoat 3, Ninja Gi e Rags 4, roupas 5, juntas de pele e Crab Armour 7; Santo Servente Rags, Monk Pants e Hoods 0. Os itens com 0 não escondem nada; a perda de peso cobre aqueles. **Observado** (`FemaleMask_Default.png` Em `human_female.mesh` UVs: vermelho o busto (1,102 vertices), branco as bandas do braço superior (560), verde o estômago (250).
+**Observado** ( `MaleMask_Default.png` , 256², amostrado em `human_male.mesh` uvs conforme o jogo os amostra): 642 dos 15.504 vértices têm uma parte: vermelho na parte superior do peito e ombros, faixas brancas ao redor dos braços, verde na frente da barriga. `hide parts` nos dados base (rebirth.mod): Drifter's e jaqueta de couro acolchoada 1, Longcoat e Dustcoat sem mangas 2, Longcoat e Dustcoat 3, Ninja Gi e Rags 4, vestes 5, jaquetas de placas, ternos de pele e Armadura de Caranguejo 7; Trapos de Servo Sagrado, Calças de Monge e capuzes 0. Itens com 0 não escondem nada; o emagrecimento cobre isso. **Observado** ( `FemaleMask_Default.png` a `human_female.mesh` uvs): vermelho o busto (1.102 vértices), branco as faixas dos braços (560), verde a barriga (250).
 
 <a id="textures"></a>
 ## Texturas
 
-- `_d`: cor de base, alfa = gloss = (255 - rigidez) / 2 ( rigidez 200 sem um mapa); 20482, BC3 com mips.
-- `_n`: layout do personagem do jogo, X em alfa e Y em verde, Y flipped de glTF+ Y em cima; vermelho e azul 0.
+- `_d` : cor base, alfa = brilho = (255 - rugosidade) / 2 (rugosidade 200 sem mapa); 2048², BC3 com mips.
+- `_n` : o layout dos personagens do jogo, X em alfa e Y em verde, Y invertido de +Y do glTF para cima; vermelho e azul 0.

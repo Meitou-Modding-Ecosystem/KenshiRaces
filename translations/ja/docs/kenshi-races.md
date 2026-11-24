@@ -1,53 +1,51 @@
 <a id="kenshi-races"></a>
-# Kenshi レース
+# Kenshi Races
 
-3つの新しいレースが、キャラクター編集者、それぞれサブレースで、ゲームの人間のスケルトン(`kenshi.races`すべての記録が積み重ねられ、体が装備されている。 [レース輸入](race-import.md). また、船は [アニメーション図書館](animations.md) 各レースのための59クリップ。 モードはレースやクリップを使用し、サブレースを追加するか、独自のレースを使用します。 [depending-on-kenshi-races.md](depending-on-kenshi-races.md).
+ゲームの人間のスケルトン ( `kenshi.races` 、依存関係なし) に、キャラクター エディター用の 3 つの新しいレース (それぞれサブレースがあります): すべてのレコードがロード時に追加され、ボディは [レース インポート](race-import.md) によって適合されます。また、これらのスケルトンの種族ごとに 59 個のクリップを含むアニメーション ライブラリ](animations.md) も同梱されています。 MOD は種族とクリップを使用し、サブ種族を追加したり、独自の種族を追加したりします: [ddependent-on-kenshi-races.md](depending-on-kenshi-races.md) 。
 
 <a id="races"></a>
 ## レース
 
-編集者はそれぞれ RACE_GROUP レースとその RACEs エンジンとして() docs/characters.md 「編集者」の内容です。
+エディターには、各 RACE_GROUP が種族としてリストされ、その RACE がサブレースとしてリストされます (engine docs/characters.md「キャラクター エディター」)。
 
-| レース(RACE_GROUP) | サブレイク(RACE) | ジェンダー | CHARACTERs |
+| レース ( RACE_GROUP ) | サブレース ( RACE ) | 性別 | キャラクター |
 | --- | --- | --- | --- |
-| Leoma `30-` | レオマ `10-` | 男性、女性 | レオマル `11-`レオマフェマ `17-` |
-| Crevan `31-` | 乗組員 `18-` | 男性、女性 | クライアント `19-`クルマ `21-` |
-| Crabfolk `32-` | クラブマン `12-` | シングル | クラブマン `13-` |
-| | クラブ `14-` | シングル | クラブ `15-` |
+| Leoma `30-` | レオマ `10-` | 男性、女性 | レオマ男性 `11-` 、レオマ女性 `17-` |
+| Crevan `31-` | クレバン `18-` | 男性、女性 | クレバン男性 `19-` 、クレヴァン女性 `21-` |
+| Crabfolk `32-` | カニマン `12-` | シングル | カニマン `13-` |
+|  | クラブクイーン `14-` | シングル | クラブクイーン `15-` |
 
-終わりは、 `KenshiRaces.mod`. Subrace と CHARACTER 名前は低い単語なので、コンソールの `spawn` 引用なしで取り上げます。 各体のファイルは、 `KenshiRaces/items/races/kenshiraces_<character>*` (通常の地図) Leoma そして、 Crevan). 男性の体は、 `male_skeleton`女性は、 `female_skeleton`クラブの体は男性の合うので、クラブの女王は男性のアニメーションと声で単性です。 原作モデル(Meshy 輸出、スムーズ 1):レオマール「レオニド・バー - 3ds Max Biped.glb」、クラブマンとクラブケーン... - 3ds マックス・ビペッド.glb、その他 `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`.
+ID は `KenshiRaces.mod` で終わります。 Subrace 名と CHARACTER 名は 1 つの小文字であるため、コンソールの `spawn` はそれらを引用符なしで受け取ります。各ボディのファイルは `KenshiRaces/items/races/kenshiraces_<character>*` ( Leoma および Crevan の法線マップ) です。男性のボディは `male_skeleton` に、女性のボディは `female_skeleton` に取り付けられます。カニの体は男性にぴったりであるため、カニの女王は男性のアニメーションと音声を備えた単一の性別です。ソース モデル ( Meshy エクスポート、スリム 1): leomamale "Leonid Bare - 3ds Max Biped.glb"、cravman およびクラブクイーン "... - 3ds Max Biped.glb"、その他の `leonidfemale.glb` 、 `corvidmale.glb` 、 `corvidfemale.glb` 。
 
 <a id="records"></a>
-## レコード
+## 記録
 
-ちなみに、このゲームのデータは、ゲームのデータに含まれています(`RaceRecords`)、そう `KenshiRaces.mod` 船は空っぽで、CIはゲームを必要としません:
+ロードされたゲーム自身のレコード ( `RaceRecords` ) からデータ フェーズで追加されるため、 `KenshiRaces.mod` は空の状態で出荷され、 CI にはゲームが必要ありません。
 
-- RACE_GROUPレースの名前とそのサブレース RACEs編集者の命令で
-- RACE (原題: A copy of Greenlander (`17-gamedata.quack`: 統計、アニメーション、声) 各性別のメッシュ、色のテキスト、通常の地図
-地図の一部(単性のスベラスは両方に1つの体を着用する) `single gender` 二つの体を有し、頭も髪もない(頭もないレースは、頭もない、体も自分のものを持っている)。 `morph num` 0; `no shirts` (シャツとパンツは人間の体のUVの配置を塗り、体のマスクと強さの正常な地図を清めます。 `playable` とのこと `editor limits` [`kenshiraces_editor.xml`](#character-editor).
-- CHARACTERドライバーのコピー(`2205-gamedata.base`性別と性別(`female chance` 100または0、金、金、ボーナスなし
-募集会話
-- エンジン:A CHARACTER自分自身 `mesh` フィールドは、そのレースの体のマッサージを超えています。
+- RACE_GROUP : レースの名前とそのサブレースの RACE (編集者の順序)。
+- RACE (サブレース): 各性別のメッシュ、カラー テクスチャ、ノーマル マップ、パーツ マップを備えた Greenlander ( `17-gamedata.quack` : 統計、アニメーション、音声) のコピー (単一の性別のサブレースは、両方の 1 つの体を着用します)。  両方のボディがある場合を除き、 `single gender` 。頭も髪もありません（種族リストに頭がなければ何も描画されません。体には独自のものがあります）。 `morph num` 0; `no shirts` (シャツとパンツは人体の UV レイアウトをペイントします);ボディマスクとストレングスノーマルマップがクリアされました。 `playable` と `editor limits` [ `kenshiraces_editor.xml` ](#character-editor) 。
+- CHARACTER : 亜人種と性別 ( `female chance` 100 または 0) のドリフター ( `2205-gamedata.base` ) のコピー。キット、お金、賞金はありません。新兵の話が付いています。
+- エンジン: CHARACTER 自身の `mesh` フィールドは、そのレースのボディ メッシュをオーバーライドします。
 
 <a id="character-editor"></a>
-## キャラクター編集
+## キャラクターエディター
 
-レースは、ゲームのようなキャラクターの作成で提供されます。 `KenshiRaces/items/races/kenshiraces_editor.xml` 骨を動かすスライダーだけを保持し、人間の体と同じように動作します。 docs/animation.md骨のスケール:顔は頭の大きさ、頭の形と首のスライダーを保持します(顔のポーズはありません:固体の頭は1つありません)、身体は人間の体のスライドと皮膚のトーンを保持します、女性の乳房の大きさと高さとスペースで、女性の骨の動きを動かします。 `L Boob` / `R Boob` 女性の体重が重い([レース輸入](race-import.md#bust)). 人間は人間(`data/editor/editor_data_human.xml`).
+レースは、ゲーム独自のものと同様に、キャラクター作成時に提供されます。 `KenshiRaces/items/races/kenshiraces_editor.xml` はボーンを動かすスライダーのみを保持するため、人間と同様にフィットしたボディで動作します (engine docs/animation.md、ボーン スケール): 顔は頭のサイズ、頭の形状、首のスライダーを保持します (顔のポーズはありません。フィットした頭には何もありません)。 Body は、女性のスケルトンの `L Boob` / `R Boob` を移動させ、女性の体の重み付けを行う人体スライダーと肌のトーン、女性の胸のサイズ、身長、間隔を保持します ([レース インポート](race-import.md#bust) ])。範囲は人間のものです ( `data/editor/editor_data_human.xml` )。
 
 <a id="recruiting"></a>
-## 募集
+## 人材募集
 
-DIALOGUE `1-KenshiRaces.mod`キャラクターは「あなたはもう一つの手を使うことができるようだ」と答え、アクション18(チームに加わる)は、プレイヤーのチームに追加されます。
+DIALOGUE  `1-KenshiRaces.mod` : キャラクターが「もう一組の手でも使えそうな感じですね。」と言うと、プレイヤーは「参加してください。」と答えます。アクション 18 (分隊に参加) では、キャラクターがプレイヤーの分隊に追加されます。
 
 <a id="testing-in-game"></a>
-## 試用ゲーム
+## ゲーム内でのテスト
 
-1. 許可 Kenshi ラウンサーのレース(または `data/mods.cfg`).
-2. コンソール: `spawn leomafemale` (あるいは、いかなる CHARACTER テーブル) コースにスパウン; 話して募集する, または F10 デビュー 募集。
-3. F10 **Kenshi レース:レース** 各レース(このモードと依存者)の()を記録します。
-4. 新しいゲーム:編集者のレースラウンドが到達 Leoma, Crevan そして、 Crabfolk.
+1. ランチャーで Kenshi Races (または `data/mods.cfg` ) を有効にします。
+2. コンソール: `spawn leomafemale` (またはテーブル内の任意の CHARACTER ) がカーソルの位置に生成されます。 recruit に話しかけるか、F10 で Recruit をデバッグします。
+3. F10 ** Kenshi Races : レース** は、ロードされているすべての適合レース (この MOD と依存物) をリストします。
+4. 新しいゲーム: エディターのレース矢印は Leoma 、 Crevan 、および Crabfolk に到達します。
 
 <a id="clothing"></a>
-## 服装
+## 衣類
 
-アムールは体の骨を共有するので、これらの体とともに移動しますが、それは人間の体の周りにモデル化されています。 部分地図は、物件の下に皮膚を隠す `hide parts` (スカート、コート、ジャケット) 体重減少は、他の場所の人間よりもより多くのものに引き込まれます([レース輸入](race-import.md#slimming)). 人間から遠く離れた形(シェル、クラウド)は、まだ、緊密な腕を介してポッキーしています。
+鎧は体の骨格を共有しているため、これらの体と一緒に動きますが、人体を中心にモデル化されています。パーツ マップは、 `hide parts` のアイテム (コート、ローブ、ジャケット) の下のスキンを非表示にします。痩身は、人間よりも大きなものを他の場所に引き込みます（[レースインポート](race-import.md#slimming) ]）。人間とはかけ離れた形状（甲羅、爪）が依然として堅い鎧を突き抜けています。

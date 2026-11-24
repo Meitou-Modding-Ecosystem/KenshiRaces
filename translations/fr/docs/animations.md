@@ -1,39 +1,33 @@
 <a id="animations"></a>
 # Animations
 
-Kenshi Les races naviguent une bibliothèque d'animation et des vidéos : chaque clip des modèles source des races (MeshyLa bibliothèque d'animation, 59 clips), rejetée sur les squelettes mâles et femelles du jeu, afin que tout personnage sur ces squelettes puisse le jouer, les humains, les hivers et les squelets ainsi que les races équipées. Les modes jouent à travers Kenshi Les races API ([depending-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations)).
+Kenshi Races propose une bibliothèque d'animations : chaque clip des modèles sources des races (bibliothèque d'animations de Meshy , 59 clips), reciblé sur les squelettes masculins et féminins du jeu, afin que n'importe quel personnage de ces squelettes puisse y jouer, humains, shek, hivers et squelettes ainsi que les races adaptées. Les mods les jouent via Kenshi Races ' API ([dedependent-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations) ).
 
 <a id="files-and-records"></a>
 ## Fichiers et enregistrements
 
-- `KenshiRaces/items/animations/kenshiraces_anims_male.skeleton` et `_female.skeleton`: Chacun commence avec sa game skeleton's os byte pour
-bits (les traces d'un fichier d'animation sont appliquées par l'os, et les bras de la femelle diffèrent), puis les clips, 30 clés par seconde.
-- ANIMATION_FILE `40-KenshiRaces.mod` (`AnimationRecords.File`Les noms des deux. La phase de données l'a relié à la `animation files` Pour chaque course
-Qui `male mesh` Il est sous `data/character/meshes/` (à l'exception de la Reine Hive, qui a son propre squelette) ou est un corps équipé (`/items/races/`) et `RaceRecords.FillRace` Il l'a relié dans de nouvelles subrases, un dépendant aussi.
-- Un handicapé COMBAT_TECHNIQUE Pour le clip (`100-` à `158-KenshiRaces.mod`Le nom de l’ordre, `anim name` = le clip: handicapé, donc pas de combat le pic;
-Un mod le joue comme un mod combat (moteur docs/modding.md« Le combat se déplace ».
+- `KenshiRaces/items/animations/kenshiraces_anims_male.skeleton` et `_female.skeleton` : chacun démarre avec les os de son squelette de jeu octet par octet (les pistes d'un fichier d'animation s'appliquent par poignée d'os, et les poignées du rig femelle diffèrent), puis les clips, 30 touches par seconde.
+- ANIMATION_FILE  `40-KenshiRaces.mod` ( `AnimationRecords.File` ) nomme les deux. La phase de données le relie au `animation files` de chaque race dont le `male mesh` est sous `data/character/meshes/` (à l'exception de la Reine de la Ruche, qui a son propre squelette) ou est un corps ajusté ( `/items/races/` ), et `RaceRecords.FillRace` le relie à de nouvelles sous-races, également dépendantes.
+- Un COMBAT_TECHNIQUE désactivé par clip ( `100-` à `158-KenshiRaces.mod` , ordre des noms), `anim name` = le clip : désactivé, donc aucun combat ne le sélectionne ; un mod le joue comme un mouvement de combat de mod (engine docs/modding.md, "Combat move").
 
 <a id="making-them"></a>
-## Pour les faire
+## Les fabriquer
 
-`tools/AnimationExport` Avec A [Le laboratoire](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) La clôture (`MOTIONLAB`Le défaut `../PZAKenshiMotionLab`et le jeu de `data/character/meshes`:
+`tools/AnimationExport` avec un clone [ Motion Lab ](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) ( `MOTIONLAB` , `../PZAKenshiMotionLab` par défaut ) et le `data/character/meshes` du jeu :
 
-1. `python tools/AnimationExport/split.py <model.glb> <clips folder>` Pour le modèle source : une référence par clip, `Bip001` Les associations renommées à
-Les rôles de Mixamo sont lues par le Motion Lab. Un modèle ultérieur écrite un clip à un précédent don ; le mâle LeomaS est le dernier.
-2. Par sexe, `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference
-<clip>.glb ...` (chacun clip): les retarde sur le corps du jeu (environ une minute pour 59).
-3. » Python tools/AnimationExport/export.py <out>/human_<gender>_rigged.glb <gender>/skeleton.skeleton
-KenshiRaces/items/animations/kenshiraces_anims_<gender>.skeleton <clips>.json`: names them `kr_<clip la case inférieure>` et écrite le fichier.
+1. `python tools/AnimationExport/split.py <model.glb> <clips folder>` par modèle source : une référence par clip, les articulations `Bip001` renommées selon les rôles Mixamo que lit le Motion Lab . Un modèle ultérieur écrase un clip donné par un modèle précédent ; le mâle Leoma passe en dernier.
+2. Par sexe, `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference <clip>.glb ...` (chaque clip) : les recible sur le corps du jeu (environ une minute pour 59).
+3. `python tools/AnimationExport/export.py <out>/human_<gender>_rigged.glb <gender>_skeleton.skeleton KenshiRaces/items/animations/kenshiraces_anims_<gender>.skeleton <clips>.json` : les nomme `kr_<clip lower case>` et écrit le fichier.
 
-Chaque clip est en place : où un clip source est envoyé (la colonne de voyage), le voyage de la racine est pris comme une ligne droite, et le bob est maintenu. Tout le monde se retrouve devant le jeu: le yaw de la racine correspond au binding pose de -90°, comme les idles du jeu eux-mêmes (**Vérifié**, `idle_stand_normal` Dans `male_skeleton.skeleton`). Un nouveau clip a également besoin de sa ligne `RaceAnimations`, avec le prochain ID technique gratuit (159 sur), et sa ligne ici.
+Chaque clip est joué sur place : là où un clip source a parcouru (la colonne Déplacement, mètres), le déplacement au sol de la racine est retiré sous forme de ligne droite, le balancement et le balancement sont conservés. Tous font face à l'avant du jeu : le lacet de la racine correspond à -90 ° de la pose de liaison, comme le font les propres ralentis du jeu (**Vérifié**, `idle_stand_normal` dans `male_skeleton.skeleton` ). Un nouveau clip a également besoin de sa ligne dans `RaceAnimations` , avec le prochain identifiant de technique libre (159 sur), et de sa ligne ici.
 
 <a id="clips"></a>
-## Clips
+## Extraits
 
-| Clip | `RaceAnimations.` | Technique | source | Les secondes | Voyage supprimé (m) |
+| Agrafe | `RaceAnimations.` | Technique | Source | Secondes | Déplacement supprimé (m) |
 | --- | --- | --- | --- | --- | --- |
 | `kr_360_power_spin_jump` | `PowerSpinJump360` | `100-` | _360_Power_Spin_Jump | 3.00 | 2.5 |
-| `kr_alert` | `Alert` | `101-` | Alerte | 4.00 |  |
+| `kr_alert` | `Alert` | `101-` | Alert | 4.00 |  |
 | `kr_all_night_dance` | `AllNightDance` | `102-` | All_Night_Dance | 8.17 |  |
 | `kr_angry_ground_stomp` | `AngryGroundStomp` | `103-` | Angry_Ground_Stomp | 1.37 |  |
 | `kr_angry_ground_stomp_2` | `AngryGroundStomp2` | `104-` | Angry_Ground_Stomp_2 | 1.77 |  |
@@ -46,8 +40,8 @@ Chaque clip est en place : où un clip source est envoyé (la colonne de voyage)
 | `kr_bicep_curl` | `BicepCurl` | `111-` | bicep_curl | 5.87 |  |
 | `kr_bicycle_crunch` | `BicycleCrunch` | `112-` | bicycle_crunch | 1.10 |  |
 | `kr_big_heart_gesture` | `BigHeartGesture` | `113-` | Big_Heart_Gesture | 6.17 |  |
-| `kr_block1` | `Block1` | `114-` | Blocage 1 | 3.47 |  |
-| `kr_block2` | `Block2` | `115-` | Blocage 2 | 1.60 |  |
+| `kr_block1` | `Block1` | `114-` | Block1 | 3.47 |  |
+| `kr_block2` | `Block2` | `115-` | Block2 | 1.60 |  |
 | `kr_breakdance_1990` | `Breakdance1990` | `116-` | Breakdance_1990 | 0.50 |  |
 | `kr_carry_heavy_object_walk_inplace` | `CarryHeavyObjectWalkInplace` | `117-` | Carry_Heavy_Object_Walk_inplace | 6.50 |  |
 | `kr_casual_walk` | `CasualWalk` | `118-` | Casual_Walk | 4.17 |  |
@@ -60,7 +54,7 @@ Chaque clip est en place : où un clip source est envoyé (la colonne de voyage)
 | `kr_climb_stairs` | `ClimbStairs` | `125-` | Climb_Stairs | 2.90 | 0.4 |
 | `kr_climb_up_rope` | `ClimbUpRope` | `126-` | Climb_Up_Rope | 2.57 | 0.2 |
 | `kr_confident_strut` | `ConfidentStrut` | `127-` | Confident_Strut | 2.67 |  |
-| `kr_counterstrike` | `Counterstrike` | `128-` | contre-strike | 6.50 |  |
+| `kr_counterstrike` | `Counterstrike` | `128-` | Counterstrike | 6.50 |  |
 | `kr_fast_lightning` | `FastLightning` | `129-` | Fast_Lightning | 10.80 |  |
 | `kr_female_bend_over_pick_up_inspect` | `FemaleBendOverPickUpInspect` | `130-` | Female_Bend_Over_Pick_Up_Inspect | 3.80 |  |
 | `kr_flirty_strut_inplace` | `FlirtyStrutInplace` | `131-` | Flirty_Strut_inplace | 3.20 |  |
@@ -71,7 +65,7 @@ Chaque clip est en place : où un clip source est envoyé (la colonne de voyage)
 | `kr_kung_fu_punch` | `KungFuPunch` | `136-` | Kung_Fu_Punch | 7.30 | 1.6 |
 | `kr_monster_walk` | `MonsterWalk` | `137-` | Monster_Walk | 4.07 |  |
 | `kr_prone_reload` | `ProneReload` | `138-` | Prone_Reload | 6.40 |  |
-| `kr_running` | `Running` | `139-` | Courir | 0.60 |  |
+| `kr_running` | `Running` | `139-` | Running | 0.60 |  |
 | `kr_sit_cross_legged_on_floor` | `SitCrossLeggedOnFloor` | `140-` | Sit_Cross_Legged_on_Floor | 2.50 |  |
 | `kr_stand_and_chat` | `StandAndChat` | `141-` | Stand_and_Chat | 5.17 |  |
 | `kr_stand_and_drink` | `StandAndDrink` | `142-` | Stand_and_Drink | 8.87 |  |
@@ -86,7 +80,7 @@ Chaque clip est en place : où un clip source est envoyé (la colonne de voyage)
 | `kr_texting_walk` | `TextingWalk` | `151-` | Texting_Walk | 2.00 |  |
 | `kr_victory_fist_pump` | `VictoryFistPump` | `152-` | Victory_Fist_Pump | 1.50 |  |
 | `kr_walk_backward_with_gun_inplace` | `WalkBackwardWithGunInplace` | `153-` | Walk_Backward_with_Gun_inplace | 1.00 |  |
-| `kr_walking` | `Walking` | `154-` | marche | 1.00 |  |
+| `kr_walking` | `Walking` | `154-` | Walking | 1.00 |  |
 | `kr_walking_2_inplace` | `Walking2Inplace` | `155-` | walking_2_inplace | 1.17 |  |
 | `kr_walking_woman` | `WalkingWoman` | `156-` | Walking_Woman | 0.97 |  |
 | `kr_wall_push_jump_and_flip` | `WallPushJumpAndFlip` | `157-` | Wall_Push_Jump_and_Flip | 2.00 | 1.3 |

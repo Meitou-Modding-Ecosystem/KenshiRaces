@@ -1,69 +1,66 @@
 <a id="preparing-a-model"></a>
-# Preparar un modelo
+# Preparando un modelo
 
-Cómo conseguir una generación `.glb` (Meshy, Hi3D, Blender) a un polígono, tamaño de textura y tamaño real del juego, antes de que se entre en `<Mod>/Structures/` (construcción de edificios) o `<Mod>/ItemModels/` y el tema. La importación en sí misma: [structures.md](structures.md).
+Cómo obtener un `.glb` ( Meshy , Hi3D , Blender ) generado a un número de polígonos, tamaño de textura y tamaño real que maneja el juego, antes de pasar a `<Mod>/Structures/` (edificios) o `<Mod>/ItemModels/` (elementos). La importación en sí: [structures.md](structures.md) .
 
-Los comandos se ejecutan desde la raíz repo en PowerShell. Necesidad de Python 3 `prepare-model.py` También necesitan `pip install pillow numpy`.
+Los comandos se ejecutan desde la raíz del repositorio en PowerShell. Necesita Python 3; `prepare-model.py` también necesita `pip install pillow numpy` .
 
 <a id="1-inspect"></a>
-## 1. Inspección
+## 1. inspeccionar
 
 ```powershell
 python tools\model-info.py <Mod>\Structures\my-hut.glb
 ```
 
-Se imprime el tamaño en metros (X, Y arriba, Z), el lado más largo, los materiales, y el tamaño de los píxeles de cada textura y MB. Una nota sobre la escala de nodo o el significado de la rotación `prepare-model.py` No se puede reorganizar: se exporta de nuevo desde Blender con transformaciones aplicadas (Objeto > Aplicación > Todas las transformaciones).
+Imprime el tamaño en metros (X, Y arriba, Z), el lado más largo, triángulos, materiales y el tamaño de píxel de cada textura y MB . Una nota sobre la escala o rotación del nodo significa que `prepare-model.py` no puede cambiar su escala: expórtelo nuevamente desde Blender con las transformaciones aplicadas (Objeto > Aplicar > Todas las transformaciones).
 
 <a id="2-cut-the-polycount"></a>
-## 2. Cortar el poligono
+## 2. Cortar el policuenta
 
-| Bien | Triángulos | Texturas |
+| Amable | Triángulos | Texturas |
 | --- | --- | --- |
-| Edificio o decoración | entre 5.000 y 20.000 | 2048 |
-| El producto (hasta, caído, en una tienda) | Menos de 5.000 | 1024 |
+| Construcción o decoración | 5.000 a 20.000 | 2048 |
+| Artículo (retenido, caído, en una tienda) | menos de 5.000 | 1024 |
 
-Los generadores a menudo dan 100.000 o más; las importaciones son más de 150.000. Para cortarlo:
+Los generadores suelen dar 100.000 o más; la importación advierte por encima de 150.000. Para cortarlo:
 
-- **Meshy:** Remete el modelo con un polígono objetivo en el presupuesto anterior (tanto la topología como el triángulo funcionan), manteniendo las texturas y
-Descargar como GLB de nuevo.
-- **El Blender:** Archivo de la etiqueta: Import glTF, seleccione la mezcla, adicione un Modificador Decimado (Collapse) y la Ratio inferior hasta que el rostro cuente en el estado
-La barra está en el presupuesto, aplique, luego Ficha > Exportación > glTF El binario (`.glb`Con la aplicación de los modificadores.
+- ** Meshy :** Vuelva a mallar el modelo con un recuento de polígonos objetivo en el presupuesto anterior (la topología cuádruple o triangular funciona), mantenga las texturas y descárguelo como GLB nuevamente.
+- ** Blender :** Archivo > Importar > glTF, seleccione la malla, agregue un modificador Diezmar (Contraer) y baje la relación hasta que el recuento de caras en la barra de estado esté dentro del presupuesto, aplíquelo, luego Archivo > Exportar > glTF Binario ( `.glb` ) con Aplicar modificadores activado.
 
-El proceso de desaceleración se simplifica por separado (`collisionTriangles`, por defecto 2000), así que cortar la mezcla visible es acerca de la tasa de marco y el tamaño del archivo.
+La colisión se simplifica por separado ( `collisionTriangles` , predeterminado 2000), por lo que cortar la malla visible depende de la velocidad de fotogramas y el tamaño del archivo.
 
 <a id="3-choose-the-size"></a>
-## 3. Elegir el tamaño
+## 3. Elige la talla
 
-La importación trata el modelo como metros; el tamaño de un generador es arbitrario. Voy a pegar el tamaño real y ponerlo en el archivo de configuración del modelo ([Sitio web.md “Settings”](structures.md#settings)No en el modelo:
+La importación trata el modelo como metros; El tamaño de un generador es arbitrario. Elija el tamaño real y configúrelo en el archivo de configuración del modelo ([structures.md "Settings"](structures.md#settings) ), no en el modelo:
 
-- El edificio: `"height"` En los metros de `<model>.json`. KenshiLas personas son de aproximadamente 1,8 metros de altura y leyen pequeños además de los tamaños del mundo real, por lo que toman el
-tamaño que describirías y añadirás 20% (un post de 2,2 m se convierte en `2.64`).
-- El objeto: `"size"`El lado más largo en metros, `<model>.json` Al lado de ella, en `ItemModels/`.
+- Edificio: `"height"` en metros en `<model>.json` .  La gente de Kenshi mide aproximadamente 1,8 m de altura y se lee pequeña en comparación con los tamaños del mundo real, así que toma el tamaño que describirías y agrega un 20% (una publicación de 2,2 m se convierte en `2.64` ).
+- Artículo: `"size"` , su lado más largo en metros, en `<model>.json` junto a él en `ItemModels/` .
 
 <a id="4-shrink-the-textures"></a>
-## 4. Descargar las texturas
+## 4. Reducir las texturas
 
 ```powershell
 python tools\prepare-model.py <Mod>\Structures\my-hut.glb 2048
 ```
 
-Esto reafirma el archivo en el lugar con la mayor parte de los píxeles de un lado (2048 para los edificios, 1024 para los objetos), generalmente cortado de decenas de MB. Un tercer argumento también desliza al lado más largo en metros, para cuando no se desea un archivo de configuración. El precio de las entradas es más alto (`textureSize`Pero cometiendo el archivo reducido mantiene el repo pequeño.
+Esto reescribe el archivo en su lugar con cada textura como máximo esa cantidad de píxeles por lado (2048 para edificios, 1024 para elementos), generalmente recortándolo de decenas de MB a unos pocos. Un tercer argumento opcional también cambia la escala del modelo a ese lado más largo en metros, para cuando no se desea un archivo de configuración. La importación también reduce a la mitad texturas más grandes ( `textureSize` ), pero confirmar el archivo reducido mantiene el repositorio pequeño.
 
-correr `model-info.py` De nuevo ver el resultado.
+Ejecute `model-info.py` nuevamente para verificar el resultado.
 
 <a id="5-import-and-check"></a>
-## 5. Importación y verificación
+## 5. Importar y verificar
 
-Construye y despliega con Play (o despliega solo la importación, [Siguiente entradaSiguiente “El comienzo rápido”](structures.md#quick-start)). El log tiene una línea por modelo:
+Compile e implemente con Play (o ejecute la importación solo, [structures.md "Inicio rápido"](structures.md#quick-start) ). El registro tiene una línea por modelo:
 
 ```
 Structure my-hut.glb -> "My Hut": 2 part(s), 12480 triangles, 3.1 m tall, collision mesh, unlocked by start
 Item beast-capsule.glb -> mesh mymod_beast_capsule.mesh, material 950000-MyMod.mod, 4082 triangles, 0.11 m long
 ```
 
-Véase la altura o la longitud y el número de triángulos, luego vea en el juego: colocar el edificio, o bajar y recoger el elemento.
+Comprueba la altura o la longitud y el número de triángulos, luego míralo en el juego: coloca el edificio o suelta y recoge el objeto.
 
 <a id="6-commit"></a>
-## 6. Compromiso
+## 6. Comprometerse
 
-Compromiso con el `.glb`Y su `.json` Y el Folio `ids.json` Juntos en `ids.json` Mantiene los identificadores de registro de cada modelo fijados, y salva los nombres de los edificios colocados por esos identificadores.
+Confirme el `.glb` , su `.json` y el `ids.json` de la carpeta juntos. `ids.json` mantiene fijas las identificaciones de registros de cada modelo y guarda los nombres de los edificios colocados según esas identificaciones.

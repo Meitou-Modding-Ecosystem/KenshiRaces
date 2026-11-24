@@ -1,29 +1,29 @@
 <a id="local-development-setup"></a>
-# Lokale Entwicklungsinstellungen
+# Lokale Entwicklungseinrichtung
 
-Clone nur den Rest, auf dem du arbeitest, in eine Folge. Jeder baut auf eigene Faust `dotnet build`Und die Frameworks, die sie herunterladen und Hash-Check selbst.
+Klonen Sie nur die Repos, an denen Sie arbeiten, in einen Ordner. Jeder baut eigenständig mit `dotnet build` auf, und die benötigten Frameworks laden sich selbst herunter und führen einen Hash-Check durch.
 
 <a id="repos"></a>
-## Entspannung
+## Repos
 
-Jeder Mod repo wird nach seinem Mod benannt.
+Jedes Mod-Repo ist nach seinem Mod benannt.
 
-| Repo | Halten | PRS geht auf |
+| Repo | Hält | PRs gehen zu |
 | --- | --- | --- |
-| MeitouClient | Der Motor und seine Mod Hooks | `fork` |
-| RivalryCore | Rivalry Core-Framework und seine Agent-Fähigkeiten | `beta` |
-| Logistikkore | Logistik Core | `beta` |
-| KriegOrchestration | War Orchestration Framework (Verwendung von Logistik Kern) | `beta` |
-| BastFront | Bast Front Melee (Verkauft Kriegs-Orchestration und Logistik-Kern) | `beta` |
-| AshenHand | Die Hand der Ashen (siehe Rivalry Core) | `beta` |
-| Ehefrau | Ehefrau | `beta` |
-| SquadArena | SquadArena Mod und das Squad Rating-Tool | `beta` |
-| Die Gastronomie (TheIvoryDisaster) | Gemeinsame CI, Verpackung, Release-Gate, Framework-Lock-Zweck | `beta` |
+| MeitouClient | die Engine und ihre Mod-Hooks | `fork` |
+| RivalryCore | Rivalry Core Framework und seine Agentenfähigkeiten | `beta` |
+| LogisticsCore | Logistik-Kernrahmen | `beta` |
+| Kriegsorchestrierung | War Orchestration-Framework (verwendet Logistics Core) | `beta` |
+| BastFront | Bast Front-Nahkampf (verwendet Kriegsorchestrierung und Logistikkern) | `beta` |
+| AshenHand | Die Ashen Hand (verwendet Rivalry Core) | `beta` |
+| Tierhaltung | Tierhaltung | `beta` |
+| SquadArena | SquadArena-Mod und das Squad-Bewertungstool | `beta` |
+| GutenStructure (TheIvoryDisaster) | Shared CI , Verpackung, Release-Gate, Framework-Sperrziel | `beta` |
 
 <a id="folders"></a>
-## Folder
+## Ordner
 
-Diese Schritte verwenden acht Ordner. Setzen Sie sie als Variablen in jedem neuen PowerShell-Fenster, und geben Sie dann die kommenden Befehl wie sie sind:
+Diese Schritte verwenden acht Ordner. Legen Sie sie in jedem neuen PowerShell-Fenster als Variablen fest und fügen Sie dann die folgenden Befehle so ein, wie sie sind:
 
 ```powershell
 $Repos     = "C:\Users\<you>\source\repos"
@@ -39,13 +39,12 @@ $Bast      = "$Repos\BastFront"
 <a id="prerequisites"></a>
 ## Voraussetzungen
 
-- .NET 11 SDK (Ein jeder Repo `global.json` Der Name der Version) und Git.
-- Ein Editor: Visual Studio, VS Code mit dem C# Dev Kit oder Rider. Auch ein Terminal funktioniert.
-- Kenshi installiert ist. Wenn es nicht in `C:\Program Files (x86)\Steam\steamapps\common\Kenshi`Set die `KENSHI_PATH` Umweltveränderung
-Zu seinem Folder.
+- . NET 11 SDK (der `global.json` jedes Repos benennt die Version) und Git.
+- Ein Editor: Visual Studio , VS Code mit dem C# Dev Kit oder Rider. Ein Terminal allein funktioniert auch.
+- Kenshi installiert. Wenn es sich nicht in `C:\Program Files (x86)\Steam\steamapps\common\Kenshi` befindet, legen Sie die Umgebungsvariable `KENSHI_PATH` auf seinen Ordner fest.
 
 <a id="clone"></a>
-## Klone
+## Klon
 
 ```powershell
 git clone --recurse-submodules https://github.com/Meitou-Modding-Ecosystem/RivalryCore.git $Rivalry
@@ -57,12 +56,12 @@ git clone --recurse-submodules https://github.com/Meitou-Modding-Ecosystem/BastF
 git clone https://github.com/Meitou-Modding-Ecosystem/MeitouClient.git $Engine
 ```
 
-Jedes Mod Repo hat seine eigene `engine` Submodule und so `$Engine` Es ist nur notwendig, Motoren zu schreiben.
+Jedes Mod-Repo verfügt über ein eigenes `engine` -Submodul, sodass `$Engine` nur zum Schreiben von Engine-Hooks benötigt wird.
 
 <a id="build-and-play-one-mod"></a>
-## Erstellen und spielen Sie ein Mod
+## Erstellen und spielen Sie einen Mod
 
-**Ändern Sie die Mods Repo:**
+**Änderung zum Repo des Mods:**
 
 ```powershell
 cd $Ashen
@@ -70,87 +69,78 @@ dotnet build
 dotnet run --project Play
 ```
 
-- Der erste Bau-Downloads nennt jedes Framework `meitou.lock.json` In den `deps` und stoppt, wenn sie SHA256 ist nicht gleich.
-- `dotnet run --project Play` Kopieren Sie die geschlossenen Frameworks und das Mod in `Kenshi\mods` Und dann beginnt der Motor. Visual Studio vs. Code
-und der installierte Launcher: [play.md](play.md).
-- Erlauben Sie den Rahmen über dem Mod im Laufenden, wie für jede Abhängigkeit.
+- Der erste Build lädt jedes in `meitou.lock.json` genannte Framework in `deps` herunter und stoppt, wenn sein SHA -256 nicht übereinstimmt.
+- `dotnet run --project Play` kopiert die gesperrten Frameworks und den Mod in `Kenshi\mods` und startet die Engine. Visual Studio , VS Code und der installierte Launcher: [play.md](play.md) .
+- Aktivieren Sie die Frameworks über dem Mod im Launcher, wie für jede Abhängigkeit.
 
 <a id="change-a-framework-and-a-mod-together"></a>
-## Ändern Sie ein Framework und ein Mod zusammen
+## Ändern Sie ein Framework und einen Mod gemeinsam
 
-Stellen Sie den Mod repo an Ihrem Framework Clone an:
+Richten Sie das Mod-Repo auf Ihren Framework-Klon:
 
 ```powershell
 Set-Content "$Ashen\Meitou.user.props" "<Project><PropertyGroup><MeitouFrameworkSources>$Rivalry\RivalryCore\RivalryCore.csproj</MeitouFrameworkSources><MeitouEngineDir>$Rivalry\engine\</MeitouEngineDir></PropertyGroup></Project>"
 ```
 
-- Gebäude in `$Ashen` Rivalry Core aus dem `$Rivalry` und verwenden Sie den Motor in `$Rivalry\engine`, und Play enthält, dass Rivalry Core baut.
-- `Meitou.user.props` Git wird ignoriert. Wenn sie bereits ihre Kenshi Die Einstellungen, fügen Sie die beiden Linien innerhalb `PropertyGroup` stattdessen.
-- `MeitouFrameworkSources` die Entwicklungspläne, die von `;`und g. `$Logistics\LogisticsCore\LogisticsCore.csproj`.
-`MeitouEngineDir` Name des Motors, auf dem der Rahmenklon baut.
-- Entfernen Sie die Linie, um zurück zu dem Lock ZIP.
+- Builds in `$Ashen` kompilieren jetzt Rivalry Core aus `$Rivalry` und verwenden die Engine in `$Rivalry\engine` , und Play stellt diesen Rivalry Core-Build bereit.
+- `Meitou.user.props` wird von Git ignoriert. Wenn es bereits Ihre Kenshi -Einstellungen enthält, fügen Sie stattdessen die beiden Zeilen in seinem `PropertyGroup` hinzu.
+- `MeitouFrameworkSources` verwendet Framework-Projektpfade, die durch `;` getrennt sind, z. B. `$Logistics\LogisticsCore\LogisticsCore.csproj` . `MeitouEngineDir` benennt die Engine, auf der der Framework-Klon aufbaut.
+- Löschen Sie die Zeile, um zum gesperrten ZIP zurückzukehren.
 
-**Framework Ketten** Bast Fronten `meitou.lock.json` Die Liste der Kriegs-Orchestration und der Logistik-Kern. Um beide Frameworks und Bast Front zusammenzustellen, übertreiben Sie beide in Bast Front:
+**Framework-Ketten.** `meitou.lock.json` von Bast Front listet War Orchestration und Logistics Core auf. Um beide Frameworks und Bast Front gemeinsam zu ändern, überschreiben Sie beide in Bast Front:
 
 ```powershell
 Set-Content "$Bast\Meitou.user.props" "<Project><PropertyGroup><MeitouFrameworkSources>$War\WarOrchestration\WarOrchestration.csproj;$Logistics\LogisticsCore\LogisticsCore.csproj</MeitouFrameworkSources><MeitouEngineDir>$Bast\engine\</MeitouEngineDir></PropertyGroup></Project>"
 ```
 
-Die Überride geht ab und so baut die Kriegsorchester gegen `$Logistics` Auch das ganze Gebäude nutzt einen einzigen Motor. Er überwindet nur die Kriegs-Orchestration und baut gegen die Logistik-Kern namens in Bast Front.
+Die Überschreibung wird weitergegeben, sodass War Orchestration auch gegen `$Logistics` erstellt wird und der gesamte Build eine Engine verwendet. Überschreiben Sie nur War Orchestration und bauen Sie es gegen den Logistikkern auf, der im Schloss von Bast Front genannt wird.
 
-Um es zu versenden: das Rahmen PR in `beta` von `$Rivalry`, die eine Vorlage veröffentlicht `rivalry-core-<version>-beta.<commit>`. Und dann, in `$Ashen`und Set `meitou.lock.json` für diese Art und die Vermögenswerte, SHA-256 und der Motor verpflichtet sich von seinen Release-Noten, und öffnen Sie den Mod PR. In einer Kette, Schiff Top-down: Logistik-Kern, dann eine Kriegs-Orchestration bauen, dann Bast Front, beide. Nach der Freisetzung des Rahmenes bewegt sich der Lock auf `rivalry-core-v<version>`.
+Um es zu versenden: Führen Sie das Framework PR mit `beta` von `$Rivalry` zusammen, wodurch eine Vorabversion `rivalry-core-<version>-beta.<commit>` veröffentlicht wird. Setzen Sie dann in `$Ashen`  `meitou.lock.json` auf dieses Tag und das Asset SHA -256 und den Engine-Commit aus den Versionshinweisen und öffnen Sie den Mod PR . In einer Kette von oben nach unten versenden: Logistics Core, dann ein War Orchestration-Build, der ihn verriegelt, und dann Bast Front, der beide verriegelt. Verschieben Sie die Sperre nach der Produktionsfreigabe des Frameworks auf `rivalry-core-v<version>` .
 
 <a id="change-the-engine-and-a-mod-together"></a>
-## Ändern Sie den Motor und einen Mod zusammen
+## Ändern Sie die Engine und einen Mod zusammen
 
-Überprüfen Sie Ihren Motorenbereich innerhalb des Mod repo-Submoduls:
+Schauen Sie sich Ihren Engine-Zweig im Submodul des Mod-Repos an:
 
 ```powershell
 git -C "$Ashen\engine" fetch origin <engine branch>
 git -C "$Ashen\engine" checkout FETCH_HEAD
 ```
 
-- Lassen Sie sich nicht an den neuen Motorrücker wenden: Die Motorrückern bewegen sich nur auf die Release-Tags, so dass die Veränderung diese Repo einmal erreicht.
-Er wird frei.
-- Ein Mod, der ein Rahmen verwendet, benötigt auch das auf diesem Motor neu errichtete Rahmen. Verwenden Sie den Rahmen oben und überprüfen Sie das gleiche
-Motorische Branchen in `$Rivalry\engine`.
-- Befehl, es zu landen: Motoren PR in `fork`Nach dem Aufstieg wird das Rahmen PR bewegt `$Rivalry\engine` An dieser Freilassung, dann die
-Mod PR bewegt seinen Lock und `engine`.
+- Übernehmen Sie den neuen Engine-Zeiger nicht: Engine-Pins werden nur zu Upstream-Release-Tags verschoben, sodass die Änderung dieses Repo erreicht, sobald der Upstream sie veröffentlicht.
+- Ein Mod, der ein Framework verwendet, muss auch das Framework auf dieser Engine neu erstellen. Verwenden Sie die obige Framework-Überschreibung und sehen Sie sich denselben Engine-Zweig in `$Rivalry\engine` an.
+- Befehl zur Landung: Motor PR in `fork` ; Nachdem der Upstream es veröffentlicht hat, verschiebt das Framework PR  `$Rivalry\engine` auf diese Version, dann verschiebt der Mod PR seine Sperre und `engine` .
 
 <a id="switch-the-engine-to-play-or-test"></a>
-## Schalten Sie den Motor um zu spielen oder zu testen
+## Schalten Sie die Engine zum Spielen oder Testen ein
 
-Um den neuesten Upstream, eine Release oder eine Motorabteilung zu spielen, wechseln Sie `$Engine` Clone mit dem Script in jedem Mod Repo:
+Um den neuesten Upstream, eine Veröffentlichung oder einen Engine-Zweig abzuspielen, tauschen Sie Ihren `$Engine` -Klon mit dem Skript in einem beliebigen Mod-Repo aus:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "$Ashen\tools\Switch-Engine.ps1" -To Upstream -Path $Engine -Run
 ```
 
-- `-To Upstream`Das neueste Engagement von VlcekM/MeitouClient `master` (Der Script fügt den `upstream` Abstand, wenn es fehlt)
-- `-To Release`Die neuesten Upstream-Release `vX.Y.Z`.
-- `-To Fork`Der Org Fork `fork` Branchen, die sich ziehen
-- `-Branch <name>`: eine Branche des Organs, wie eine Motor PR.
-- ohne `-Path` Es nutzt die `MeitouClient` Die Folder neben dem Mod Repo. `-Run` das Spiel in Release aufbauen und es starten; `-Build` nur
-Er baut es.
-- Upstream, Release und `-Branch` die Klone auf einem abgeschlossenen Kompromiss verlassen; die `master` und `fork` Branchen sind nicht geändert. Das Script
-Stopp, ohne etwas zu ändern, wenn die Klone unbeforderte Veränderungen hat.
-- Es berührt niemals die Mod-Repo `engine` Submodule (das ist `Update-Local.ps1` und die Pins).
+- `-To Upstream` : das neueste Commit von VlcekM/ MeitouClient  `master` (das Skript fügt die `upstream` -Remote hinzu, wenn sie fehlt).
+- `-To Release` : das neueste Upstream-Release-Tag `vX.Y.Z` .
+- `-To Fork` : Der `fork` -Zweig des Org-Forks, gezogen.
+- `-Branch <name>` : ein Zweig der Organisationsgabel, z. B. der Zweig einer Engine von PR .
+- Ohne `-Path` wird der Ordner `MeitouClient` neben dem Mod-Repo verwendet. `-Run` erstellt das Spiel in Release und startet es; `-Build` baut es nur.
+- Upstream, Release und `-Branch` verlassen den Klon bei einem getrennten Commit; Die lokalen Zweige `master` und `fork` werden nicht geändert. Das Skript stoppt ohne Änderungen, wenn der Klon nicht festgeschriebene Änderungen aufweist.
+- Es berührt niemals das `engine` -Submodul des Mod-Repos (das heißt `Update-Local.ps1` und die Pins).
 
 <a id="keep-clones-current"></a>
-## Klonen aktualisieren
+## Halten Sie die Klone aktuell
 
-Nach jedem Treffer und jedes Mal, wenn ein Bau mit fehlenden Motortypen fehlt (z. B. `The type or namespace name 'RelationCause' could not be found`), schließen Sie Visual Studio und führen Sie das Update-Script in der Mod-Repo aus:
+Nach jedem Pull und immer dann, wenn ein Build aufgrund fehlender Engine-Typen fehlschlägt (z. B. `The type or namespace name 'RelationCause' could not be found` ), schließen Sie Visual Studio und führen Sie das Update-Skript im Repo des Mods aus:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File "$Ashen\tools\Update-Local.ps1" -Clean -Build
 ```
 
-- Es schaltet sich auf `beta` und zieht es, dann aktualisiert `engine` und `build/gutenstructure` Für die Verpflichtungen `beta` Pinsen (`git pull` allein
-Sie lassen sich auf die Alten ab). `-Branch <name>` Ein anderes Glanz zieht.
-- Es überprüft jeden Untermodul gegen seinen Pin und druckt die Motorversion.
-- Das Flagge `MeitouEngineDir` und `MeitouFrameworkSources` In `Meitou.user.props` oder die Umwelt: sie machen die Bauanwendung ein anderes
-repo's engine oder frame statt dieser repo'n pins. Entfernen Sie sie, es sei denn, Sie ändern ein Rahmen und ein Mod zusammen.
-- `-Clean` Entfernen Sie das Git-Unvergessliche `bin` und `obj` Folders, so dass kein Bau des alten Motors neu verwendet wird. `-Build` Rennen `dotnet build`.
-- Es endet mit `Up to date` oder eine Liste der markierten Linien `FIX`.
+- Es wechselt zu `beta` und zieht es, aktualisiert dann `engine` und `build/gutenstructure` auf die Commits-Pins `beta` (nur `git pull` belässt sie auf den alten). `-Branch <name>` zieht einen weiteren Zweig.
+- Es prüft jedes Submodul anhand seines Pins und gibt die Engine-Version aus.
+- Es markiert `MeitouEngineDir` und `MeitouFrameworkSources` in `Meitou.user.props` oder der Umgebung: Sie sorgen dafür, dass der Build die Engine oder das Framework eines anderen Repos anstelle der Pins dieses Repos verwendet. Löschen Sie sie, es sei denn, Sie ändern gleichzeitig ein Framework und einen Mod.
+- `-Clean` löscht die von Git ignorierten Ordner `bin` und `obj` , sodass kein Build der alten Engine wiederverwendet wird. `-Build` führt `dotnet build` aus.
+- Es endet mit `Up to date` oder einer Liste von Zeilen mit der Bezeichnung `FIX` .
 
-Der nächste Build herunterladen ein Framework nur, wenn `meitou.lock.json` Veränderte sich.
+Der nächste Build lädt ein Framework nur dann erneut herunter, wenn sich `meitou.lock.json` geändert hat.

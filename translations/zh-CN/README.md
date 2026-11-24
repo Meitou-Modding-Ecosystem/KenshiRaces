@@ -1,51 +1,43 @@
 <a id="kenshi-races"></a>
-# Kenshi 赛事
+# Kenshi Races
 
-新赛事为 [客人](https://github.com/Meitou-Modding-Ecosystem/MeitouClient) 在游戏中的人类骨骼,可在角色编辑器中播放: Leoma 和 Crevan (男女)和 Crabfolk 一个动画图书馆为每个人骨骼,以及其他模式添加自己的种族和种族。 GPL3.0 或更晚。
+游戏人体骨骼上的 [ MeitouClient ](https://github.com/Meitou-Modding-Ecosystem/MeitouClient) 的新种族，可在角色编辑器中玩： Leoma 和 Crevan （男性和女性）和 Crabfolk （蟹人，蟹后），每个人体骨骼种族的 59 个剪辑的动画库，以及其他 mods 添加自己的种族和子种族的框架。 GPL -3.0 或更高版本。
 
-- 赛车,他们的记录,并在游戏中测试它们: [docs/kenshi-races.md](docs/kenshi-races.md).
-- 使用这些赛车或从另一个模式添加自己的: [docs/depending-on-kenshi-races.md](docs/depending-on-kenshi-races.md) (代理技能)
-`.claude/skills/kenshi-races-dependent`).
-- 动画图书馆(在人类骨骼上每种种族的59个剪辑)以及它是如何制作的: [docs/animations.md](docs/animations.md).
-- Fitting a rigged `.glb` 身体(Meshy, Hi3D “3ds Max Biped”)在游戏的骨骼上: [docs/race-import.md](docs/race-import.md).
+- 比赛、他们的记录以及在游戏中的测试：[docs/kenshi-races.md](docs/kenshi-races.md) 。
+- 使用这些比赛或从另一个模组添加您自己的比赛：[docs/depending-on-kenshi-races.md](docs/depending-on-kenshi-races.md) （代理技能 `.claude/skills/kenshi-races-dependent` ）。
+- 动画库（人体骨骼上每个种族的 59 个剪辑）及其制作方法：[docs/animations.md](docs/animations.md) 。
+- 将装配好的 `.glb` 身体（ Meshy 、 Hi3D “3ds Max Biped”）安装到游戏的骨架上：[docs/race-import.md](docs/race-import.md) 。
 
-- 使用 Visual Studio、VS Code 或终端构建和运行本地(该 repo 的发动机或安装的启动器,用于游戏): [docs/play.md](docs/play.md).
-- 在您的机器上设置休息: [docs/local-development.md](docs/local-development.md).
-- 指示代理人对延迟休息的变化: [docs/agents-across-repos.md](docs/agents-across-repos.md).
-- 引擎的规则,版本,CI和发布: [CLAUDE.md](../../CLAUDE.md) (如同 `AGENTS.md`( );步骤程序:
-`.claude/skills/meitou-engine-release`.
-- 对最新的 Meitou 发布进行测试(CI 在每个 PR 上进行测试): [docs/refcheck.md](docs/refcheck.md).
-- 首次发布 Steam 工作室的模式,然后每次发布: [docs/steam-workshop.md](docs/steam-workshop.md).
-- 转身 `.glb` 模型(Meshy, Hi3D,混合器)到可构建的结构,不 FCS 需要: [docs/structures.md](docs/structures.md);
-首先,要获得产生的模型的聚数、尺寸和结构: [docs/model-prep.md](docs/model-prep.md).
+- 使用 Visual Studio 、 VS Code 或终端（此存储库的引擎或已安装的启动器，部署到游戏）在本地构建和运行：[docs/play.md](docs/play.md) 。
+- 在您的计算机上设置存储库：[docs/local-development.md](docs/local-development.md) 。
+- 指导代理进行跨存储库的更改：[docs/agents-across-repos.md](docs/agents-across-repos.md) 。
+- 引擎引脚、版本、 CI 和版本的代理规则：[ CLAUDE .md](../../CLAUDE.md) （与 `AGENTS.md` 相同）；分步程序： `.claude/skills/meitou-engine-release` 。
+- 根据最新版本检查构建的模组 Meitou 发布 （ CI 做每一个 PR ): [文档/refcheck.md ](docs/refcheck.md) .
+- 首次将 mod 发布到 Steam 创意工坊，然后在每个版本中发布：[docs/steam-workshop.md](docs/steam-workshop.md) 。
+- 将 `.glb` 模型（ Meshy 、 Hi3D 、 Blender ）转换为可构建的结构，不需要 FCS ：[docs/structurals.md](docs/structures.md) ；首先获取生成模型的多边形数、大小和纹理：[docs/model-prep.md](docs/model-prep.md) 。
 
 <a id="numbers"></a>
 ## 数字
 
-任务类型(`AddGoalType`, `AddJobType`)和对话代码(`AddDialogueCondition`, `AddDialogueEffect`( ) 由每個充電模式分享( )[模型号码区块](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/numbers.md)). Kenshi 种族不要求任何人。
+任务类型（ `AddGoalType` 、 `AddJobType` ）和对话代码（ `AddDialogueCondition` 、 `AddDialogueEffect` ）由每个加载的 mod（[mod 编号块](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/numbers.md) ）共享。 Kenshi Races 声称没有。
 
-| 号码 | 游泳池 | 使用 |
+| 数字 | 水池 | 使用 |
 | --- | --- | --- |
 
 <a id="layout"></a>
 ## 布局
 
-- `engine/`: MeitouClient 作为一个 git 子模块,粘贴到发动机承诺的模式构建反对。 `git pull` 它不移动: 后
-每個Pull Run `powershell -ExecutionPolicy Bypass -File tools\Update-Local.ps1 -Clean -Build` ([保持克隆流动](docs/local-development.md#keep-clones-current)).
-- `KenshiRaces/`• 由 mod 的项目和 `meitou.json`; `KenshiRaces/items/races/`定制机构(委托进口产量)。
-`KenshiRaces.Tests/`其测试(合成数据,不需要游戏安装)。 `<Mod>.Data/` (可选):写作的发电机 `<Mod>.mod` 从安装的游戏。 `<Mod>/Structures/` (可选 ) : `.glb` 以可建造的建筑物为基础([docs/structures.md](docs/structures.md)).
-- `meitou.lock.json`: 框架释放了 mods 构建反
-([框架锁](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md)); 框架更新工作流将其转移到新的发布和合并,当 CI 通过([框架更新](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-update.md)).
-- `Play/`单击创建、部署和运行。
-- `tools/`: `Update-Local.ps1`,本地拖动和发动机点检查([保持克隆流动](docs/local-development.md#keep-clones-current));
-`refcheck.sh` 和 `RefCheck/`, 引擎引用检查器([docs/refcheck.md](docs/refcheck.md)); `StructureImport/`, 模型进口([docs/structures.md](docs/structures.md)); `RaceImport/`( )  ([docs/race-import.md](docs/race-import.md)); `model-info.py` 和 `prepare-model.py`,模型检查和结构缩小([docs/model-prep.md](docs/model-prep.md)).
-- `Directory.Build.props` 输入发动机,所以模式与游戏的设置构建(警告是错误)。
-- `Directory.Build.rsp` 标签发动机的参考,因为最古老的 Meitou 释放了 mods 支持,相当于每个 `gameVersion` 地板:The
-游戏拒绝一个引用一个新的发动机标签的模式,而子模块构建 `1.0.0.0` ([版本](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/versioning.md)). 互相互相相互相互    日程 對  新  發行  則 則 會 檢查 ([相同的](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/meitou-compat.md)).
+- `engine/` ： MeitouClient 作为 git 子模块，固定到引擎提交 mod 构建。 `git pull` 不会移动它：每次拉动运行 `powershell -ExecutionPolicy Bypass -File tools\Update-Local.ps1 -Clean -Build` 后（[保持克隆当前的](docs/local-development.md#keep-clones-current) ）。
+- `KenshiRaces/` ：mod 的项目和 `meitou.json` ； `KenshiRaces/items/races/` ：装配体（承诺进口输出）。 `KenshiRaces.Tests/` ：其测试（合成数据，无需安装游戏）。 `<Mod>.Data/` （可选）：从已安装的游戏写入 `<Mod>.mod` 的生成器。 `<Mod>/Structures/` （可选）： `.glb` 模型在部署时作为可构建结构导入（[docs/structurals.md](docs/structures.md) ）。
+- `meitou.lock.json` ：框架发布针对（[框架锁](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md) ）构建的 mod；框架更新工作流程将其移动到新版本，并在 CI 通过时合并（[框架更新](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-update.md) ）。
+- `Play/` ：一键构建、部署和运行。
+- `tools/` : `Update-Local.ps1` ，本地拉力和引擎引脚检查（[保持克隆当前](docs/local-development.md#keep-clones-current) ）； `refcheck.sh` 和 `RefCheck/` ，引擎引用检查（[docs/refcheck.md](docs/refcheck.md) ）； `StructureImport/` ，模型导入（[docs/structurals.md](docs/structures.md) ）； `RaceImport/` ，身体配件（[docs/race-import.md](docs/race-import.md) ）； `model-info.py` 和 `prepare-model.py` ，模型检查和纹理收缩（[docs/model-prep.md](docs/model-prep.md) ）。
+- `Directory.Build.props` 导入引擎，因此 mods 使用游戏的设置构建（警告是错误）。
+- `Directory.Build.rsp` 将引擎引用标记为最旧的 Meitou 发布的 mods 支持，等于每个 `gameVersion` 楼层：游戏拒绝引用较新引擎标记的 mod，并且子模块构建 `1.0.0.0` （[版本控制](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/versioning.md) ）。 Meitou 兼容性工作流程每天根据新的 Meitou 版本检查模组（[meitou compat](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/meitou-compat.md) ）。
 
 <a id="branches"></a>
-## 分支
+## 分支机构
 
-PR 进入 `beta`CI(构建和测试)必须通过。 `beta` 被推广为 `main` 一旦在游戏中进行测试,生产将通过PR进行 `release`. 每个人都融入 `release` 标签它 `<slug>-v<version>` 此分類上一篇: ZIP(`.github/workflows/release.yml`除非此标签存在; `tools\Tag-Release.ps1` 这是手动落后。
+PR 为 `beta` ； CI （构建和测试）必须通过。  一旦在游戏中进行测试， `beta` 就会升级为 `main` ，生产过程会经历 PR 到 `release` 。每次合并到 `release` 时都会将其标记为 `<slug>-v<version>` 并发布 mod 的 zip ( `.github/workflows/release.yml` ) 除非该标记存在； `tools\Tag-Release.ps1` 是手动后备。
 
-- 新品种保养和永久性 beta/main/release 评论: [docs/branch-policy.md](docs/branch-policy.md). 模板复制来源;GutenStructure通过和解应用设置。
+- 新存储库分支保护和永久 beta/main/release 审查：[docs/branch-policy.md](docs/branch-policy.md) 。模板复制来源； GutenStructure 通过协调应用设置。

@@ -1,51 +1,43 @@
 <a id="kenshi-races"></a>
-# Kenshi расы
+# Kenshi Races
 
-Новые гонки для [Метуклиент](https://github.com/Meitou-Modding-Ecosystem/MeitouClient) на человеческих скелетах игры, можно играть в редакторе персонажей: Leoma и Crevan Мужчины и женщины, а также Crabfolk (Крабман) — анимационная библиотека с 59 клипами для каждого человека, и в рамках других моделей добавляются собственные расы и подростки. GPL3.0 или позже.
+Новые расы для [ MeitouClient ](https://github.com/Meitou-Modding-Ecosystem/MeitouClient) на человеческих скелетах игры, в которые можно играть в редакторе персонажей: Leoma и Crevan (мужчина и женщина) и Crabfolk (краб, королева крабов), библиотека анимации из 59 клипов для каждой расы человеческих скелетов, а также фреймворк, в который другие моды добавляют свои собственные расы и подрасы. GPL -3.0 или новее.
 
-- Соревнования, их записи и тестирование в игре: [docs/kenshi-races.md](docs/kenshi-races.md).
-- Используйте эти расы или добавьте свой из другого режима: [docs/depending-on-kenshi-races.md](docs/depending-on-kenshi-races.md) Агентские навыки
-`.claude/skills/kenshi-races-dependent`).
-- Анимационная библиотека (показана 59 клипов для каждой расы на человеческих скелетах) и как она была сделана: [docs/animations.md](docs/animations.md).
-- Подготавливает риги `.glb` тело (Meshy, Hi3D «3ds Max Biped») на скелет игры: [docs/race-import.md](docs/race-import.md).
+- Расы, их рекорды и тестирование в игре: [docs/kenshi-races.md](docs/kenshi-races.md) .
+- Использование этих рас или добавление своих из другого мода: [docs/dependent-on-kenshi-races.md](docs/depending-on-kenshi-races.md) (навык агента `.claude/skills/kenshi-races-dependent` ).
+- Библиотека анимации (59 роликов для каждой расы на скелетах людей) и как она делалась: [docs/animations.md](docs/animations.md) .
+- Установка оснащенного тела `.glb` ( Meshy , Hi3D "3ds Max Biped") на скелет игры: [docs/race-import.md](docs/race-import.md) .
 
-- Создать и запускать локально с помощью Visual Studio, VS Code или терминала (мотор этого репо или установленный запускник, размещенный в игре): [docs/play.md](docs/play.md).
-- Настроить отдых на машине: [docs/local-development.md](docs/local-development.md).
-- Направление агентов на промежуток, который провоцирует отдых: [docs/agents-across-repos.md](docs/agents-across-repos.md).
-- Правила агентства для двигателя, версии, CI и выпуски: [CLAUDE.md](../../CLAUDE.md) (как и `AGENTS.md`• шаг за шагом процедуры:
-`.claude/skills/meitou-engine-release`.
-- Проверка встроенного режима против последней версии Meitou (CI делает это на каждом PR): [docs/refcheck.md](docs/refcheck.md).
-- Публикуя моду в Steam Workshop впервые, затем на каждом выпуске: [docs/steam-workshop.md](docs/steam-workshop.md).
-- Обратно `.glb` Модель (Meshy, Hi3D, блендер) в строительные структуры, нет FCS Нужное для: [docs/structures.md](docs/structures.md);
-Получить поликонт, размер и текстуры генерируемого модела в первую очередь: [docs/model-prep.md](docs/model-prep.md).
+- Соберите и запустите локально с помощью Visual Studio , VS Code или терминала (движок этого репозитория или установленный модуль запуска, развернутый в игре): [docs/play.md](docs/play.md) .
+- Настройка репозиториев на вашем компьютере: [docs/local-development.md](docs/local-development.md) .
+- Инструктирование агентов об изменении, охватывающем репозитории: [docs/agents-across-repos.md](docs/agents-across-repos.md) .
+- Правила агента для вывода ядра, версий, CI и выпусков: [ CLAUDE .md](../../CLAUDE.md) (то же, что `AGENTS.md` ); пошаговые процедуры: `.claude/skills/meitou-engine-release` .
+- Проверка встроенного мода на соответствие новейшей версии Meitou ( CI делает это на каждом PR ): [docs/refcheck.md](docs/refcheck.md) .
+- Публикация мода в Мастерской Steam впервые, а затем при каждом выпуске: [docs/steam-workshop.md](docs/steam-workshop.md) .
+- Превращая модели `.glb` ( Meshy , Hi3D , Blender ) в сборные конструкции, FCS не требуется: [docs/structures.md](docs/structures.md) ; сначала получить количество полигонов, размер и текстуры сгенерированной модели: [docs/model-prep.md](docs/model-prep.md) .
 
 <a id="numbers"></a>
-## цифры
+## Числа
 
-Типы заданий (`AddGoalType`, `AddJobType`) и диалоговые коды (`AddDialogueCondition`, `AddDialogueEffect`В каждом из них ([Блок номер](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/numbers.md)). Kenshi Расы не претендуют.
+Типы задач ( `AddGoalType` , `AddJobType` ) и коды диалогов ( `AddDialogueCondition` , `AddDialogueEffect` ) являются общими для каждого загруженного мода ([номер модуля блокирует](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/numbers.md) ). Kenshi Races не утверждает ничего.
 
-| Число | Бассейн | Использование |
+| Число | Бассейн | Использовать |
 | --- | --- | --- |
 
 <a id="layout"></a>
-## Лайоут
+## Макет
 
-- `engine/`: MeitouClient Как гит-подмодуль, привязанный к двигателю, выполняет модульные строения против. `git pull` не перемещается: после
-Каждый пулл проходит `powershell -ExecutionPolicy Bypass -File tools\Update-Local.ps1 -Clean -Build` ([Дайте клонм текущим](docs/local-development.md#keep-clones-current)).
-- `KenshiRaces/`Проекты Мода и `meitou.json`; `KenshiRaces/items/races/`• приспособление организмов (коммиссированный импортный продукт).
-`KenshiRaces.Tests/`: его тесты (синтетические данные, не требуется установка игры). `<Mod>.Data/` (опциональный): генератор, который пишет `<Mod>.mod` Из установленных игр. `<Mod>/Structures/` (в том числе и опционально ) `.glb` Внедрение в эксплуатацию конструкций в качестве конструкций ([docs/structures.md](docs/structures.md)).
-- `meitou.lock.json`: рамка выводит модули, которые строят против
-([Фреймворк](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md)• Рамковый обновленный рабочий поток перемещает его на новые выпуски и сливается, когда CI проходит ([Рамковые обновления](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-update.md)).
-- `Play/`Один-клик создает, развертывает и запускает.
-- `tools/`: `Update-Local.ps1`, местный pull и двигатель-пин проверка ([Дайте клонм текущим](docs/local-development.md#keep-clones-current));
-`refcheck.sh` и `RefCheck/`Проверка двигателя ([docs/refcheck.md](docs/refcheck.md)); `StructureImport/`Внешний образ импорта ([docs/structures.md](docs/structures.md)); `RaceImport/`Вместе с тем, что тело ([docs/race-import.md](docs/race-import.md)); `model-info.py` и `prepare-model.py`, модели проверки и текстура сокращения ([docs/model-prep.md](docs/model-prep.md)).
-- `Directory.Build.props` Импортирует двигатель, поэтому модули строят с настройками игры (остережения являются ошибками).
-- `Directory.Build.rsp` Заметка двигателей, так как старейший Meitou выпускает поддержку моде, равная каждому `gameVersion` Поверхность: The
-Игра отказывается от режима, ссылаясь на более новый двигатель, а подмодуль строит `1.0.0.0` ([Версия](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/versioning.md)). Рабочий поток для совместимости с Meitou, где каждый день проверяются модули против новых выпусков Meitou ([Метус Соп](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/meitou-compat.md)).
+- `engine/` : MeitouClient как подмодуль git, прикрепленный к движку, для которого создается мод. `git pull` не перемещает его: после каждого запроса запускайте `powershell -ExecutionPolicy Bypass -File tools\Update-Local.ps1 -Clean -Build` ([сохранять текущие клоны](docs/local-development.md#keep-clones-current) ).
+- `KenshiRaces/` : проект мода и `meitou.json` ; `KenshiRaces/items/races/` : установленные кузова (фиксированный импортный вывод). `KenshiRaces.Tests/` : его тесты (синтетические данные, установка игры не требуется). `<Mod>.Data/` (опционально): генератор, записывающий `<Mod>.mod` из установленной игры. `<Mod>/Structures/` (необязательно): модели `.glb` импортируются как сборные конструкции при развертывании ([docs/structures.md](docs/structures.md) ).
+- `meitou.lock.json` : фреймворк выпускает сборки модов ([блокировка фреймворка](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md) ); рабочий процесс обновления Framework перемещает его в новые выпуски и объединяет после прохождения CI ([framework update](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-update.md) ).
+- `Play/` : сборка, развертывание и запуск в один клик.
+- `tools/` : `Update-Local.ps1` , локальная проверка тяги и штифта двигателя ([держать клоны текущими](docs/local-development.md#keep-clones-current) ); `refcheck.sh` и `RefCheck/` , проверка ссылок на движок ([docs/refcheck.md](docs/refcheck.md) ); `StructureImport/` , импорт модели ([docs/structures.md](docs/structures.md) ); `RaceImport/` , кузовной фитинг ([docs/race-import.md](docs/race-import.md) ); `model-info.py` и `prepare-model.py` , проверка модели и сжатие текстур ([docs/model-prep.md](docs/model-prep.md) ).
+- `Directory.Build.props` импортирует движок, поэтому моды создаются с учетом настроек игры (предупреждения — это ошибки).
+- `Directory.Build.rsp` помечает ссылки на движок как самый старый выпуск Meitou , поддерживающий моды, равный каждому этажу `gameVersion` : игра отклоняет мод, ссылающийся на более новую марку движка, и подмодуль собирает `1.0.0.0` ([версии](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/versioning.md) ). Рабочий процесс совместимости Meitou ежедневно проверяет моды на соответствие новым выпускам Meitou ([meitou compat](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/meitou-compat.md) ).
 
 <a id="branches"></a>
-## Фанты
+## Филиалы
 
-В PRS `beta`• CI (конструкция и испытания) должны пройти. `beta` Поощряется для `main` После того, как он был пробён в игре, производство проходит через PR. `release`. Каждый из них объединяется `release` Теги это `<slug>-v<version>` Используется для публикации ZIP (`.github/workflows/release.yml`(е) если не существует такой знак; `tools\Tag-Release.ps1` Это и есть ручная пауза.
+PR в `beta` ; CI (сборка и тесты) должен пройти. `beta` повышается до `main` после тестирования в игре, а производство проходит от PR до `release` . Каждое слияние с `release` помечает его как `<slug>-v<version>` и публикует zip-архив мода ( `.github/workflows/release.yml` ), если этот тег не существует; `tools\Tag-Release.ps1` — это резервный вариант вручную.
 
-- Защита от новых репозиторий и постоянных beta/main/release Рецензии → [docs/branch-policy.md](docs/branch-policy.md). Шаблоны копируют источник; GutenStructure применяет настройки через примирение.
+- Защита ветвей нового репозитория и постоянные обзоры бета-/основных/выпусков: [docs/branch-policy.md](docs/branch-policy.md) . Исходный код шаблонов; GutenStructure применяет настройки посредством согласования.

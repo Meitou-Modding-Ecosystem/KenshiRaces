@@ -1,9 +1,9 @@
 <a id="publishing-to-the-steam-workshop"></a>
-# Publicado en el Steam Workshop
+# Publicar en Steam Workshop
 
-Crea el elemento de Workshop de modos una vez, por mano, de una versión ZIP. Después de eso, [El taller de Watcher](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/workshop-watcher.md) ejecuta en su PC de Windows y carga cada nueva versión de GitHub a ese elemento en un horario. Todos los pasos se realizan en **Windows PowerShell** En su PC, se inscribe en la cuenta de Steam que posee el artículo.
+El elemento del Taller del mod se crea una vez, a mano, a partir de una versión ZIP . Después de eso, [Workshop Watcher](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/workshop-watcher.md) se ejecuta en su Windows PC y carga cada nueva versión de GitHub en ese elemento según un cronograma. Todos los pasos se ejecutan en **Windows PowerShell** en su PC , iniciando sesión en la cuenta de Steam que será propietaria del artículo.
 
-Los comandos utilizan estos valores. Configure una vez por la ventana de PowerShell, con el nombre de la pasta de su mod (como en `release.yml` `mod-folder`y su primera versión:
+Los comandos utilizan estos valores. Configúrelos una vez por ventana de PowerShell, con el nombre de la carpeta de su mod (como en `release.yml`  `mod-folder` ) y su primera versión de lanzamiento:
 
 ```powershell
 $Mod = "ExampleMod"
@@ -13,21 +13,20 @@ $Watcher = "$env:LOCALAPPDATA\WorkshopWatcher\WorkshopWatcher.ps1"
 ```
 
 <a id="1-release-the-mod"></a>
-## 1. Descargar el Mod
+## 1. Libera el mod.
 
-1. Mezcla `beta` En el `main`Entonces, abriendo y fusionando un PR `main` En el `release` ([Las ramas](../README.md#branches)).
-2. Espera el flujo de trabajo de liberación en `release`. Se trata de la fusión `<slug>-v<version>` Con la versión en `meitou.json` (por ejemplo
-`example-mod-v0.1.0`y crea una liberación con `<Mod>-<version>.zip` y `<Mod>-<version>.zip.sha256`. Si esto no es posible antes de que se haga una prueba, `powershell -ExecutionPolicy Bypass -File tools\Tag-Release.ps1` La entrada se hace de la mano (`-DryRun` Sólo imprimir las órdenes).
+1. Fusione `beta` en `main` , luego abra y fusione un PR de `main` en `release` ([Branches](../README.md#branches) ).
+2. Espere el flujo de trabajo de lanzamiento en `release` . Etiqueta la combinación `<slug>-v<version>` con la versión en `meitou.json` (por ejemplo, `example-mod-v0.1.0` ) y crea una versión con `<Mod>-<version>.zip` y `<Mod>-<version>.zip.sha256` . Si esa ejecución falla antes de etiquetar, `powershell -ExecutionPolicy Bypass -File tools\Tag-Release.ps1` empuja la etiqueta manualmente ( `-DryRun` solo imprime los comandos).
 
 <a id="2-install-workshop-watcher-and-sign-in-to-steam"></a>
-## 2. Instalar Workshop Watcher y inscribirse en Steam
+## 2. Instale Workshop Watcher e inicie sesión en Steam.
 
-Seguimos [Instalación](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/workshop-watcher.md#install) En la guía del Workshop Watcher. El installer descarga SteamCMD para `%LOCALAPPDATA%\WorkshopWatcher\steamcmd` y inscribirlo en su cuenta de Steam. Cuando se pregunta `Add a mod to watch now?`La respuesta `n`El elemento no existe todavía. Descarga este paso si Workshop Watcher ya está instalado.
+Siga [Instalar](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/workshop-watcher.md#install) en la guía Workshop Watcher. El instalador descarga steamcmd en `%LOCALAPPDATA%\WorkshopWatcher\steamcmd` e inicia sesión en su cuenta de Steam. Cuando le pregunte `Add a mod to watch now?` , responda `n` : el artículo aún no existe. Omita este paso si Workshop Watcher ya está instalado.
 
 <a id="3-prepare-the-items-files"></a>
-## 3. Preparar los archivos del elemento
+## 3. Preparar los archivos del artículo.
 
-1. Descarga la liberación ZIP y envuelve en `$Work`:
+1. Descargue la versión ZIP y descomprímala en `$Work` :
 
    ```powershell
    New-Item -ItemType Directory -Force $Work
@@ -35,13 +34,13 @@ Seguimos [Instalación](https://github.com/TheIvoryDisaster/GutenStructure/blob/
    Expand-Archive "$Work\$Mod.zip" -DestinationPath $Work
    ```
 
-`$Work\$Mod` Ahora tiene `$Mod.dll`, `meitou.json` y `$Mod.mod`.
-2. Salva la imagen previa del artículo como `$Work\preview.png`: PNG o JPG, menos de 1 MB, cuadrado (512 x 512 píxeles de trabajo).
+`$Work\$Mod` ahora contiene `$Mod.dll` , `meitou.json` y `$Mod.mod` .
+2. Guarde la imagen de vista previa del elemento como `$Work\preview.png` : PNG o JPG , en 1 MB , cuadrado (512 x 512 píxeles funciona).
 
 <a id="4-write-the-vdf"></a>
 ## 4. Escribe el VDF
 
-C.C.C. crea el elemento a partir de VDF archivo: un archivo de texto de `"key" "value"` Las parejas dentro de la `"workshopitem"` El bloque. Este mandamiento escribe `$Work\create.vdf` con los caminos llenos. El Edit `title` y `description` En primer lugar:
+steamcmd crea el elemento a partir de un archivo VDF : un archivo de texto de pares `"key" "value"` dentro de un bloque `"workshopitem"` . Este comando escribe `$Work\create.vdf` con las rutas completadas. Edite `title` y `description` primero:
 
 ```powershell
 $Dir = $Work.Replace('\', '/')
@@ -60,44 +59,43 @@ $Dir = $Work.Replace('\', '/')
 "@ | Set-Content "$Work\create.vdf" -Encoding ASCII
 ```
 
-| La clave | Valor |
+| Llave | Valor |
 | --- | --- |
-| `appid` | `233860`, KenshiLa aplicación Steam ID. |
-| `publishedfileid` | `0` Crea un nuevo elemento. Cualquier otro número de actualizaciones que el elemento existente. |
-| `contentfolder` | Paseo completo a la pasta cuyos ficheros se convierten en el contenido del elemento: la pasta mod de la ZIPPero no a sus padres. |
-| `previewfile` | El camino hacia la imagen previa. |
-| `visibility` | `0` El público, `1` Sólo los amigos, `2` El privado, `3` No listado . Comienza con `2` y cambiarlo en la página del artículo. |
-| `title` | El nombre del artículo en el taller. Comienza con `[Meitou]`Como lo hacen los otros modos de código de Meitou. |
-| `description` | Una línea de texto. Escribe la descripción completa en la página del artículo después (suporta Steam BBCode). |
-| `changenote` | La primera entrada de la tabla de los cambios de la sección. |
+| `appid` | `233860` , aplicación Steam de Kenshi  ID . |
+| `publishedfileid` | `0` crea un nuevo elemento. Cualquier otro número actualiza ese elemento existente. |
+| `contentfolder` | Ruta completa a la carpeta cuyos archivos se convierten en el contenido del elemento: la carpeta mod del ZIP , no su padre. |
+| `previewfile` | Ruta completa a la imagen de vista previa. |
+| `visibility` | `0` público, `1` solo amigos, `2` privado, `3` no listado. Comience con `2` y cámbielo en la página del artículo. |
+| `title` | El nombre del objeto en el Taller. Comience con `[Meitou]` , como lo hacen otras modificaciones de código Meitou . |
+| `description` | Una línea de texto. Luego escribe la descripción completa en la página del artículo (es compatible con BBCode de Steam). |
+| `changenote` | La primera entrada de la pestaña Notas de cambio del elemento. |
 
 Reglas para los valores:
 
-- Páginas en la que se muestran los caminos (`C:/Users/me/Downloads/...`). Se debe duplicar el número de datos (`C:\\Users\\me\\...`).
-- Una cita doble dentro de un valor se escribe `\"`.
-- Mantener el archivo ASCII.
+- Escriba rutas con barras diagonales ( `C:/Users/me/Downloads/...` ). Se debe duplicar una barra invertida ( `C:\\Users\\me\\...` ).
+- Se escribe una comilla doble dentro de un valor `\"` .
+- Conserve el archivo ASCII .
 
 <a id="5-create-the-item"></a>
-## 5. Crea el elemento
+## 5. Crea el artículo
 
 ```powershell
 & "$env:LOCALAPPDATA\WorkshopWatcher\steamcmd\steamcmd.exe" +login <steam account name> +workshop_build_item "$Work\create.vdf" +quit
 ```
 
-`<steam account name>` es el nombre que se inscribe en Steam con, como se le da al instalador. steamcmd utiliza el login salvado. Si solicita una contraseña o código de Steam Guard, `powershell -ExecutionPolicy Bypass -File $Watcher login`Luego vuelve a dirigir el comando.
+`<steam account name>` es el nombre con el que inicia sesión en Steam, tal como se lo proporcionó el instalador. steamcmd utiliza el inicio de sesión guardado. Si solicita una contraseña o un código Steam Guard, ejecute `powershell -ExecutionPolicy Bypass -File $Watcher login` y luego ejecute el comando nuevamente.
 
-El curso termina con `Success.`. Abre Steam > tu perfil > Elementos de taller, abre el nuevo elemento y copia el número después `?id=` En su URLEsta es la identificación del elemento.
+La carrera termina con `Success.` . Abre Steam > tu perfil > Artículos del Taller, abre el nuevo artículo y copia el número después de `?id=` en su URL : ese es el artículo ID .
 
 <a id="6-finish-the-items-page"></a>
-## 6. Finalizar la página del artículo
+## 6. Termina la página del artículo.
 
 En la página del artículo en Steam:
 
-1. Aceptar el acuerdo legal de Steam si la página muestra el banner. Hasta que lo haga, sólo puedes ver el artículo.
+1. Acepta el acuerdo legal de Steam Workshop si la página muestra el banner. Hasta que lo hagas, sólo tú podrás ver el artículo.
 2. Escribe la descripción completa.
-3. Si el mód necesita otro Mod de Workshop (por ejemplo, Rivalry Core), añadirlo a continuación. **Add/Remove Objetos necesarios**. Los suscriptores son
-Se le pidió que suscribiera también. Con la dependencia de `meitou.json` `dependencies`El orden del lanzador lo pone primero en el orden de carga.
-4. Cambiar la visibilidad de **público** Cuando la página está listo.
+3. Si el mod necesita otro mod de Workshop (por ejemplo, Rivalry Core), agréguelo en **Agregar o quitar elementos necesarios**. Luego se pide a los suscriptores que también se suscriban. Con la dependencia en `meitou.json`  `dependencies` , Arrange del lanzador lo coloca primero en el orden de carga.
+4. Cambie la visibilidad a **Pública** cuando la página esté lista.
 
 <a id="7-watch-the-item"></a>
 ## 7. Mira el artículo
@@ -107,9 +105,9 @@ powershell -ExecutionPolicy Bypass -File $Watcher add-item -Repo <owner>/<repo> 
 powershell -ExecutionPolicy Bypass -File $Watcher run -DryRun
 ```
 
-El lanzamiento se informa del lanzamiento actual como ya se ha descargado. Eliminar `$Work` Una vez que lo hace.
+El simulacro informa que la versión actual ya está cargada. Elimine `$Work` una vez que lo haga.
 
 <a id="each-release-after-that"></a>
-## Cada uno de ellos, después de
+## Cada lanzamiento posterior a eso
 
-Descarga el mód como en el paso 1. El próximo lanzamiento de la guardia se descarga ZIPVerifica su SHA-256 y lo carga en el artículo, con el título de liberación y el enlace como la nota de cambio. Nunca cambia el título, la descripción, la previsión o la visibilidad de la página. `powershell -ExecutionPolicy Bypass -File $Watcher status` muestra el horario, el siguiente curso y el último cargamento.
+Libere el mod como en el paso 1. La próxima ejecución programada del observador descarga el ZIP , verifica su SHA -256 y lo carga en el elemento, con el título de la versión y el enlace como nota de cambio. Nunca cambia el título, la descripción, la vista previa o la visibilidad del artículo: cámbielos en la página del artículo. `powershell -ExecutionPolicy Bypass -File $Watcher status` muestra el cronograma, la siguiente ejecución y la última carga.

@@ -1,12 +1,12 @@
 <a id="depending-on-kenshi-races"></a>
-# 依存して Kenshi レース
+# Kenshi Races に応じて
 
-コードモードの使い方 Kenshi レースのレースやアニメーション、それらにサブレースを追加するか、それら自身のレース(`kenshi.races`). 充電規則:モーター [modding-dependencies.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md). エージェントのスキルは、同じステップを通過します: [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md).
+コード MOD が Kenshi Races ' レースとアニメーションを使用する方法、それらにサブレースを追加する方法、または独自のレース ( `kenshi.races` ) を追加する方法。ローダー ルール: エンジン [modding-dependency.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md) .エージェント スキルは同じ手順を実行します: [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md) 。
 
 <a id="1-reference-it-at-build-time-never-ship-it"></a>
-## 1. 建設時間に参照し、決して送ることはありません。
+## 1. ビルド時に参照し、決して出荷しない
 
-由来のレポで作られた [メイドモード](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate)添加 Kenshi レースのリリース ZIP `meitou.lock.json`ダウンロード、チェック、参照を構築し、プレイはそれを実行します。 すべての値は、リリースのノートから来ています(`kenshi-races-v<version>`):
+[MeitouModTemplate](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate) ] から作成したリポジトリで、 Kenshi Races のリリース zip を `meitou.lock.json` に追加します。ビルドはダウンロード、チェック、参照し、Play によってデプロイされます。すべての値はリリースのノート ( `kenshi-races-v<version>` ) に基づいています。
 
 ```json
 {
@@ -20,12 +20,11 @@
 }
 ```
 
-- あなたの `engine/` パインがそのエンジンに移動する(GutenStructure
-[フレームロック](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md)).
-- 決してリスト `KenshiRaces.dll` 自分のうちに `assemblies`・充電したもの `kenshi.races` タイプに仕える。
+- `engine/` ピンは、そのエンジン コミット ( GutenStructure [フレームワーク ロック](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md) ]) に移動します。
+- 自分の `assemblies` に `KenshiRaces.dll` をリストしないでください。ロードされた `kenshi.races` は型を提供します。
 
 <a id="2-declare-it-in-meitoujson"></a>
-## 2. で宣言する `meitou.json`
+## 2. `meitou.json` で宣言する
 
 ```json
 "apiVersion": 2,
@@ -33,13 +32,13 @@
 "dependencies": [{ "id": "kenshi.races", "version": ">=0.4.0 <0.5.0" }]
 ```
 
-- 以前の 1.0 は、小さなバージョンが破ることができます。 API次に、次に、次の小さな範囲をカップします。
-- Kenshi レースはあなたのモードの上に座る必要があります。 `data/mods.cfg` (ラウンチャーの順序はそうする) だから、データの段階が動くときにその記録が存在します。
+- 1.0 より前のマイナー バージョンでは API が壊れる可能性があるため、次のマイナーで範囲を制限します。
+- Kenshi Races は `data/mods.cfg` の MOD の上に配置する必要があります (ランチャーの Arrange がそれを行います)。そのため、データ フェーズの実行時にそのレコードが存在します。
 
 <a id="3-use-its-races"></a>
-## 3. レースを利用する
+## 3. 種族を利用する
 
-IDS を参照 `Races` あなたの記録から、例えば、データ段階において:
+記録から `Races` の ID を参照します。データフェーズでは:
 
 ```csharp
 public void EditData(ModDataContext c)
@@ -51,19 +50,16 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- RACEs (サブスクリプション) `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`.
-- CHARACTERs (無名、募集可能) `LeomaMaleCharacter`, `LeomaFemaleCharacter`, `CrevanMaleCharacter`, `CrevanFemaleCharacter`,
-`CrabmanCharacter`, `CrabQueenCharacter`.
-- RACE_GROUPs (編集者のレース) `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`. `Races.Recruit` 」と話すと「つながる」
-- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen` (`Subrace`)と `Races.Groups` 説明する。 テーブル:
-[Kenshi-races.md 「レース」](kenshi-races.md#races).
+- レース (サブレース): `Races.LeomaRace` 、 `CrevanRace` 、 `CrabmanRace` 、 `CrabQueenRace` 。
+- キャラクター (キットなし、採用可能): `LeomaMaleCharacter` 、 `LeomaFemaleCharacter` 、 `CrevanMaleCharacter` 、 `CrevanFemaleCharacter` 、 `CrabmanCharacter` 、 `CrabQueenCharacter` 。
+- RACE_GROUPs (編集者の種族): `LeomaGroup` 、 `CrevanGroup` 、 `CrabfolkGroup` 。 `Races.Recruit` は「参加しましょう」です。話す。
+- `Races.Leoma` 、 `Crevan` 、 `Crabman` 、 `CrabQueen` ( `Subrace` ) および `Races.Groups` で説明します。表: [kenshi-races.md "種族"](kenshi-races.md#races) 。
 
 <a id="4-add-a-subrace-or-a-race"></a>
 ## 4. サブレースまたはレースを追加する
 
-1. それぞれの体に合わせて、 [レース輸入](race-import.md) KenshiRacesのクローンから、あなたのモードに `items/races` 自分の声で
-(`mymod_<character>`; `female` 女性の体のためのリッジとして)とファイルを結びつける。 追加 `!/<Mod>/items/races/*.mesh` そして、 `!/<Mod>/items/races/*.dds` へへへへ `.gitignore`.
-2. 説明して、モードのデータ段階に記録を追加します(入力実装) `IModDataPhase`):
+1. 各ボディを KenshiRaces クローンからのレース インポート](race-import.md) で、独自のステム ( `mymod_<character>` ; 女性ボディのリグとして `female` ) を備えた MOD の `items/races` にフィットさせ、ファイルをコミットします。 `!/<Mod>/items/races/*.mesh` と `!/<Mod>/items/races/*.dds` を `.gitignore` に追加します。
+2. それを説明し、MOD のデータ フェーズにそのレコードを追加します (エントリは `IModDataPhase` を実装します)。
 
 ```csharp
 static readonly Subrace GhostCrab = new("ghostcrab", "30-MyMod.mod",
@@ -77,17 +73,16 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- サブレイクとA `Male` そしてA `Female` 体は編集者の性の矢を手に入れ、一つは単一の性であり、それぞれのキャラクターがそれを着ている。
-- `RaceRecords.Add(c, subrace, talk)`: `talk` Aは DIALOGUE キャラクターのアイドル、 `null` 誰にも。
-- 自分のレース: `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` 添加する → RACE_GROUP あらゆるサブレイク
-- 主体は `playable` とのこと Kenshi レイアウトのレイヤー(`RaceRecords.EditorLimits`); `FillRace` / `FillCharacter` 記録を追加する
-自分(`c.Add`) 後により多くのフィールドを変更したい場合。
-- IDs はあなたのものです: あなたの記録 `.mod` ファイル名
+- `Male` および `Female` ボディを持つサブレースには、編集者の性別矢印が適用されます。 1つは単一の性別であり、すべてのキャラクターがそれを着用します。
+- `RaceRecords.Add(c, subrace, talk)` : `talk` はキャラクターの DIALOGUE ID であり、 `null` はキャラクターの ID ではありません。
+- あなた自身のレース: `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` は、 RACE_GROUP とすべてのサブレースを追加します。
+- サブレースは `playable` であり、 Kenshi Races ' エディター制限 ( `RaceRecords.EditorLimits` ) があります。 `FillRace` / `FillCharacter` は、後でさらにフィールドを変更する場合に、自分で追加したレコード ( `c.Add` ) を入力します。
+- ID はあなたのものです。あなた自身の `.mod` ファイル名のレコードです。
 
 <a id="6-play-its-animations"></a>
-## 6. アニメーションをプレイする
+## 6. アニメーションを再生します
 
-すべてのクリップ [animations.md](animations.md) ゲームの人間の骨格のすべてのレースに結びついている(サブレースが追加されます) `RaceRecords` しかも、モードはそれを演じるだけだ。 モード戦闘動きは、単なるアニメーションであり、ゲームが何の役にも立たないときに尋ねられます(エンジン) docs/modding.md「戦闘が動く」:
+[animations.md](animations.md) ] のすべてのクリップは、ゲームの人間のスケルトンのすべての種族 ( `RaceRecords` で追加されたサブ種族も) にリンクされているため、MOD はそれを再生するだけです。 MOD の戦闘動作はアニメーションのみであり、ゲームがそれ自体で何も再生しないたびに尋ねられます (engine docs/modding.md、「戦闘動作」)。
 
 ```csharp
 CombatTechnique? _wave;
@@ -99,11 +94,11 @@ public void Initialize(ModContext c)
 }
 ```
 
-- `Waving` あなたのもの:安い、テープセキュリティ、あなたの状態から読むだけで答え、クリップの進歩は0から1(秒) `clip.Length`).
-- クリップは現地でプレーし、あなたの動きよりも短いクリップは、あなたが進歩を回避しない限り、最後のフレームを保持します。
-- アニメーションは依存症(第1部と第2部)のみを必要とし、自分の記録はありません。
+- `Waving` はあなたのものです。あなた自身の状態、クリップの進行状況 0 から 1 (秒 / `clip.Length` ) からの、安価でスレッドセーフな読み取り専用の回答です。
+- クリップは所定の位置で前を向いて再生されます。移動よりも短いクリップは、進行状況をラップしない限り、最後のフレームを保持します。
+- アニメーションには依存関係 (セクション 1 と 2) のみが必要で、独自のレコードは必要ありません。
 
 <a id="5-check-it"></a>
-## 5. チェックする
+## 5. 確認してください
 
-`dotnet build`試合後、F10で **Kenshi レース:レース** あなたがたは、あなたがたの手のひらを、 `spawn <name>` スパイする。 名称 サブタイトル& CHARACTERs 低い単語、例えば、 `ghostcrab`だから、コンソールは引用なしでそれらを取る; 新しいゲームの編集者はあなたのサブレースをリストします。
+`dotnet build` 、テスト、そしてゲーム内 F10 ** Kenshi Races : レース** はメッシュを含むレースをリストし、 `spawn <name>` はそれを生成します。サブレースと CHARACTER には小文字の単語を 1 つ付けてください。 `ghostcrab` なので、コンソールは引用符なしでそれらを受け取ります。新しいゲームのエディターにサブレースがリストされます。

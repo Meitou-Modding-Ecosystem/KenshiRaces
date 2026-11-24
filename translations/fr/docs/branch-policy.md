@@ -1,16 +1,16 @@
 <a id="permanent-branch-policy-and-repository-onboarding"></a>
-# Politique de branche permanente et de stockage à bord
+# Politique de branche permanente et intégration du référentiel
 
-Tous les archives Meitou-Modding-Ecosystem utilisent le [Politique permanente centrale](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md):
+Tous les référentiels Meitou -Modding-Ecosystem utilisent la [politique permanente centrale](https://github.com/TheIvoryDisaster/GutenStructure/blob/main/docs/branch-policy.md) :
 
-| Branche | Exigences |
+| Bifurquer | Exigence |
 | --- | --- |
-| Les branches ordinaires | Non protégé |
-| Bébé | PR + passer CI; les super-maîtres peuvent passer la révision, y compris les auto-métrages |
-| Principal / libération | PR + passant CIA+une approbation de super-maîtres indépendants; pas de bypass d'examen |
+| Branches ordinaires | Non protégé |
+| bêta | PR + dépassement de CI ; les super-responsables peuvent contourner la révision, y compris les auto-fusions |
+| principal / version | PR + réussite à CI + une approbation de super-mainteneur indépendant ; pas de contournement des avis |
 
-GitHub Actions n’a pas de bypass de révision. L'exception de l'équipe de Beta s'applique uniquement aux avis: obligatoire PR/CI La sécurité n’a pas de bypass. CODEOWNERS Il n'y a pas de demande d'approbation supplémentaire.
+GitHub Actions n’a pas de contournement de révision. L'exception de l'équipe Beta s'applique uniquement aux avis : la sécurité obligatoire des PR / CI n'a pas de contournement. CODEOWNERS n’ajoute pas d’exigence d’approbation supplémentaire.
 
-Les modèles de GitHub copient la source, pas les règles de branche, les permis d'équipe, les environnements ou les secrets. Les protections de Configuration de GutenStructure découvrent de nouvelles répercussions d'organes par heure, et ils attribuent l'accès à l'équipe en cas de disparition et appliquent la politique. Pour configurer un nouveau repo immédiatement, demandez à un maintien autorisé de la Structure de prévoir puis appliquez ce flux de travail sur l'organisation principale. Faites cela avant de compter sur des mélanges protégées ou de la publication. Gardez la préparation dans le caller CI et vérifiez les courses réelles; les vérifications attendues avec aucun flux de travail seront à jamais.
+Les modèles GitHub copient la source, et non les ensembles de règles de branche, les autorisations d'équipe, les environnements ou les secrets.  L'outil Configurer les protections des branches de version de GutenStructure découvre de nouveaux référentiels d'organisation publics toutes les heures à la minute 17, attribue au référentiel d'équipe un accès en écriture en cas d'absence et applique la stratégie. Pour configurer un nouveau dépôt immédiatement, demandez à un responsable GutenStructure autorisé de prévisualiser puis d'appliquer ce flux de travail sur l'organisation cible principale. Faites-le avant de compter sur des fusions ou des publications protégées. Conservez Release readiness dans l'appelant CI et vérifiez les passages réels ; les contrôles attendus sans flux de travail correspondant attendront indéfiniment.
 
-Créer main/release de la source stable révisée quand elle est prête ; la politique les cible même avant qu'elles existent. Gardez les pins de flux de travail immobiles de ce modèle, mettez à jour la porte de sortie et l'éditeur de paquets à travers les PR. Le repos privé nécessite une séparation plan/protection validation; aucun accès Azure n’est accordé par la découverte. Les secrets extérieurs de la plate-forme restent dans des environnements propriétaires et ne sont jamais copiés de ce modèle.
+Créez la version principale/version à partir de la source stable révisée lorsque vous êtes prêt ; la politique les cible avant même qu’ils existent. Conservez les broches de flux de travail centrales révisées et immuables de ce modèle, en mettant à jour ensemble la porte de publication et l'éditeur de packages via les PR. Les dépôts privés nécessitent une validation de plan/protection distincte ; aucun accès Azure n’est accordé par découverte. Les secrets de la plateforme externe restent dans les environnements appartenant à l'auteur et ne sont jamais copiés à partir de ce modèle.

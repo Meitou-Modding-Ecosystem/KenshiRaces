@@ -1,42 +1,41 @@
 <a id="build-and-run-locally"></a>
 # Construir y ejecutar localmente
 
-El edificio `Play` construye el motor y cada mod en este repo, copia los modos y los `meitou.lock.json` Los nombres se encuentran en la carpeta de los modos del juego, y luego se inicia el juego. Utilice cualquier herramienta que le guste: Visual Studio, VS Code o un terminal que realice la misma construcción.
+La compilación de `Play` construye el motor y cada mod en este repositorio, copia los mods y los nombres de los marcos `meitou.lock.json` en la carpeta de mods del juego y luego inicia el juego. Utilice la herramienta que desee: Visual Studio , VS Code o un terminal ejecutan la misma compilación.
 
-Todos los tres necesitan.NET 11 SDK y un clan con sus submodulos (`git clone --recurse-submodules <repo URL>`o `git submodule update --init --recursive` en una clona existente). Sin ellos, la construcción se detiene `MEITOU001`que se llama ese mandamiento.
+Los tres necesitan el . NET 11 SDK y un clon con sus submódulos ( `git clone --recurse-submodules <repo URL>` o `git submodule update --init --recursive` en un clon existente). Sin ellos, la compilación se detiene con `MEITOU001` y nombra ese comando.
 
 <a id="visual-studio"></a>
-## Visual estudio
+## Visual Studio
 
-1. Abre el repo `.slnx`.
-2. Sitio `Play` Como proyecto de inicio, se vea a disposición de Visual Studio si no lo ha seleccionado (clicar a la derecha > Configurar como proyecto de inicio).
-3. Seleccione un perfil en el botón de descifrado junto al botón Inici, y luego presione F5 (debug) o Ctrl+F5:
+1. Abra el `.slnx` del repositorio.
+2. Configure `Play` como proyecto de inicio si Visual Studio no lo seleccionó (haga clic derecho > Establecer como proyecto de inicio).
+3. Elija un perfil en el menú desplegable junto al botón Inicio, luego presione F5 (depurar) o Ctrl+F5:
 
-| El perfil | Corridas | Utilice para |
+| Perfil | Corre | Úselo para |
 | --- | --- | --- |
-| Juego (Motor + Mods) | `MeitouClient.exe` construido en este repo `engine` Submodulo | Testar y desbloquear su mod; los puntos de desbloqueo en el trabajo de código mod |
-| Meitou launcher (instalar) | El lanzador instalado desde el Meitou libera, `%LOCALAPPDATA%\MeitouLauncher\current\meitou-launcher.exe` | Modificar la lista de modos o poner la orden de carga y confiar en un nuevo código de modos |
+| Jugar (motor + mods) | `MeitouClient.exe` construido a partir del submódulo `engine` de este repositorio | probar y depurar tu mod; puntos de interrupción en el trabajo del código mod |
+| Lanzador Meitou (instalado) | el lanzador instalado desde las versiones Meitou , `%LOCALAPPDATA%\MeitouLauncher\current\meitou-launcher.exe` | cambiar la lista de mods o el orden de carga y confiar en el código de un nuevo mod |
 
 <a id="vs-code"></a>
-## El Código
+## VS Code
 
-1. Instalar la extensión C# Dev Kit (VS Code la ofrece cuando se abre la pasta; está en `.vscode/extensions.json`).
-2. Abre la carpeta de raíz del repo (File > Open Folder).
-3. Descargar y descargar (Ctrl+Shift+D) **Juego (Motor + Mods)**La impresión de F5. Construye y despliega primero, luego comienza el motor bajo el
-Debugger; puntos de desgaste en el trabajo de código mod.
-4. Para el lanzador instalado: Terminal > Tareas de ejecución > **Meitou launcher (instalar)**. Construye y desploma, luego abre el lanzador.
+1. Instale la extensión C# Dev Kit ( VS Code la ofrece cuando abre la carpeta; está en `.vscode/extensions.json` ).
+2. Abra la carpeta raíz del repositorio (Archivo > Abrir carpeta).
+3. Ejecutar y depurar (Ctrl+Shift+D), seleccione **Reproducir (motor + mods)**, presione F5. Primero construye y despliega, luego arranca el motor bajo el depurador; Los puntos de interrupción en el código mod funcionan.
+4. Para el iniciador instalado: Terminal > Ejecutar tarea > ** Lanzador Meitou (instalado) **. Se construye y se implementa, luego abre el iniciador.
 
-Terminal > Run Build Task (Ctrl+Shift+B) sólo construye y despliega.
+Terminal > Ejecutar tarea de compilación (Ctrl+Shift+B) solo compila e implementa.
 
 <a id="without-an-editor"></a>
-## Sin un editor
+## Sin editor
 
-Clica derecha `tools\Build.ps1` > **Con PowerShell**. Se construye y se despliega como `dotnet build` (ver los submodulares primero si están faltando) y mantener la ventana abierta para que pueda leer el resultado. `-Test` También se realizan las pruebas. `-Run` Entonces comienza el motor.
+Haga clic derecho en `tools\Build.ps1` > **Ejecutar con PowerShell**. Se construye y se implementa como `dotnet build` (comprobando primero los submódulos si faltan) y mantiene la ventana abierta para que pueda leer el resultado. `-Test` también ejecuta las pruebas;  Luego, `-Run` arranca el motor.
 
 <a id="terminal"></a>
-## Terminales
+## Terminal
 
-En la carpeta de la raíz del repo:
+En la carpeta raíz del repositorio:
 
 ```powershell
 dotnet build
@@ -44,9 +43,9 @@ dotnet test
 dotnet run --project Play
 ```
 
-- `dotnet build` y `dotnet test` Construir y probar cada proyecto.
-- `dotnet run --project Play` Construye, implementa y comienza el motor (el perfil de "Play (motor + mods)").
-- Para utilizar el lanzador instalado, desplegarse sin iniciar el motor, y abrir el lanzador:
+- `dotnet build` y `dotnet test` construyen y prueban cada proyecto.
+- `dotnet run --project Play` construye, implementa e inicia el motor (el perfil "Jugar (motor + mods)").
+- Para utilizar el iniciador instalado, implemente sin iniciar el motor y luego abra el iniciador:
 
 ```powershell
 dotnet build Play
@@ -54,26 +53,21 @@ dotnet build Play
 ```
 
 <a id="what-a-play-build-does"></a>
-## Lo que hace un juego
+## ¿Qué hace una construcción de juego?
 
-- Encuentra los mods: cada posesión de la carpeta de alto nivel `meitou.json` y `<Folder>/<Folder>.csproj`. Un nuevo modo no necesita cambios `Play`.
-- Construcción del motor y cada mód **liberación**, cualquiera que sea la configuración que usted haya elegido: el motor de desgaste construye el lanzamiento en `TaskStart.CheckStarts`
-Una vez que un mod comienza la tarea de un personaje. Los puntos de desviación en el código de modo que sigan funcionando (los símbolos de liberación se despliegue).
-- Copia de cada mod `<Mod>.dll`, `<Mod>.pdb` y `meitou.json` para `<Kenshi>\mods\<Mod>\`. Cerrar el juego primero: un juego corriente bloquea el dll.
-- Copiar cada marco en `meitou.lock.json` de su descarga de la cartera a `<Kenshi>\mods\<Framework>\`, o, para un marco construido
-En el caso de un clón ([local-development.md](local-development.md)y su producción construida.
-- Un sistema de control de datos con un sistema de control (`<Mod>.Data/<Mod>.Data.csproj`y correr como `<generator> <Kenshi folder> <output .mod>`Se obtiene su `<Mod>.mod`
-generado del juego instalado; un fracaso es un aviso de construcción y el modo se implementa sin él. Todos los demás modos reciben un vacío `<Mod>.mod` Cuando no hay uno, el que existe nunca se sustituye.
-- Un mod con un `Structures` El archivo tiene su `.glb` Los modelos importados en su paquete, los registros incorporados en su `.mod`
-([structures.md](structures.md)).
-- Cuando la carpeta de modos no existe, nada se copia y el edificio dice que es así.
-- El botón de juego del lanzador comienza el lanzamiento que ha instalado, no el motor de este repo. Cerrar y ejecutar "Play (motor + mods)" para probar su
-Construir .
+- Encuentra las modificaciones: todas las carpetas de nivel superior que contienen `meitou.json` y `<Folder>/<Folder>.csproj` . Un nuevo mod no necesita cambios en `Play` .
+- Crea el motor y cada mod en **Lanzamiento**, cualquiera que sea la configuración que hayas elegido: las compilaciones del motor de depuración incluyen `TaskStart.CheckStarts` una vez que un mod inicia la tarea de un personaje. Los puntos de interrupción en el código mod aún funcionan (se implementan símbolos de versión).
+- Copia el `<Mod>.dll` , `<Mod>.pdb` y `meitou.json` de cada mod a `<Kenshi>\mods\<Mod>\` . Primero cierre el juego: un juego en ejecución bloquea la dll.
+- Copia cada marco en `meitou.lock.json` desde su carpeta de versión descargada a `<Kenshi>\mods\<Framework>\` o, para un marco creado a partir de un clon ([local-development.md](local-development.md) ), su resultado de compilación.
+- Un mod con un generador de datos ( `<Mod>.Data/<Mod>.Data.csproj` , ejecutado como `<generator> <Kenshi folder> <output .mod>` ) obtiene su `<Mod>.mod` generado a partir del juego instalado; una falla es una advertencia de compilación y el mod se implementa sin ella. Todos los demás mods obtienen un `<Mod>.mod` vacío cuando no tienen ninguno; uno existente nunca se reemplaza.
+- Un mod con una carpeta `Structures` obtiene sus modelos `.glb` importados en su carpeta implementada y los registros se fusionan en su `.mod` ([structures.md](structures.md) ).
+- Cuando la carpeta de mods no existe, no se copia nada y la compilación lo dice.
+- El botón Reproducir del iniciador inicia la versión que instaló, no el motor de este repositorio. Ciérralo y ejecuta "Play (motor + mods)" para probar tu compilación.
 
 <a id="settings"></a>
-## Establecimiento
+## Ajustes
 
-Deficiencias: Juego `C:\Program Files (x86)\Steam\steamapps\common\Kenshi`El Mods en el mapa `<game>\mods`. Cambiarlos con el `KENSHI_PATH` variable ambiental (el motor también lo lee, por lo que ambos están de acuerdo), o por máquina en un git-ignorado `Meitou.user.props` En la carpeta de la raíz del repo:
+Valores predeterminados: juego `C:\Program Files (x86)\Steam\steamapps\common\Kenshi` , carpeta de mods `<game>\mods` . Cámbielos con la variable de entorno `KENSHI_PATH` (el motor también la lee, por lo que ambos están de acuerdo), o por máquina en un `Meitou.user.props` ignorado por git en la carpeta raíz del repositorio:
 
 ```xml
 <Project>
@@ -87,11 +81,10 @@ Deficiencias: Juego `C:\Program Files (x86)\Steam\steamapps\common\Kenshi`El Mod
 </Project>
 ```
 
-El motor encuentra el juego por sí mismo (Steam); `KenshiDir` Sólo en el `Meitou.user.props` No se ha pasado a eso. La configuración de lanzamiento de VS Code funciona con el motor de lanzamiento; Ese `.vscode/launch.json` local, si se cambia `PlayConfiguration`.
+El motor encuentra el juego por sí solo (Steam); `KenshiDir` configurado solo en `Meitou.user.props` no se le pasa.  La configuración de lanzamiento de VS Code ejecuta el motor de lanzamiento; edite `.vscode/launch.json` localmente si cambia `PlayConfiguration` .
 
 <a id="first-run"></a>
-## Primera ronda
+## Primera carrera
 
-- Desarrollar el lanzamiento instalado una vez (cada una de las formas anteriores): habilitar el modo y sus placas, y confiar en su código.
-- Si la copia fracasó con "acceso rechazado", dar a su usuario los derechos de Modificación en `Kenshi\mods` (Propiedades > Seguridad) en lugar de llevar a cabo su
-El editor como administrador.
+- Ejecute el iniciador instalado una vez (cualquiera de las formas anteriores): habilite el mod y sus marcos, y confíe en su código.
+- Si la copia falla con "acceso denegado", otorgue a su usuario derechos de Modificación en `Kenshi\mods` (Propiedades > Seguridad) en lugar de ejecutar su editor como administrador.

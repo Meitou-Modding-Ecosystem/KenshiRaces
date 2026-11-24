@@ -1,12 +1,12 @@
 <a id="depending-on-kenshi-races"></a>
-# В зависимости от Kenshi расы
+# В зависимости от Kenshi Races
 
-Как используется код Kenshi Расы и анимации, добавляет к ним субрасы или добавляет свои собственные расы (`kenshi.races`). Правила зарядки: двигатель [modding-dependencies.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md). Агентская умение проходит через те же шаги: [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md).
+Как мод кода использует расы и анимацию Kenshi Races , добавляет к ним подрасы или добавляет свои собственные расы ( `kenshi.races` ). Правила загрузчика: engine [modding-dependents.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md) . Навык агента проходит те же этапы: [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md) .
 
 <a id="1-reference-it-at-build-time-never-ship-it"></a>
-## 1. Реферат на строительство времени, никогда не бросать
+## 1. Ссылайтесь на него во время сборки, никогда не отправляйте его.
 
-В репетиции, сделанной из [Модель Модель](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate)Добавить Kenshi Распущенный ZIP для `meitou.lock.json`• постройка загружает, проверяет и ссылается на нее, а Play размещает ее. Вся стоимость поступает из записей издания (`kenshi-races-v<version>`):
+В репозиторий, созданный на основе [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate) , добавьте zip-архив выпуска Kenshi Races в `meitou.lock.json` ; сборка загружает, проверяет и ссылается на нее, а Play развертывает ее. Каждое значение взято из примечаний к выпуску ( `kenshi-races-v<version>` ):
 
 ```json
 {
@@ -20,12 +20,11 @@
 }
 ```
 
-- Ваш `engine/` PIN перемещается к этому двигателю (GutenStructure
-[Фреймворк](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md)).
-- Никогда не перечислюсь `KenshiRaces.dll` В своем собственном `assemblies`• Загруженный `kenshi.races` Служит типу.
+- Ваш вывод `engine/` перемещается в этот коммит движка ( GutenStructure [блокировка фреймворка](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md) ).
+- Никогда не указывайте `KenshiRaces.dll` в своем `assemblies` ; загруженный `kenshi.races` обслуживает типы.
 
 <a id="2-declare-it-in-meitoujson"></a>
-## 2. Декларируйте в `meitou.json`
+## 2. Объявите это в `meitou.json` .
 
 ```json
 "apiVersion": 2,
@@ -33,13 +32,13 @@
 "dependencies": [{ "id": "kenshi.races", "version": ">=0.4.0 <0.5.0" }]
 ```
 
-- До 1.0 небольшая версия может нарушать APIИтак, поймите диапазон на следующий миниатюр.
-- Kenshi Расы должны сидеть выше вашего режима `data/mods.cfg` (Организация запускателя делает это), поэтому его записи существуют, когда идет фаза данных.
+- До версии 1.0 минорная версия может сломать API , поэтому ограничьте диапазон следующей минорной версией.
+- Kenshi Races должен находиться над вашим модом в `data/mods.cfg` (это делает Arrange программы запуска), поэтому его записи существуют, когда выполняется ваша фаза данных.
 
 <a id="3-use-its-races"></a>
-## 3. Используйте свои гонки
+## 3. Используйте свои расы
 
-Показания к IDS в `Races` из ваших записей, например, в фазе ваших данных:
+Обратитесь к идентификаторам в `Races` из ваших записей, например. на этапе данных:
 
 ```csharp
 public void EditData(ModDataContext c)
@@ -51,19 +50,16 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- RACEs (в том числе и субстанции ) `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`.
-- CHARACTERs (Одна из них – рекрутинговая и рекрутинговая) `LeomaMaleCharacter`, `LeomaFemaleCharacter`, `CrevanMaleCharacter`, `CrevanFemaleCharacter`,
-`CrabmanCharacter`, `CrabQueenCharacter`.
-- RACE_GROUPs (Подробнее о издательской гонке): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`. `Races.Recruit` Это слово «присоединяйтесь».
-- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen` (`Subrace`) и `Races.Groups` Опишите их Таблица →
-[Kenshi-races.md «Разы»](kenshi-races.md#races).
+- РАСЫ (подрасы): `Races.LeomaRace` , `CrevanRace` , `CrabmanRace` , `CrabQueenRace` .
+- ПЕРСОНАЖИ (без комплекта, набираемые): `LeomaMaleCharacter` , `LeomaFemaleCharacter` , `CrevanMaleCharacter` , `CrevanFemaleCharacter` , `CrabmanCharacter` , `CrabQueenCharacter` .
+- RACE_GROUPs (расы редактора): `LeomaGroup` , `CrevanGroup` , `CrabfolkGroup` . `Races.Recruit` — «Присоединяйтесь к нам». разговаривать.
+- Их описывают `Races.Leoma` , `Crevan` , `Crabman` , `CrabQueen` ( `Subrace` ) и `Races.Groups` . Таблица: [kenshi-races.md "Гонки"](kenshi-races.md#races) .
 
 <a id="4-add-a-subrace-or-a-race"></a>
-## 4. Добавить подрасы или расы
+## 4. Добавьте подрасу или расу.
 
-1. Каждый из них подходит для [Ввоз расы](race-import.md) от клона KenshiRaces, в ваш режим `items/races` С собственным голосом
-(`mymod_<character>`; `female` Как риг для женского тела), и совершать файлы. Добавить `!/<Mod>/items/races/*.mesh` и `!/<Mod>/items/races/*.dds` Для `.gitignore`.
-2. Опишите его и добавьте его записи в фазу данных вашего режима (входные имплементации `IModDataPhase`):
+1. Вставьте каждое тело с помощью [race import](race-import.md) из клона KenshiRaces] в `items/races` вашего мода с собственным выносом ( `mymod_<character>` ; `female` в качестве установки для женского тела) и зафиксируйте файлы. Добавьте `!/<Mod>/items/races/*.mesh` и `!/<Mod>/items/races/*.dds` к `.gitignore` .
+2. Опишите его и добавьте его записи в фазу данных вашего мода (запись реализует `IModDataPhase` ):
 
 ```csharp
 static readonly Subrace GhostCrab = new("ghostcrab", "30-MyMod.mod",
@@ -77,17 +73,16 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- Субарация с а `Male` И А `Female` Тело получает половую стрелу редактора; с одним оно однополые, и каждый персонаж носит его.
-- `RaceRecords.Add(c, subrace, talk)`: `talk` Это A DIALOGUE Идентификация персонажей, `null` Для никого.
-- Выберите свою гонку: `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` Добавить в RACE_GROUP И все подрасы.
-- Субъекты `playable` С Kenshi Ограничения редактора (`RaceRecords.EditorLimits`); `FillRace` / `FillCharacter` Заполните записи, которые вы добавили
-Собственность (`c.Add`Когда вы хотите изменить больше поля после.
-- Идентификаторы являются вашими: запись собственной `.mod` Название файла .
+- Подраса с телом `Male` и `Female` получает стрелку пола редактора; один из них однополый, и его носит каждый персонаж.
+- `RaceRecords.Add(c, subrace, talk)` : `talk` — это идентификатор DIALOGUE для символов, `null` — нет.
+- Ваша собственная раса: `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` добавляет RACE_GROUP и все подрасы.
+- Подрасы — это `playable` с ограничениями редактора Kenshi Races ( `RaceRecords.EditorLimits` ); `FillRace` / `FillCharacter` заполняет записи, которые вы добавляете самостоятельно ( `c.Add` ), когда впоследствии вы захотите изменить дополнительные поля.
+- Идентификаторы принадлежат вам: записи вашего собственного имени файла `.mod` .
 
 <a id="6-play-its-animations"></a>
-## 6. Играть в его анимации
+## 6. Воспроизведите анимацию
 
-Каждый клип [animations.md](animations.md) связывается с каждым гонком на человеческих скелетах игры (субраса добавляется с `RaceRecords` Так что, так что мод играет только на него. Мод боевого движения - это только анимация, просьба, когда игра не играет ничего собственного (мотор) docs/modding.md«Коббат движется»):
+Каждый клип [animations.md](animations.md) связан с каждой расой человеческих скелетов в игре (подраса также добавлена ​​в `RaceRecords` ), поэтому мод воспроизводит только его. Боевой ход мода — это только анимация, он запрашивается всякий раз, когда игра не воспроизводит ничего собственного (движок docs/modding.md, «Боевые ходы»):
 
 ```csharp
 CombatTechnique? _wave;
@@ -99,11 +94,11 @@ public void Initialize(ModContext c)
 }
 ```
 
-- `Waving` Ваш: дешевый, безопасный, читающий только ответ из вашего состояния, прогресс клипа 0 до 1 (секунд / `clip.Length`).
-- Клипы играют на месте и передвигаются вперед; клип, короткий по отношению к вашему движению, держит свою последнюю рамку, если вы не запутаете прогресс.
-- Анимации требуют только зависимости (секции 1 и 2), никакой собственной записи.
+- `Waving` ваш: дешевый, потокобезопасный, доступный только для чтения ответ из вашего собственного состояния, прогресс клипа от 0 до 1 (секунды/ `clip.Length` ).
+- Клипы воспроизводятся на месте и лицом вперед; клип короче вашего хода сохраняет свой последний кадр, пока вы не завершите прогресс.
+- Анимациям нужны только зависимости (разделы 1 и 2), никаких собственных записей.
 
 <a id="5-check-it"></a>
 ## 5. Проверьте это
 
-`dotnet build`Итак, в игре F10 **Kenshi Расы: расы** Своей расой он перечисляет, и `spawn <name>` И шпинат его. Название подрастая и CHARACTERs В одном из слов ниже, например. `ghostcrab`Так что консоль берет их без цитат; редактор новой игры перечисляет вашу субрасу.
+`dotnet build` , ваши тесты, затем в игре F10 ** Kenshi Races : Races** перечисляет вашу расу с ее сеткой, а `spawn <name>` порождает ее. Назовите подрасы и СИМВОЛОВ одним словом в нижнем регистре, например. `ghostcrab` , поэтому консоль принимает их без кавычек; в редакторе новой игры указана ваша подраса.

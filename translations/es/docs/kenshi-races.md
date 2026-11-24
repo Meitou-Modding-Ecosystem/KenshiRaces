@@ -1,53 +1,51 @@
 <a id="kenshi-races"></a>
-# Kenshi Las carreras
+# Kenshi Races
 
-Tres nuevas carreras para el editor de personajes, cada una con subrasas, en los esqueletos humanos del juego (`kenshi.races`, sin dependencias): cada registro añadido a la carga, los cuerpos equipados por el [Las carreras de importación](race-import.md). Además, el barco también [Biblioteca de Animación](animations.md) de 59 clips para cada carrera en esos esqueletos. Los modos utilizan las carreras y los clips, añaden subraces o añaden sus propias carreras: [depending-on-kenshi-races.md](depending-on-kenshi-races.md).
+Tres nuevas razas para el editor de personajes, cada una con subrazas, en los esqueletos humanos del juego ( `kenshi.races` , sin dependencias): cada registro agregado durante la carga, los cuerpos equipados por la [carrera importada](race-import.md) . También incluye una [biblioteca de animación](animations.md) de 59 clips para cada raza en esos esqueletos. Los mods usan las carreras y los clips, agregan subrazas o agregan sus propias razas: [depending-on-kenshi-races.md](depending-on-kenshi-races.md) .
 
 <a id="races"></a>
-## Las carreras
+## carreras
 
-El editor incluye cada uno RACE_GROUP como una carrera y su RACEs como subraces (el motor docs/characters.md “Editor de personajes”.
+El editor enumera cada RACE_GROUP como una carrera y sus CARRERAS como subrazas (engine docs/characters.md "Editor de personajes").
 
-| La carrera (RACE_GROUP) | El submarino (RACE) | Género | CHARACTERs |
+| Carrera ( RACE_GROUP ) | Subraza ( RACE ) | Géneros | PERSONAJES |
 | --- | --- | --- | --- |
-| Leoma `30-` | León `10-` | hombre, mujer | Leomacía `11-`La leona `17-` |
-| Crevan `31-` | El tripulación `18-` | hombre, mujer | Crevanmales `19-`Creación `21-` |
-| Crabfolk `32-` | Crabman `12-` | Solitario | Crabman `13-` |
-| | Crabqueen `14-` | Solitario | Crabqueen `15-` |
+| Leoma `30-` | leoma `10-` | masculino, femenino | leomamacho `11-` , leomamacho `17-` |
+| Crevan `31-` | crevan `18-` | masculino, femenino | crevanmacho `19-` , crevanhembra `21-` |
+| Crabfolk `32-` | hombre cangrejo `12-` | soltero | hombre cangrejo `13-` |
+|  | reina cangrejo `14-` | soltero | reina cangrejo `15-` |
 
-terminará en `KenshiRaces.mod`. Subrace y CHARACTER los nombres son una palabra inferior, por lo que la consola `spawn` Los tomamos sin cotas. Los archivos de cada cuerpo son `KenshiRaces/items/races/kenshiraces_<character>*` (Mapa normal en el Leoma y Crevan). Los cuerpos masculinos están preparados para `male_skeleton`Las mujeres de `female_skeleton`Los cuerpos de crab son masculinos, por lo que una reina de crab es un solo género con las animaciones masculinas y la voz. El modelo de fuente (Meshy exportaciones, slim 1): leomal "Leonid Bare - 3ds Max Biped.glb", crabman y crabqueen "... - 3ds max Biped `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`.
+Los identificadores terminan en `KenshiRaces.mod` . Los nombres Subrace y CHARACTER son una palabra en minúscula, por lo que el `spawn` de la consola los toma sin comillas. Los archivos de cada cuerpo son `KenshiRaces/items/races/kenshiraces_<character>*` (mapas normales en Leoma y Crevan ). Los cuerpos masculinos están instalados en `male_skeleton` , los femeninos en `female_skeleton` ; Los cuerpos de los cangrejos son trajes masculinos, por lo que una reina cangrejo es de un solo género con las animaciones y la voz masculinas. Modelos de origen (exportaciones Meshy , slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", cangrejo y cangrejo queen "... - 3ds Max Biped.glb", los otros `leonidfemale.glb` , `corvidmale.glb` , `corvidfemale.glb` .
 
 <a id="records"></a>
-## Los registros
+## Archivos
 
-Añadido en la fase de datos de la plataforma de datos del juego cargado (`RaceRecords`Y así `KenshiRaces.mod` Los barcos vacíos y CI no necesitan juego:
+Agregado en la fase de datos de los propios registros del juego cargado ( `RaceRecords` ), por lo que `KenshiRaces.mod` se envía vacío y CI no necesita juego:
 
-- RACE_GROUPEl nombre de la raza y sus subraces RACEspor orden del editor.
-- RACE (subrace): una copia de Greenlander (`17-gamedata.quack`: estadísticas, animaciones, voces) con la mezcla de cada género, textura de color, mapa normal
-y un mapa parcial (una subraza de un solo género lleva su un cuerpo para ambos); `single gender` a menos que tenga dos cuerpos; no hay cabezas ni cabezas (una raza en la que no hay cabeza atrae ninguno; el cuerpo tiene su propio); `morph num` 0; `no shirts` (T-shirts y pantalones pintan el layout UV del cuerpo humano); máscara del cuerpo y la fuerza de los mapas normales limpiados; `playable` con `editor limits` [`kenshiraces_editor.xml`](#character-editor).
-- CHARACTERUna copia de la letra (`2205-gamedata.base`de la raza y el género (`female chance` 100 o 0), sin kit, dinero o bonos, con el
-Recrutación de conversaciones.
-- El motor: A CHARACTERde su propia `mesh` El campo supera la mezcla corporal de su raza.
+- RACE_GROUP : el nombre de la carrera y las CARRERAS de sus subrazas, en el orden del editor.
+- RACE (subraza): una copia de Greenlander ( `17-gamedata.quack` : estadísticas, animaciones, voces) con la malla, textura de color, mapa normal y mapa parcial de cada género (una subraza de un solo género usa su mismo cuerpo para ambos); `single gender` a menos que tenga ambos cuerpos; sin cabezas ni cabellos (una raza que no tiene cabeza no dibuja ninguna; el cuerpo tiene la suya propia); `morph num` 0; `no shirts` (camisas y pantalones pintan la disposición ultravioleta del cuerpo humano); máscara corporal y mapas normales de fuerza borrados; `playable` con `editor limits` [ `kenshiraces_editor.xml` ](#character-editor) .
+- CHARACTER : una copia de Drifter ( `2205-gamedata.base` ) de la subraza y género ( `female chance` 100 o 0), sin kit, dinero ni recompensa, con la charla de recluta.
+- Motor: el propio campo `mesh` de un CHARACTER anula la malla de la carrocería de su carrera.
 
 <a id="character-editor"></a>
-## El personaje editor
+## editor de personajes
 
-Las carreras se ofrecen en la creación de personajes como el propio juego. `KenshiRaces/items/races/kenshiraces_editor.xml` Mantén sólo los eslavos que mueven los huesos, por lo que trabajan en los cuerpos adhesivos como en un hombre (motor) docs/animation.md, las escalas óseas): El rostro tiene el tamaño de la cabeza, la forma de la cabeza y los rastros del cuello (no las posiciones del rostro: las cabezas fijadas no tienen ninguna); El cuerpo tiene los rastros y el ton de la piel del cuerpo humano, con el tamaño del pecho, la altura y el espacio para las mujeres, que mueven el esqueleto femenino. `L Boob` / `R Boob` Los cuerpos de las mujeres son objeto de[Las carreras de importación](race-import.md#bust)). Los seres humanos son los seres humanos (`data/editor/editor_data_human.xml`).
+Las carreras se ofrecen en la creación de personajes como las del juego. `KenshiRaces/items/races/kenshiraces_editor.xml` mantiene solo los controles deslizantes que mueven los huesos, por lo que funcionan en los cuerpos ajustados como en un humano (motor docs/animation.md, las escalas óseas): La cara contiene el tamaño de la cabeza, la forma de la cabeza y los controles deslizantes del cuello (sin posturas de la cara: las cabezas ajustadas no tienen ninguna); El cuerpo contiene los controles deslizantes del cuerpo humano y el tono de piel, con el tamaño, la altura y el espaciado de los senos para las mujeres, que mueven el `L Boob` / `R Boob` del esqueleto femenino al que están ponderados los cuerpos femeninos ([race import](race-import.md#bust) ). Los rangos son los humanos ( `data/editor/editor_data_human.xml` ).
 
 <a id="recruiting"></a>
-## Recrutamiento
+## Reclutamiento
 
-DIALOGUE `1-KenshiRaces.mod`El personaje dice: “Se ve como si pudiera usar otro par de manos”, y el jugador responde: “Juego” y la acción 18 añade el personaje al jugador.
+DIALOGUE  `1-KenshiRaces.mod` : el personaje dice "Parece que te vendrían bien otro par de manos", el jugador responde "Únete a nosotros". y la acción 18 (unirse al escuadrón) agrega el personaje al escuadrón del jugador.
 
 <a id="testing-in-game"></a>
-## Testar en el juego
+## Pruebas en el juego
 
-1. Permite Kenshi Las raíces en el lanzador (o `data/mods.cfg`).
-2. El console: `spawn leomafemale` (o cualquier CHARACTER en la tabla) espadas en el cursor; hablar para recrutar, o F10 recrutar.
-3. F10 **Kenshi Categoría: Race** Lista de cada rase de plazas de plazas (los modos y dependientes).
-4. Nuevo juego: los arcos de la carrera del editor alcanzan Leoma, Crevan y Crabfolk.
+1. Habilite Kenshi Races en el iniciador (o `data/mods.cfg` ).
+2. Consola: `spawn leomafemale` (o cualquier CHARACTER en la tabla) aparece en el cursor; hablar con reclutar, o F10 depurar Reclutar.
+3. F10 ** Kenshi Races : carreras ** enumera todas las carreras equipadas y cargadas (este mod y sus dependientes).
+4. Nuevo juego: las flechas de carrera del editor llegan a Leoma , Crevan y Crabfolk .
 
 <a id="clothing"></a>
-## La ropa
+## Ropa
 
-Armour comparte el esqueleto del cuerpo, por lo que se mueve con estos cuerpos, pero se modela alrededor del cuerpo humano. La parte del mapa esconde la piel debajo de los objetos con `hide parts` (Las camisetas, ropas, jaquetas); los rasgos de pérdida de peso en lo que es más bulkier que un humano en otros lugares ([Las carreras de importación](race-import.md#slimming)). Las formas lejanas de los humanos (heces, clavos) todavía se ponen a través de un armario estrecho.
+La armadura comparte el esqueleto del cuerpo, por lo que se mueve con estos cuerpos, pero está modelada alrededor del cuerpo humano. El mapa de piezas oculta la piel debajo de los elementos con `hide parts` (abrigos, batas, chaquetas); adelgazar atrae a lo que es más voluminoso que un ser humano en otros lugares ([importación de raza](race-import.md#slimming) ). Formas muy alejadas de las humanas (conchas, garras) todavía se asoman a través de la ajustada armadura.

@@ -1,121 +1,109 @@
 <a id="structures-from-3d-models"></a>
 # Strutture da modelli 3D
 
-Possiamo a `.glb` Il modello (Meshy, Hi3D, un Blender esportazione) nel tuo mod `Structures` La cartella e la costruzione del gioco lo trasformano in un edificio che puoi mettere dal menu di costruzione: Ogre, tessuti compressi, collisione e registri `<Mod>.mod`. No FCSNon c’è Blender, non c’è Installazione per l’importazione.
+Inserisci un modello `.glb` ( Meshy , Hi3D , un'esportazione Blender ) nella cartella `Structures` del tuo mod e la build di gioco lo trasformerà in un edificio che puoi posizionare dal menu di costruzione: mesh Ogre, texture compresse, collisione e record in `<Mod>.mod` . No FCS , no Blender , nessuna installazione del gioco necessaria per l'importazione stessa.
 
 <a id="quick-start"></a>
-## Rapido inizio
+## Avvio rapido
 
-1. Inserisci il modello `<Mod>/Structures/`di E.G. `MyMod/Structures/watch-tower.glb`.
-2. Opzionale: oltre a questo `watch-tower.json` Con qualsiasi [Settimenti](#settings)di E.G.
+1. Inserisci il modello in `<Mod>/Structures/` , ad es. `MyMod/Structures/watch-tower.glb` .
+2. Opzionale: accanto, `watch-tower.json` con qualsiasi [impostazioni](#settings) , ad es.
 
    ```json
    { "name": "Watch Tower", "height": 6, "materials": 20, "description": "A lookout of scrap and rope." }
    ```
 
-3. Costruire e distribuire come di solito ([play.md](play.md)• Visual Studio F5, VS Codice F5, o `dotnet run --project Play`. Il log mostra una
-`Structure ...` Linee per modello.
-4. Nel gioco: costruire il menu, categoria `EXTERIOR` (o quello che avete messo) Con il default `"research": "start"` È noto dall’inizio di una
-Il gioco, e anche i risparmi esistenti (Meitou lavora fuori dalla ricerca finita, che include sempre `_Default Start`).
-5. Il modello, il suo `.json` e `Structures/ids.json` (scrive sul primo posto di importazione) I file generati sono di produzione e non sono
-Compiuto da
+3. Costruisci e distribuisci come al solito ([play.md](play.md) ): Visual Studio F5, VS Code F5 o `dotnet run --project Play` . Il registro di costruzione mostra una riga `Structure ...` per modello.
+4. Nel gioco: menu di costruzione, categoria `EXTERIOR` (o quella impostata da te). Con lo `"research": "start"` predefinito è noto dall'inizio del gioco e anche nei salvataggi esistenti ( Meitou elabora gli sblocchi dalla ricerca terminata, che include sempre `_Default Start` ).
+5. Impegna il modello, i suoi `.json` e `Structures/ids.json` (scritti alla prima importazione). I file generati sono output di compilazione e non vengono sottoposti a commit.
 
-Senza giocare: `dotnet run --project tools/StructureImport -- <Mod>/Structures <Kenshi>/mods/<Mod>`.
+Senza gioco: `dotnet run --project tools/StructureImport -- <Mod>/Structures <Kenshi>/mods/<Mod>` .
 
 <a id="settings"></a>
 ## Impostazioni
 
-Tutte le opzioni (`<model>.json`, i commenti consentiti; un nome sconosciuto è un errore per cui i tipi non vanno ignorati).
+Tutto facoltativo ( `<model>.json` , commenti consentiti; un nome sconosciuto è un errore quindi gli errori di battitura non passano inosservati).
 
-| Settiamo | di default | Significato |
+| Collocamento | Predefinito | Senso |
 | --- | --- | --- |
-| `name` | Il nome del file, `-`/`_` Come spazi | Nome nel menu di costruzione |
-| `description` | `""` | Creazione di menu testo |
-| `height` | La dimensione del proprio modello | L'altezza finita in metri; il modello è scalato ugualmente a esso. I modelli AI vengono a dimensioni arbitrari, quindi impostare questo |
-| `sink` | `0` | metri scendono nel terreno (protegge dal fluttuare sulle spalle) |
-| `yaw` | `0` | Gradi girati intorno all'asse verticale |
-| `category` | `EXTERIOR` | La categoria dei menu (`building category`Il gioco è (`BUILDINGS`, `CAMPING`, `FARMING`... o un nuovo nome |
-| `group` | `""` | `building group`: edifici condividendo uno sono varianti di un'entrata |
-| `materials` | `5` | Il materiale che costa |
-| `buildSpeed` | `2` | `build speed mult` (la tenda del gioco 5, case da 1 a 2) |
-| `research` | `start` | `start`Conosciuto dall’inizio; `none`e non lo fa nulla (o non lo fa) RESEARCH String ID e.g. `96564-rebirth.mod` |
-| `placement` | `outdoor` | `outdoor`, `indoor` o `both` |
-| `createsTown` | `true` | L'immissione fuori da una città comincia con un outpost |
-| `collision` | `mesh` | `mesh` (una copia semplificata del modello), `box` (e la scatola è limitata) o `none` (caminare attraverso di esso) |
-| `collisionTriangles` | `2000` | La maggior parte dei triangoli `mesh` La collisione continua (12 a 50.000) |
-| `textureSize` | `2048` | il più grande lato di tessuto in pixel (una potenza di due, con un massimo di 8192) |
+| `name` | nome file, `-` / `_` come spazi | nome nel menu di creazione |
+| `description` | `""` | creare il testo del menu |
+| `height` | taglia propria del modello | altezza finita in metri; il modello viene scalato in modo uniforme rispetto ad esso.  I modelli AI hanno dimensioni arbitrarie, quindi impostalo |
+| `sink` | `0` | metri affondati nel terreno (impedisce che galleggi sui pendii) |
+| `yaw` | `0` | gradi ruotati attorno all'asse verticale |
+| `category` | `EXTERIOR` | categoria del menu di costruzione ( `building category` ): il gioco ( `BUILDINGS` , `CAMPING` , `FARMING` , ...) o un nuovo nome |
+| `group` | `""` | `building group` : gli edifici che ne condividono uno sono varianti di una voce |
+| `materials` | `5` | Materiali da costruzione costa |
+| `buildSpeed` | `2` | `build speed mult` (tende del gioco 5, case da 1 a 2) |
+| `research` | `start` | `start` : conosciuto fin dall'inizio; `none` : niente lo sblocca (i tuoi record lo fanno); o un ID stringa RESEARCH , ad es. `96564-rebirth.mod` |
+| `placement` | `outdoor` | `outdoor` , `indoor` o `both` |
+| `createsTown` | `true` | posizionandolo fuori da una città avvia un avamposto |
+| `collision` | `mesh` | `mesh` (una copia semplificata del modello), `box` (il suo riquadro di delimitazione) o `none` (percorrilo) |
+| `collisionTriangles` | `2000` | la maggior parte dei triangoli conservati dalla collisione `mesh` (da 12 a 50.000) |
+| `textureSize` | `2048` | lato della trama più grande in pixel (una potenza di due, al massimo 8192) |
 
 <a id="item-models"></a>
-## Modelli di oggetto
+## Modelli di articoli
 
-Inserisci un modello di oggetto `<Mod>/ItemModels/` E invece (`Structures` che lo renderebbe un edificio). L'importazione scrive la sua messa e le sue texture accanto alle strutture" e MATERIAL_SPECS_CLOTHING Il tuo mod; il tuo mod ITEM Il record poi segna loro. Il log mostra una `Item ...` Linee per modello con i nomi da usare.
+Metti invece il modello di un oggetto in `<Mod>/ItemModels/` ( `Structures` lo renderebbe un edificio). L'importazione scrive la sua mesh e le sue texture accanto alle strutture e ad un record MATERIAL_SPECS_CLOTHING ; il record ITEM del tuo mod quindi punta a loro. Il registro di costruzione mostra una riga `Item ...` per modello con i nomi da utilizzare.
 
-1. `MyMod/ItemModels/lantern.glb`Opzionale `lantern.json`: `{ "size": 0.3 }`.
-2. Nella registrazione degli articoli (generatore di dati o fase di dati), impostare:
+1. `MyMod/ItemModels/lantern.glb` , opzionalmente `lantern.json` : `{ "size": 0.3 }` .
+2. Nel record dell'articolo (generatore di dati o fase dati), imposta:
 
-Il valore del campo è
+| Campo | Valore |
    | --- | --- |
-| `mesh` e `ground mesh` (Filenami) Il suo `<mod>_<model>.mesh`di E.G. `mymod_lantern.mesh` | | `material` (Riflessione) Il Corano `<950000 + 100 × block>-<Mod>.mod`Il blocco da `ItemModels/ids.json`di E.G. `950000-MyMod.mod` |
+| `mesh` e `ground mesh` (nomi file) | `<mod>_<model>.mesh` , ad es. `mymod_lantern.mesh` | | `material` (riferimento) | `<950000 + 100 × block>-<Mod>.mod` , blocco da `ItemModels/ids.json` , ad es. `950000-MyMod.mod` |
 
-Vediamo prima il materiale (`GameDatabase.Find`e mantenere lo sguardo quando è mancato: un zip rilasciato, e i test che leggono il gioco senza il mod, non lo hanno.
-3. Il modello, il suo `.json` e `ItemModels/ids.json`.
+Cerca prima il materiale ( `GameDatabase.Find` ) e mantieni l'aspetto del sostituto quando manca: uno zip rilasciato e test che leggono il gioco senza il mod distribuito, non ce l'hanno.
+3. Impegna il modello, i suoi `.json` e `ItemModels/ids.json` .
 
-| Settiamo | di default | Significato |
+| Collocamento | Predefinito | Senso |
 | --- | --- | --- |
-| `name` | Il nome del file, `-`/`_` Come spazi | Il nome del registro materiale |
-| `size` | La dimensione del proprio modello | il lato più lungo in metri; il modello è scalato in modo uguale a quello |
-| `yaw` | `0` | Gradi girati intorno all'asse verticale |
-| `textureSize` | `1024` | il più grande lato di tessuto in pixel (una potenza di due, con un massimo di 8192) |
+| `name` | nome file, `-` / `_` come spazi | il nome del record materiale |
+| `size` | taglia propria del modello | lato più lungo in metri; il modello viene ridimensionato in modo uniforme |
+| `yaw` | `0` | gradi ruotati attorno all'asse verticale |
+| `textureSize` | `1024` | lato della trama più grande in pixel (una potenza di due, al massimo 8192) |
 
-- Un prodotto per modello (la ITEM I nomi uno `material`Il modello si trova al suo punto più basso, centrato, come fanno le scatole del gioco.
-- Il gioco tira un elemento sul terreno, in una mano e in un'icona auto con la sua `mesh` (`ground mesh` prima sul terreno) e il
-MATERIAL_SPECS_CLOTHING Il suo `material` Il nome del motore `docs/formats/runtime-materials.md` “Calleri” `WorldObjectLayout.ItemMesh`).
-- L'icona dell'inventario viene ritirata dal modello a meno che i record non `auto icon image` falso e il proprio `icon`.
+- Un materiale per modello di articolo (lo ITEM ne nomina uno `material` ); il modello si trova nel punto più basso, centrato, come fanno le maglie degli oggetti del gioco.
+- Il gioco disegna un oggetto sul terreno, in una mano e nell'icona di un'auto con il suo `mesh` ( `ground mesh` il primo a terra) e lo MATERIAL_SPECS_CLOTHING con i suoi nomi `material` (motore `docs/formats/runtime-materials.md` "Chiamatori", `WorldObjectLayout.ItemMesh` ).
+- L'icona dell'inventario viene ricavata dal modello a meno che il record non imposti `auto icon image` false e il proprio `icon` .
 
 <a id="getting-a-good-model"></a>
 ## Ottenere un buon modello
 
-- Chiediamo Meshy o Hi3D Per A PBR- Modello testo e scaricalo come GLB. Un paio di decine di migliaia di triangoli sono abbondanti; il log flagga un modello
-Più di 150mila. Tagliare la piattaforma, scegliere la dimensione e tagliare le tessute: [model-prep.md](model-prep.md).
-- Il modello di fronte è +Z nel file (glTFdi convenzione); utilizzo e `yaw` per girarlo.
-- Ogni materiale diventa la sua parte. I generatori generatori di solito danno uno; al massimo 49.
-- Il modello si trova al suo punto più basso, centrato.
+- Chiedi a Meshy o Hi3D un modello con texture PBR e scaricalo come GLB . Alcune decine di migliaia di triangoli sono sufficienti; il registro contrassegna un modello superiore a 150.000. Tagliare il polycount, scegliere la dimensione e restringere le texture: [model-prep.md](model-prep.md) .
+- La parte anteriore del modello è rivolta verso +Z nel file (convenzione glTF); utilizzare `yaw` per girarlo.
+- Ogni materiale diventa parte di se stesso. I generatori di solito ne danno uno; al massimo 49.
+- Il modello si trova nel punto più basso, centrato.
 
 <a id="what-it-writes"></a>
 ## Cosa scrive
 
-Inserisci la scheda Mod (`<Kenshi>/mods/<Mod>/`):
+Nella cartella mod distribuita ( `<Kenshi>/mods/<Mod>/` ):
 
-- `structures/<mod>_<model>.mesh` 1 per materiale, `_1`, `_2`, ... quando più): Ogre `[MeshSerializer_v1.8]`Posizione, normale, UV e
-tangente con la manovra in w, il layout del gioco di costruzione.
-- `structures/<mod>_<model>_d.dds`, `_n.dds`, `_m.dds`: diffusa (BC3), normale (BC1, BC3 quando tagliato), metallica (BC1), con mipi.
-- `structures/<mod>_<model>_col.xml`La collisione .
-- Per un modello di oggetto: `structures/<mod>_<model>.mesh` e la sua composizione, nessuna collisione.
-- I record si uniscono `<Mod>.mod` oltre a qualsiasi altra cosa in esso (i registri di un generatore di dati vengono conservati; viene sostituita una importazione precedente):
-BUILDINGe uno BUILDING_PART e MATERIAL_SPEC per il materiale, e l'inclusione (la ricerca `enable buildings` La costruzione è un’edificio; uno MATERIAL_SPECS_CLOTHING Per il modello.
+- `structures/<mod>_<model>.mesh` (uno per materiale, `_1` , `_2` , ... quando diversi): Ogre `[MeshSerializer_v1.8]` , posizione, normale, UV e tangente con la mano in w, il layout delle maglie dell'edificio del gioco.
+- `structures/<mod>_<model>_d.dds` , `_n.dds` , `_m.dds` : diffuso (BC3), normale (BC1, BC3 se tagliato), metallizzato (BC1), con mips.
+- `structures/<mod>_<model>_col.xml` : la collisione.
+- Per un modello di articolo: `structures/<mod>_<model>.mesh` e le sue texture, nessuna collisione.
+- I record vengono fusi in `<Mod>.mod` accanto a qualsiasi altra cosa al suo interno (vengono conservati i record di un generatore di dati; vengono sostituiti quelli di un'importazione precedente): uno BUILDING , uno BUILDING_PART e MATERIAL_SPEC per materiale e lo sblocco (lo `enable buildings` della ricerca ottiene l'edificio); uno MATERIAL_SPECS_CLOTHING per modello di articolo.
 
-I nomi dei file iniziano con il nome del mod, perché il gioco mostra le risorse per il nome del file su ogni mod.
+I nomi dei file iniziano con il nome della mod perché il gioco cerca le risorse in base al nome del file semplice in ogni mod.
 
-I record id sono `<n>-<Mod>.mod` con n da 900000 a 3⁄4, un blocco di 100 a 3⁄4 per modello (construzione +0, parti +1, materiali +50); modelli di oggetti contano da 950000 (materiale +0) in `ItemModels/ids.json`. `Structures/ids.json` Mantenere il blocco di ogni modello in modo che gli ID non cambiano mai: un salvataggio chiama un edificio posto per l'ID del suo record. Non modificare mai un blocco; rimuovere un modello rimuove il suo edificio dai giochi che lo hanno messo.
+Gli ID dei record sono `<n>-<Mod>.mod` con n da 900000 in su, un blocco di 100 per modello (edificio +0, parti +1, materiali +50); i modelli degli articoli contano da 950000 (materiale +0) in `ItemModels/ids.json` . `Structures/ids.json` mantiene il blocco di ciascun modello in modo che gli ID non cambino mai: un salvataggio nomina un edificio posizionato in base all'ID del suo record. Non modificare o rimuovere mai un blocco; rimuovere un modello rimuove il suo edificio dai giochi che lo hanno posizionato.
 
 <a id="facts-the-import-relies-on"></a>
-## Il fatto che l’importazione dipende da
+## Fatti su cui si basa l'importazione
 
-Controllato contro i file del gioco (Kenshi 1.0.68 dati) e con i lettori del motore:
+Controllato con i file del gioco (dati Kenshi 1.0.68) e con i lettori del motore:
 
-- **Unità**: l'unità mondiale è 0,1 m, Y in alto; glTF è metri, Y in alto, quindi la scala è 10 (i file di collisione del gioco utilizzano la gravità 98.1).
-- **Materiali**La vista di una parte dell’edificio è MATERIAL_SPEC (`texture map`, `normal map`, `metalness map`, `material type`Non è la messa
-Il nome del motore (Engine `docs/formats/runtime-materials.md`). Il giocatore del gioco (`data/materials/deferred/objects.hlsl`Leggi diffuso RGB come colore e A come gloss (tempo `specular mult`di norma RGB Come il Tango-spazio normale e A come la maschera di taglio (`material type` 1, `alpha threshold`Il metallico di R. L'importazione scrive gloss = 1 - glTF La rottura e il metalliismo da glTFil canale blu; glTF MASK e BLEND Diventare un taglio.
-- **Il Tango**Il sistema binorale del schiaffo è a croce (tangente, normale) × w, e sulle messe del gioco segna lungo l'aumento di V (**Verificato**:
-`prisoner_pole.mesh` 86 di questi triangoli, `Camp_tent1.mesh` 1858 e 1865. glTF Le mappe normali mettono in luce l'immagine (sconto V), quindi l'importazione ruota il canale verde e mette in luce il modo in cui si gioca.
-- **Collisione**: una parte di `xml collision` è un file PhysX NxuStream2; un carico minimo di file scritto a mano (il gioco `Camp_tent1_COL.xml` è
-una scatola) PhysX è Z up e le mappe di gioco (x, y, z) a (x, z, -y), quindi l'importazione scrive i punti della parte come (x, -z, y). Il triangolo entra come punti piatti e triangoli; il gioco lo fa carico, Meitou lo legge come è (motore) `docs/formats/collision.md`).
-- **I campi**: BUILDING e BUILDING_PART trasportare il set di campo completo del gioco Camping Tent 1 (`18026-small_changes_otto.mod`E così niente
-Si tratta di un default; no `functionality`E’ un edificio piatto.
-- **disattivazione**: un edificio è nel menu di costruzione una volta che una ricerca finita lo elenca in `enable buildings`Ogni gioco inizia con
-`_Default Start` (`5359-gamedata.base`e finito . **Verificato** con il motore `GameDatabase`, `ResearchGate` e `BuildingBuildData` sul gioco di base e su un mod importato: le strutture sono disattivate e costano i materiali di costruzione come stabilito.
+- **Unità**: l'unità mondiale è 0,1 m, Y in alto; glTF è metri, Y in su, quindi la scala è 10 (i file di collisione del gioco utilizzano la gravità 98,1).
+- **Materiali**: l'aspetto di una parte di un edificio è il suo MATERIAL_SPEC ( `texture map` , `normal map` , `metalness map` , `material type` ), non il nome del materiale della mesh (motore `docs/formats/runtime-materials.md` ). Lo shader di costruzione del gioco ( `data/materials/deferred/objects.hlsl` ) legge RGB diffuso come colore e A come lucentezza (volte `specular mult` ), RGB normale come normale dello spazio tangente e A come maschera di ritaglio ( `material type` 1, `alpha threshold` ), metallità da R. L'importazione scrive gloss = 1 - rugosità e metallicità glTF dal canale blu di glTF; glTF MASK e BLEND diventano un ritaglio.
+- **Tangenti**: la binormale dello shader è cross(tangente, normale) × w, e sulle mesh del gioco punta lungo la V crescente (**Verificato**: `prisoner_pole.mesh` 86 di 86 triangoli, `Camp_tent1.mesh` 1858 di 1865). Le mappe normali glTF puntano verso l'alto dell'immagine in verde (V decrescente), quindi l'importazione inverte il canale verde e imposta la direzione del gioco.
+- **Collisione**: `xml collision` di una parte è un file PhysX NxuStream2; viene caricato un file minimo scritto a mano (lo `Camp_tent1_COL.xml` del gioco è una scatola). PhysX è Z up e il gioco mappa (x, y, z) su (x, z, -y), quindi l'importazione scrive i punti della parte come (x, -z, y). La mesh triangolare si presenta come punti semplici e triangoli; il gioco lo cucina al caricamento, Meitou lo legge così com'è (motore `docs/formats/collision.md` ).
+- **Campi**: BUILDING e BUILDING_PART trasportano il set completo di campi della tenda da campeggio 1 del gioco ( `18026-small_changes_otto.mod` ), quindi nulla viene impostato di default; no `functionality` , quindi è un edificio semplice.
+- **Sblocco**: un edificio è nel menu di costruzione una volta che una ricerca terminata lo elenca in `enable buildings` ; ogni partita inizia con `_Default Start` ( `5359-gamedata.base` ) finito. **Verificato** con il motore `GameDatabase` , `ResearchGate` e `BuildingBuildData` nel gioco base più una mod importata: le strutture sono sbloccate e costano materiali da costruzione come impostato.
 
 <a id="not-covered-yet"></a>
-## Non coperto ancora
+## Non ancora coperto
 
-Interiori, porte, funzioni (servizio, letti, lavorazione) e parti di rotazione.
+Interni, porte, funzioni (contenitori, letti, lavorazione) e parti tornite.

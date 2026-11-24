@@ -1,12 +1,12 @@
 <a id="depending-on-kenshi-races"></a>
-# 의존에 따라 Kenshi 레이스
+# Kenshi Races 에 따라 다름
 
-코드 모드 사용 방법 Kenshi 인종과 애니메이션, 그들에게 수브라스를 추가하거나 자신의 인종을 추가합니다 (`kenshi.races`). 로더 규칙 : 엔진 [modding-dependencies.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md). 에이전트 기술은 같은 단계를 통과합니다: [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md).
+코드 모드가 Kenshi Races ' 종족과 애니메이션을 사용하고, 하위 종족을 추가하거나 자체 종족을 추가하는 방법( `kenshi.races` ). 로더 규칙: 엔진 [modding-dependent.md](https://github.com/Meitou-Modding-Ecosystem/MeitouClient/blob/master/docs/modding-dependencies.md) . 에이전트 스킬은 동일한 단계를 진행합니다: [.claude/skills/kenshi-races-dependent](../../../.claude/skills/kenshi-races-dependent/SKILL.md) .
 
 <a id="1-reference-it-at-build-time-never-ship-it"></a>
-## 1. 건설 시간에 그것을 참조하십시오, 결코 그것을 배치하지 마십시오
+## 1. 빌드 시 참조하고 절대 배송하지 마세요.
 
-에서 만든 에서 [템플릿](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate)추가하기 Kenshi Races' release Zip에 대한 리뷰 보기 `meitou.lock.json`; 건물 다운로드, 검사 및 참조 그것, 그리고 플레이 그것을 배포. 모든 값은 값의 값으로 나온다(`kenshi-races-v<version>`):
+[MeitouModTemplate](https://github.com/Meitou-Modding-Ecosystem/MeitouModTemplate) 로 만든 저장소에서 Kenshi Races ' 릴리스 zip을 `meitou.lock.json` 에 추가합니다. 빌드는 이를 다운로드하고 확인하고 참조하며 Play는 이를 배포합니다. 모든 값은 릴리스 노트( `kenshi-races-v<version>` )에서 나옵니다.
 
 ```json
 {
@@ -20,12 +20,11 @@
 }
 ```
 
-- 당신의 `engine/` 핀이 그 엔진에 움직이기 때문에 (GutenStructure)
-[프레임 워크](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md)).
-- 결코 목록 `KenshiRaces.dll` 당신의 자신의 `assemblies`• 충전된 `kenshi.races` 그들은 유형을 봉사합니다.
+- `engine/` 핀은 해당 엔진 커밋( GutenStructure [프레임워크 잠금](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/framework-lock.md) )으로 이동합니다.
+- 자신의 `assemblies` 에 `KenshiRaces.dll` 를 나열하지 마십시오. 로드된 `kenshi.races` 는 유형을 제공합니다.
 
 <a id="2-declare-it-in-meitoujson"></a>
-## 2. 그것을 선언하라 `meitou.json`
+## 2. `meitou.json` 에서 선언하세요.
 
 ```json
 "apiVersion": 2,
@@ -33,13 +32,13 @@
 "dependencies": [{ "id": "kenshi.races", "version": ">=0.4.0 <0.5.0" }]
 ```
 
-- 1.0 이전에 작은 버전이 깨질 수 있습니다. API그래서 다음 미니에 대한 범위를 캡처합니다.
-- Kenshi 레이스는 당신의 모드 위에 서 있어야합니다. `data/mods.cfg` (시작자의 순서) 그래서 그것의 기록은 당신의 데이터 단계가 실행 될 때 존재합니다.
+- 1.0 이전의 마이너 버전은 API 를 손상시킬 수 있으므로 다음 마이너 버전에서 범위를 제한하세요.
+- Kenshi Races 는 `data/mods.cfg` 에서 모드 위에 있어야 하므로(런처의 정렬이 수행함) 데이터 단계가 실행될 때 해당 레코드가 존재합니다.
 
 <a id="3-use-its-races"></a>
-## 3. 그들의 경주를 사용하라
+## 3. 종족을 활용하라
 
-IDS에 대한 참조 `Races` 귀하의 기록에서, 예를 들어, 귀하의 데이터 단계에서:
+기록에서 `Races` 의 ID를 참조하세요. 데이터 단계에서:
 
 ```csharp
 public void EditData(ModDataContext c)
@@ -51,19 +50,16 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- RACEs (에 대한 의견 : `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`.
-- CHARACTERs (그러나 그들은 그들을 괴롭히지 않았다) `LeomaMaleCharacter`, `LeomaFemaleCharacter`, `CrevanMaleCharacter`, `CrevanFemaleCharacter`,
-`CrabmanCharacter`, `CrabQueenCharacter`.
-- RACE_GROUPs (이 편집자의 레이스 : `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`. `Races.Recruit` ‘우리에게 합류하라’는 말이 있다.
-- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen` (`Subrace`) 그리고 `Races.Groups` 그들을 묘사하라. 테이블 :
-[Kenshi-races.md “종사”](kenshi-races.md#races).
+- RACE(하위 경주): `Races.LeomaRace` , `CrevanRace` , `CrabmanRace` , `CrabQueenRace` .
+- 캐릭터(키트 없음, 모집 가능): `LeomaMaleCharacter` , `LeomaFemaleCharacter` , `CrevanMaleCharacter` , `CrevanFemaleCharacter` , `CrabmanCharacter` , `CrabQueenCharacter` .
+- RACE_GROUPs (편집자의 종족): `LeomaGroup` , `CrevanGroup` , `CrabfolkGroup` . `Races.Recruit` 는 "함께해요"입니다. 말하다.
+- `Races.Leoma` , `Crevan` , `Crabman` , `CrabQueen` ( `Subrace` ) 및 `Races.Groups` 가 이를 설명합니다. 표: [kenshi-races.md "경주"](kenshi-races.md#races) .
 
 <a id="4-add-a-subrace-or-a-race"></a>
-## 4. Subrace 또는 Race를 추가하십시오
+## 4. 하위 경주 또는 경주 추가
 
-1. 각 몸은 각 몸과 함께 [경주 수입](race-import.md) KenshiRaces 클론에서, 당신의 모드에 `items/races` 당신의 목소리로
-(`mymod_<character>`; `female` 여성의 몸에 대한 잔디처럼), 그리고 파일을 묶어. 추가하기 `!/<Mod>/items/races/*.mesh` 그리고 `!/<Mod>/items/races/*.dds` 는 는 `.gitignore`.
-2. 그것을 설명하고 모드의 데이터 단계에 기록을 추가하십시오 (입력 구현 `IModDataPhase`):
+1. [KenshiRaces 클론의 레이스 가져오기](race-import.md) 를 자신의 스템( `mymod_<character>` , 여성 신체용 장비인 `female` )을 사용하여 모드의 `items/races` 에 맞추고 파일을 커밋합니다. `!/<Mod>/items/races/*.mesh` 및 `!/<Mod>/items/races/*.dds` 를 `.gitignore` 에 추가합니다.
+2. 이를 설명하고 모드의 데이터 단계에 해당 레코드를 추가하십시오(항목은 `IModDataPhase` 를 구현합니다).
 
 ```csharp
 static readonly Subrace GhostCrab = new("ghostcrab", "30-MyMod.mod",
@@ -77,17 +73,16 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- A와 함께 한 잔의 `Male` 그리고 A `Female` 몸은 편집자의 성총을 얻는다; 하나는 단일 성이며, 각 캐릭터는 그것을 착용합니다.
-- `RaceRecords.Add(c, subrace, talk)`: `talk` A는 A DIALOGUE 캐릭터를 위한 ID, `null` 아무에게도
-- 당신의 자신의 경주 : `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` 추가하십시오 RACE_GROUP 그리고 각각의 잔치.
-- 주제가 니다 `playable` 와 함께 Kenshi 녹음기 녹음하기 녹음 (`RaceRecords.EditorLimits`); `FillRace` / `FillCharacter` 당신이 추가하는 레코드를 작성합니다.
-자신을 위해서(`c.Add`) 후에 더 많은 필드를 변경하려면.
-- ID는 당신의 것입니다 : 당신의 기록 `.mod` 파일 이름
+- `Male` 및 `Female` 본체가 있는 하위 경주는 편집자의 성별 화살표를 얻습니다. 하나는 단일 성별이고 모든 캐릭터가 그것을 착용합니다.
+- `RaceRecords.Add(c, subrace, talk)` : `talk` 는 문자의 DIALOGUE ID이고, 없음의 경우 `null` 입니다.
+- 나만의 레이스: `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` 는 RACE_GROUP 와 모든 하위 레이스를 추가합니다.
+- 하위 경주는 Kenshi Races ' 편집기 제한( `RaceRecords.EditorLimits` )이 있는 `playable` 입니다. `FillRace` / `FillCharacter` 채우기 레코드는 나중에 더 많은 필드를 변경하려는 경우 직접 추가( `c.Add` )합니다.
+- ID는 귀하의 것입니다. 귀하의 `.mod` 파일 이름이 기록됩니다.
 
 <a id="6-play-its-animations"></a>
-## 6. 그의 애니메이션을 재생합니다.
+## 6. 애니메이션 재생
 
-각 클립은 [animations.md](animations.md) 게임의 인간 척추에있는 모든 경주와 연결되어있다 (subrace 추가 `RaceRecords` 또한), 그래서 모드는 그것을 재생합니다. 모드 전투 움직임은 단지 애니메이션이며, 게임이 자신의 무언가를 재생할 때마다 요청됩니다. docs/modding.md‘투쟁이 움직인다’는 말이다.
+[animations.md](animations.md) 의 모든 클립은 게임의 인간 뼈대에 있는 모든 종족( `RaceRecords` 와 함께 추가된 하위 종족도 있음)에 연결되어 있으므로 모드에서는 해당 클립만 재생합니다. 모드 전투 동작은 애니메이션일 뿐이며 게임이 자체적으로 아무것도 재생하지 않을 때마다 요청됩니다(엔진 문서/modding.md, "전투 동작"):
 
 ```csharp
 CombatTechnique? _wave;
@@ -99,11 +94,11 @@ public void Initialize(ModContext c)
 }
 ```
 
-- `Waving` 귀하의: 저렴한, 스트립 안전한, 귀하의 상태에서 읽기만한 답변, 클립의 진행 0에서 1 (초 / `clip.Length`).
-- 클립은 위치에 있고 앞으로 나아가며, 당신이 진보를 멈추지 않는 한, 당신의 움직임보다 짧은 클립은 마지막으로 유지됩니다.
-- 애니메이션은 의존성만 필요합니다 (제 1 및 제 2 장), 자신의 기록이 없습니다.
+- `Waving` 는 귀하의 것입니다. 귀하의 상태에서 저렴하고 스레드로부터 안전하며 읽기 전용 답변을 얻을 수 있으며 클립의 진행률은 0에서 1(초/ `clip.Length` )입니다.
+- 클립은 제자리에서 재생되고 앞을 향합니다. 이동보다 짧은 클립은 진행 상황을 래핑하지 않는 한 마지막 프레임을 유지합니다.
+- 애니메이션에는 종속성(섹션 1 및 2)만 필요하며 자체 기록은 필요하지 않습니다.
 
 <a id="5-check-it"></a>
-## 5. 그것을 확인하십시오
+## 5. 확인해보세요
 
-`dotnet build`, 당신의 테스트, 그 다음 게임 F10 **Kenshi 레이스 : 레이스** 그대는 그대의 잔치와 함께 그대의 삶을 살아가며, `spawn <name>` 그것을 스파이. 이름은 고 CHARACTERs 한마디 낮은 단어, 예를 들면 `ghostcrab`그래서 콘솔은 인용없이 그들을 얻습니다; 새로운 게임의 편집자는 당신의 수족관을 목록.
+`dotnet build` , 테스트 후 게임 F10 ** Kenshi Races : races** 에서 메시와 함께 레이스를 나열하고 `spawn <name>` 가 이를 생성합니다. 하위 경주 및 CHARACTER 이름은 소문자로 1개 단어로 지정하세요. `ghostcrab` 이므로 콘솔은 따옴표 없이 이를 사용합니다. 새 게임의 편집기에는 하위 인종이 나열됩니다.

@@ -1,121 +1,109 @@
 <a id="structures-from-3d-models"></a>
-# 3Dモデルの構造
+# 3Dモデルからの構造
 
-ポットA `.glb` モデル(Meshy, Hi3Dブレイヤー(モード)で `Structures` フォルダーとゲームの構築は、構築メニューから置くことができる建物に変換されます: オグレメッシュ、圧縮されたテキスト、衝突と記録 `<Mod>.mod`. ノー FCSブレイダー、ゲームインストールは、輸入自体に必要ありません。
+`.glb` モデル ( Meshy 、 Hi3D 、 Blender エクスポート) を MOD の `Structures` フォルダーに置くと、プレイ ビルドによってそれがビルド メニューから配置できる建物に変わります: Ogre メッシュ、圧縮テクスチャ、コリジョン、および `<Mod>.mod` のレコード。 FCS 、 Blender 、インポート自体にゲームのインストールは必要ありません。
 
 <a id="quick-start"></a>
-## 早速スタート
+## クイックスタート
 
-1. モデルを入れて `<Mod>/Structures/`☆☆☆☆ `MyMod/Structures/watch-tower.glb`.
-2. 選択肢:それに加えて、 `watch-tower.json` どんなものと [設定](#settings)☆☆☆☆
+1. モデルを `<Mod>/Structures/` に入れます。 `MyMod/Structures/watch-tower.glb` 。
+2. オプション: その横に、 `watch-tower.json` 任意の [設定 ](#settings) 、例えば
 
    ```json
    { "name": "Watch Tower", "height": 6, "materials": 20, "description": "A lookout of scrap and rope." }
    ```
 
-3. いつものように作り上げて([play.md](play.md)・Visual Studio F5、VS コード F5、または `dotnet run --project Play`. レコードは1つを示す。
-`Structure ...` モデルによるライン
-4. ゲーム内:メニュー、カテゴリー `EXTERIOR` (あるいは、あなたがたが定めたもの) デフォルトで `"research": "start"` 初めから知られているのは、
-ゲーム、そして既存の節約も(Meitouは、常に含まれる完成調査のオープンです。 `_Default Start`).
-5. モデルを採用し、 `.json` そして、 `Structures/ids.json` (最初の輸入に記載) 生成されたファイルは、出力を作成し、それ以外の
-約束した。
+3. 通常どおりビルドしてデプロイします ([play.md](play.md) ): Visual Studio F5、 VS Code F5、または `dotnet run --project Play` 。ビルド ログには、モデルごとに 1 つの `Structure ...` 行が表示されます。
+4. ゲーム内: ビルド メニュー、カテゴリ `EXTERIOR` (または設定したもの)。デフォルトの `"research": "start"` では、ゲームの開始時から既知であり、既存のセーブでも既知です ( Meitou は、完了した研究からロック解除を計算します。これには常に `_Default Start` が含まれます)。
+5. モデル、その `.json` および `Structures/ids.json` (最初のインポートに書き込まれた) をコミットします。生成されたファイルはビルド出力であり、コミットされません。
 
-ゲームなし: `dotnet run --project tools/StructureImport -- <Mod>/Structures <Kenshi>/mods/<Mod>`.
+遊びなし: `dotnet run --project tools/StructureImport -- <Mod>/Structures <Kenshi>/mods/<Mod>` 。
 
 <a id="settings"></a>
 ## 設定
 
-すべてのオプション(`<model>.json`, コメントが許可されます; 未知の名前はエラーですので、タイプは無視されません)。
+すべてオプション ( `<model>.json` 、コメントは許可されています。不明な名前はエラーとなるため、タイプミスは見逃されません)。
 
 | 設定 | デフォルト | 意味 |
 | --- | --- | --- |
-| `name` | ファイル名、 `-`/`_` スペースとして | メニューの名称 |
-| `description` | `""` | メニューテキスト作成 |
-| `height` | モデルの大きさ | 完成高度はメートルで、モデルはそれに等しくスケールされています。 AIモデルは、任意のサイズで来るので、これを設定します。 |
-| `sink` | `0` | 地面に落ちるメートル(スロープに浮かぶのを止める) |
-| `yaw` | `0` | 階段は垂直軸の周りを振り回す |
-| `category` | `EXTERIOR` | メニューカテゴリー(`building category`ゲーム( )`BUILDINGS`, `CAMPING`, `FARMING`・・・あるいは新しい名前。 |
-| `group` | `""` | `building group`: 建物 共有 1 は 1 入り口の変数 |
-| `materials` | `5` | 建物は費用がかかる。 |
-| `buildSpeed` | `2` | `build speed mult` (ゲームのテント5、ハウス1から2) |
-| `research` | `start` | `start`初めから知られています。 `none`あなたがたは、何事もなく、あなたがたの手のひらに、あるいは、 RESEARCH ストレッチID、e.g `96564-rebirth.mod` |
-| `placement` | `outdoor` | `outdoor`, `indoor` あるいは `both` |
-| `createsTown` | `true` | 町の外に置くのは、出発点です。 |
-| `collision` | `mesh` | `mesh` (シンプル化されたコピー) `box` (ボックスの入り口) `none` (その通りを歩く) |
-| `collisionTriangles` | `2000` | ほとんどの三角形は `mesh` 衝突が続く(12〜50万) |
-| `textureSize` | `2048` | ピクセルで最大のテキストサイド(最大8192点のパワー) |
+| `name` | ファイル名、 `-` / `_` (スペースとして) | ビルドメニューの名前 |
+| `description` | `""` | ビルドメニューテキスト |
+| `height` | モデル自身のサイズ | 仕上がりの高さ（メートル単位）。モデルはそれに合わせて均等にスケールされます。 AI モデルには任意のサイズがあるため、これを設定します |
+| `sink` | `0` | メートルが地面に沈みます（斜面に浮くのを防ぎます） |
+| `yaw` | `0` | 垂直軸を中心に回転した度 |
+| `category` | `EXTERIOR` | ビルド メニュー カテゴリ ( `building category` ): ゲームの ( `BUILDINGS` 、 `CAMPING` 、 `FARMING` 、 ...) または新しい名前 |
+| `group` | `""` | `building group` : 1 つを共有する建物は 1 つのエントリのバリアントです |
+| `materials` | `5` | 建築資材にかかる費用 |
+| `buildSpeed` | `2` | `build speed mult` (ゲームのテント 5、家 1 ～ 2) |
+| `research` | `start` | `start` : 最初からわかっています。 `none` : ロックを解除するものは何もありません (自分の記録がロックを解除します)。または RESEARCH 文字列 ID (例: `96564-rebirth.mod` |
+| `placement` | `outdoor` | `outdoor` 、 `indoor` または `both` |
+| `createsTown` | `true` | 町の外に置くと前哨基地が始まります |
+| `collision` | `mesh` | `mesh` (モデルの簡略化されたコピー)、 `box` (その境界ボックス)、または `none` (モデルのウォークスルー) |
+| `collisionTriangles` | `2000` | `mesh` コリジョンが保持するほとんどの三角形 (12 ～ 50,000) |
+| `textureSize` | `2048` | ピクセル単位の最大テクスチャ面 (2 のべき乗、最大 8192) |
 
 <a id="item-models"></a>
 ## アイテムモデル
 
-アイテムのモデルを入力する `<Mod>/ItemModels/` 代わりに(`Structures` 建物に変えようかな) 輸入は、そのメッシュと構造を、構造と一つの構造に加えて書く。 MATERIAL_SPECS_CLOTHING レコーディング:あなたのモード ITEM レコードはそれらを指摘します。 レコードは1つを示す。 `Item ...` 使用する名前を含むモデルによるライン
+代わりにアイテムのモデルを `<Mod>/ItemModels/` に置きます ( `Structures` では建物になります)。インポートは、構造と 1 つの MATERIAL_SPECS_CLOTHING レコードの横にメッシュとテクスチャを書き込みます。 MOD の ITEM レコードはそれらを指します。ビルド ログには、モデルごとに 1 つの `Item ...` 行と使用する名前が表示されます。
 
-1. `MyMod/ItemModels/lantern.glb`オプションで `lantern.json`: `{ "size": 0.3 }`.
-2. 項目記録(データ生成器またはデータ段階)に、以下を設定します。
+1. `MyMod/ItemModels/lantern.glb` 、オプションで `lantern.json` : `{ "size": 0.3 }` 。
+2. 品目レコード (データ ジェネレーターまたはデータ フェーズ) で、次のように設定します。
 
-田舎の価値観
+|フィールド |値 |
    | --- | --- |
-| `mesh` そして、 `ground mesh` (フィレンツェ) `<mod>_<model>.mesh`☆☆☆☆ `mymod_lantern.mesh` | | `material` (参照) イラスト `<950000 + 100 × block>-<Mod>.mod`ブロックから `ItemModels/ids.json`☆☆☆☆ `950000-MyMod.mod` |
+| `mesh` そして `ground mesh` (ファイル名) | `<mod>_<model>.mesh` 、例えば `mymod_lantern.mesh` | | `material` (参考) | `<950000 + 100 × block>-<Mod>.mod` 、からブロックします `ItemModels/ids.json` 、例えば `950000-MyMod.mod` |
 
-まず、物質を調べる(`GameDatabase.Find`)そして、それが欠けているときにスタンドインを見つける:リリースされたジップ、そしてプレイされたモードなしでゲームを読むテストは、それを持っていません。
-3. モデルを採用し、 `.json` そして、 `ItemModels/ids.json`.
+最初にマテリアル ( `GameDatabase.Find` ) を検索し、不足している場合は代役の外観を維持します。リリースされた zip と、デプロイされた MOD なしでゲームを読み取るテストには、それがありません。
+3. モデル、その `.json` および `ItemModels/ids.json` をコミットします。
 
 | 設定 | デフォルト | 意味 |
 | --- | --- | --- |
-| `name` | ファイル名、 `-`/`_` スペースとして | 物質記録の名称 |
-| `size` | モデルの大きさ | 最長の側面はメートルで、モデルはそれに平等にスケールされている。 |
-| `yaw` | `0` | 階段は垂直軸の周りを振り回す |
-| `textureSize` | `1024` | ピクセルで最大のテキストサイド(最大8192点のパワー) |
+| `name` | ファイル名、 `-` / `_` (スペースとして) | マテリアルレコードの名前 |
+| `size` | モデル自身のサイズ | 最長辺をメートル単位で表します。モデルはそれに均等にスケールされます |
+| `yaw` | `0` | 垂直軸を中心に回転した度 |
+| `textureSize` | `1024` | ピクセル単位の最大テクスチャ面 (2 のべき乗、最大 8192) |
 
-- 1 項目ごとに 1 項目(グローバル) ITEM 名前 1 `material`);モデルは、ゲームのアイテムマッサージが行うように、その最も低い点に立っています。
-- ゲームは、地面にアイコン、手のひらにアイコンを引き出す。 `mesh` (`ground mesh` 初めに地上に、そして、
-MATERIAL_SPECS_CLOTHING 彼女の `material` エンジン(エンジン) `docs/formats/runtime-materials.md` 「呼び」、 `WorldObjectLayout.ItemMesh`).
-- 記録のアイコンは、記録のセットが付いている場合を除き、 `auto icon image` 偽りと自分の `icon`.
+- 項目モデルごとに 1 つのマテリアル ( ITEM は 1 つの `material` に名前を付けます)。モデルは、ゲームのアイテム メッシュと同様に、中心の最下点に立っています。
+- ゲームは、 `mesh` (最初に地面にある `ground mesh` ) と MATERIAL_SPECS_CLOTHING の `material` 名 (エンジン `docs/formats/runtime-materials.md` "Callers"、 `WorldObjectLayout.ItemMesh` ) を使用して、地面、手、および自動アイコンにアイテムを描画します。
+- レコードが `auto icon image` false と独自の `icon` を設定しない限り、インベントリ アイコンはモデルから描画されます。
 
 <a id="getting-a-good-model"></a>
-## グローバルモデル
+## 良いモデルを入手する
 
-- 質問 Meshy あるいは Hi3D Aのために PBRテキストモデルをダウンロードして、 GLB. 数十万の三角形がたくさんあり、ロゴの旗はモデルです。
-150万以上。 形状を切り、サイズを選択し、テキストを縮小します。 [model-prep.md](model-prep.md).
-- 図面の前面は、図面に Z + Z を表示します(glTF使用(使用) 使用 `yaw` 逆転する。
-- それぞれの物質が自分の部分になる。 発電機は通常1個、最大49個を提供します。
-- モデルは、最も低い点、中心に立っています。
+- Meshy または Hi3D に PBR テクスチャ モデルを要求し、 GLB としてダウンロードします。三角形は数万個あれば十分です。ログには 150,000 を超えるモデルのフラグが立てられます。ポリカウントをカットし、サイズを選択し、テクスチャを縮小します: [model-prep.md](model-prep.md) .
+- ファイルではモデルの前面が +Z を向いています (glTF の規則)。 `yaw` を使って回してください。
+- それぞれの素材が独自の部品になります。ジェネレータは通常 1 つを与えます。せいぜい49。
+- モデルは中央の最下点に立っています。
 
 <a id="what-it-writes"></a>
-## 何を書く
+## 書かれていること
 
-モードフォルダー(`<Kenshi>/mods/<Mod>/`):
+デプロイされた MOD フォルダー ( `<Kenshi>/mods/<Mod>/` ):
 
-- `structures/<mod>_<model>.mesh` (物質に1つ、 `_1`, `_2`いくつかの場合:オグレ `[MeshSerializer_v1.8]`位置、正常、UV、
-手動性のW、ゲームの独自の建物の配置。
-- `structures/<mod>_<model>_d.dds`, `_n.dds`, `_m.dds`: ディフーズ(BC3)、正常(BC1、BC3、切断時に)、金属性(BC1)、ミップ。
-- `structures/<mod>_<model>_col.xml`・衝突
-- アイテムモデルについて: `structures/<mod>_<model>.mesh` そして、その構造は、衝突なし。
-- レコードが合う `<Mod>.mod` その他のものを含む(データ生成器の記録が保存され、以前の輸入が置き換えられている):
-BUILDINGひとつひとつ BUILDING_PART そして、 MATERIAL_SPEC 物質と開封(研究) `enable buildings` 建物の収穫(一つ) MATERIAL_SPECS_CLOTHING アイテムモデル
+- `structures/<mod>_<model>.mesh` (マテリアルごとに 1 つ、 `_1` 、 `_2` 、... 複数の場合): Ogre `[MeshSerializer_v1.8]` 、位置、法線、 UV および w の利き手による接線、ゲーム独自の建物メッシュのレイアウト。
+- `structures/<mod>_<model>_d.dds` 、 `_n.dds` 、 `_m.dds` : ディフューズ (BC3)、ノーマル (BC1、切り抜き時 BC3)、メタルネス (BC1)、ミップあり。
+- `structures/<mod>_<model>_col.xml` : 衝突。
+- 項目モデルの場合: `structures/<mod>_<model>.mesh` とそのテクスチャ、衝突なし。
+- レコードは、その中の他のものと並んで `<Mod>.mod` にマージされます (データ ジェネレーターのレコードは保持され、以前のインポートは置き換えられます): BUILDING 、マテリアルごとに 1 つの BUILDING_PART および MATERIAL_SPEC 、およびロック解除 (リサーチの `enable buildings` が建物を取得します)。アイテムモデルごとに 1 つの MATERIAL_SPECS_CLOTHING 。
 
-ファイル名はモードの名前で始まりますが、ゲームはすべてのモードで単純なファイル名でリソースを表示します。
+ゲームはすべての MOD にわたって裸のファイル名でリソースを検索するため、ファイル名は MOD の名前で始まります。
 
-レコードIDは `<n>-<Mod>.mod` で n から 900000 まで で で は で あり でし て でしょ う で も でし と し て い ます でし, でし の モデル に は 100 個 の ブロック (構築 +0, 部品 +1, 材料 +50); 項目 モデル の 数 は 950000 個 (材料 +0) で です。 `ItemModels/ids.json`. `Structures/ids.json` それぞれのモデルのブロックを保持し、IDは決して変わらない:保存者は記録のIDによって位置づけられた建物を名付けます。 決してブロックを編集したり、削除したりすることは、モデルを置いたゲームから取り除くことです。
+レコード ID は `<n>-<Mod>.mod` で、n は 900000 からで、モデルごとに 100 のブロック (建物 +0、部品 +1、材料 +50)。項目モデルは `ItemModels/ids.json` で 950000 (材質 +0) からカウントされます。 `Structures/ids.json` は各モデルのブロックを保持するため、ID は決して変更されません。保存では、配置された建物にそのレコードの ID で名前が付けられます。ブロックを編集したり削除したりしないでください。モデルを削除すると、その建物を配置したゲームからその建物が削除されます。
 
 <a id="facts-the-import-relies-on"></a>
-## 輸入が依存する事実
+## インポートが依存する事実
 
-ゲームのファイルをチェックする(Kenshi 1.0.68 データ) とエンジンの読者と共に:
+ゲームのファイル ( Kenshi 1.0.68 データ) およびエンジンのリーダーと照合して確認しました。
 
-- **ユニット**世界単位は0.1m、Y up。 glTF メートル、Yアップですので、スケールは10です(ゲームの衝突ファイルは重力98.1を使用します)。
-- **材料**建物の一部の見た目は、 MATERIAL_SPEC (`texture map`, `normal map`, `metalness map`, `material type`(メッサの)メッサではない
-エンジン名(エンジン) `docs/formats/runtime-materials.md`). ゲームのシェイダー(`data/materials/deferred/objects.hlsl`読む ディフューズ RGB 色とAは輝き(時間) `specular mult`(普通に) RGB マッサージはマッサジとマッサリーはマッシャージ(`material type` 1, `alpha threshold`金属のR。 輸入はグラス = 1 - glTF 金属性と金属性は、 glTFブルーチャンネル glTF MASK そして、 BLEND カットアウトになる。
-- **タンジン**ちなみに、シェイダーのバイノーマルはクロス(タンゲン、正常) × w で、ゲームのメッセージでは、増加する V に沿って点数を表示します。**検証**:
-`prisoner_pole.mesh` 86個の三角形のうち、 `Camp_tent1.mesh` 1858年(1865年) glTF 通常の地図は、画像をグリーンにする(Vを減らす)ので、輸入はグリーンチャンネルを回転させ、ゲームの道を設定します。
-- **衝突**●一部の `xml collision` PhysX NxuStream2 ファイル; 手書きの最小ファイル充電(ゲームの `Camp_tent1_COL.xml` は、
-1箱) PhysX は Z up とゲーム マップ (x, y, z) から (x, z, -y) まで ですので、輸入 は パーツ の ポイント を (x, -z, y) として 書きます。 三角形は、平らな点と三角形として入り、ゲームはそれを積み重ね、メイトはそれを読む。 `docs/formats/collision.md`).
-- **フィールド**: BUILDING そして、 BUILDING_PART は ゲーム キャンプ テント 1 の 完全 フィールド セット を 運ぶ でしょ (`18026-small_changes_otto.mod`だから、何も
-デフォルトに落ちる; ノー `functionality`それは、平らな建物です。
-- **オフロック**: 建物が構築メニューに置かれているので、完成した研究がリストに置かれる `enable buildings`すべてのゲームが始まる。
-`_Default Start` (`5359-gamedata.base`(終わり) **検証** エンジンと共に `GameDatabase`, `ResearchGate` そして、 `BuildingBuildData` ベースゲームと輸入モード:構造は解体され、構造材料は設定されます。
+- **単位**: 世界単位は 0.1 メートル、Y は上です。 glTF はメートル、Y が上なので、スケールは 10 です (ゲームの衝突ファイルは重力 98.1 を使用します)。
+- **マテリアル**: 建築パーツの外観は、メッシュのマテリアル名 (エンジン `docs/formats/runtime-materials.md` ) ではなく、その MATERIAL_SPEC ( `texture map` 、 `normal map` 、 `metalness map` 、 `material type` ) です。ゲームの構築シェーダ ( `data/materials/deferred/objects.hlsl` ) は、拡散 RGB をカラーとして、A を光沢 ( `specular mult` の倍) として読み取り、通常の RGB を接線空間法線として、A をカットアウト マスク ( `material type` 1、 `alpha threshold` ) として読み取り、メタルネスを R から読み取ります。インポートでは、glTF から glTF の粗さとメタルネスを書き込みます。ブルーチャンネル。 glTF MASK 、 BLEND はカットアウトとなります。
+- **接線**: シェーダーの従法線はcross(接線, 法線) × wであり、ゲームのメッシュ上では増加するVに沿って指します(**検証済み**: `prisoner_pole.mesh` 86/86三角形、 `Camp_tent1.mesh` 1858/1865)。 glTF 法線マップは画像の上に緑を指す (V が減少する) ため、インポートによって緑のチャンネルが丸くなり、ゲームの方向が設定されます。
+- **衝突**: パーツの `xml collision` は PhysX NxuStream2 ファイルです。手書きの最小限のファイルがロードされます (ゲームの `Camp_tent1_COL.xml` は 1 つのボックスです)。 PhysX は Z アップで、ゲームは (x, y, z) を (x, z, -y) にマップするため、インポートではパーツのポイントが (x, -z, y) として書き込まれます。三角形メッシュは、単純な点と三角形として入力されます。ゲームはロード時にそれをクックし、 Meitou はそれをそのまま読み取ります (エンジン `docs/formats/collision.md` )。
+- **フィールド**: BUILDING および BUILDING_PART には、ゲームのキャンプ テント 1 ( `18026-small_changes_otto.mod` ) の完全なフィールド セットが含まれるため、デフォルトに該当するものはありません。 `functionality` がないので、地味な建物です。
+- **ロック解除**: 完了した調査で `enable buildings` に建物がリストされると、建物は構築メニューに表示されます。すべてのゲームは `_Default Start` ( `5359-gamedata.base` ) で始まり、終了します。 **エンジンの `GameDatabase` 、 `ResearchGate` 、および `BuildingBuildData` でベース ゲームとインポートされた MOD を使用して検証済み**: 構造はロックが解除されており、設定どおりの建築材料がかかります。
 
 <a id="not-covered-yet"></a>
-## まだカバーされていない
+## まだカバーされていません
 
-室内、ドア、機能(ストレージ、ベッド、デザイン)および回転部品。
+インテリア、ドア、機能（収納、ベッド、クラフト）、回転部品。
