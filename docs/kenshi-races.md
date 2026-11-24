@@ -38,9 +38,10 @@ Added in the data phase from the loaded game's own records (`RaceRecords`), so `
 ## Character editor
 
 The races are offered at character creation like the game's own. `KenshiRaces/items/races/kenshiraces_editor.xml` keeps only the sliders that
-move bones, so they work on the fitted bodies as on a human (engine docs/animation.md, the bone scales): Face holds Head size, Head shape and
-the neck sliders (no face poses: the fitted heads have none); Body holds the human body sliders and Skin Tone, with Breast size, height and
-spacing for women, which move the female skeleton's `L Boob` / `R Boob` the female bodies are weighted to ([race import](race-import.md#bust)).
+move bones (engine docs/animation.md, the bone scales): Face holds Head size, Head shape and the neck sliders (no face poses: the fitted heads
+have none); Body holds Height, Frame, Posture, Shoulder set, Neck position, Leg length, Shoulders, Arm bulk, Hands, Feet and Skin Tone.
+Chest, Stomach, Waist, Hips, Legs bulk, Legs shape and the bust sliders are left out: they scale the spine, pelvis, thigh and bust bones
+unevenly, which warped the fitted chests, busts and the small of the Leoma's back even with human weights (**Observed** in game, 2026-11-23).
 Ranges are the human ones (`data/editor/editor_data_human.xml`).
 
 ## Recruiting

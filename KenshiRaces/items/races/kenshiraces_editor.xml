@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Kenshi Races character editor limits (docs/kenshi-races.md "Character editor"): the bone-driven sliders only. Face: the
-     head and neck sliders (the fitted heads have no face poses). Body: the human body sliders, the bust ones for women. -->
+     head and neck sliders (the fitted heads have no face poses). Body: size, proportion and limb sliders; none that reshape the
+     torso (Chest, Stomach, Waist, Hips, legs' bulk and shape, the bust ones), which warp the fitted chests, busts and lower backs. -->
 <Editor>
  <Config gender="Male">
   <Category name="Face">
@@ -20,12 +21,6 @@
    <Range max="110" min="90" name="Shoulders" random_group="1"/>
    <Range max="145" min="70" name="Arm bulk"/>
    <Range max="120" min="80" name="Hands" random_group="0"/>
-   <Range max="180" min="55" mid="100" name="Chest" random_group="1"/>
-   <Range max="200" min="70" mid="100" name="Stomach"/>
-   <Range max="155" min="35" mid="100" name="Waist" random_group="1"/>
-   <Range max="145" min="75" mid="100" name="Hips" random_group="1"/>
-   <Range max="140" min="70" mid="100" name="Legs bulk"/>
-   <Range max="115" min="85" mid="100" name="Legs shape"/>
    <Range max="120" min="80" name="Feet"/>
    <ColourRange name="Skin Tone">
     <Colour r="255" g="255" b="255" />
@@ -55,15 +50,6 @@
    <Range max="110" min="90" name="Shoulders"/>
    <Range max="145" min="70" mid="100" name="Arm bulk"/>
    <Range max="120" min="80" name="Hands"/>
-   <Range max="180" min="55" mid="100" name="Chest"/>
-   <Range max="150" min="25" mid="85" name="Breast size"/>
-   <Range max="140" min="0" mid="100" name="Breast height"/>
-   <Range max="125" min="50" mid="100" name="Breast spacing"/>
-   <Range max="200" min="70" mid="100" name="Stomach"/>
-   <Range max="155" min="15" mid="100" name="Waist"/>
-   <Range max="145" min="75" mid="100" name="Hips"/>
-   <Range max="140" min="70" mid="100" name="Legs bulk"/>
-   <Range max="115" min="85" mid="100" name="Legs shape"/>
    <Range max="120" min="80" name="Feet"/>
    <ColourRange name="Skin Tone">
     <Colour r="255" g="255" b="255" />

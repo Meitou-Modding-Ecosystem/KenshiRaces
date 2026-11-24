@@ -65,22 +65,26 @@ seams welded) so neighbouring vertices move alike. **Observed** (male Leoma): 39
 Every body's bust (a man's chest) is raised to its rig's human's, or the female human's with `bust=female` (**Observed**: the Leoma and
 Crevan women sat theirs 2.0 and 1.75 units lower, the male Leoma 1.0, the Crab Queen 1.5 below the female human's, under the clothing's chest
 and the part map's bust). The bust is the middle of the quarter-unit slice, between `Spine1` and the shoulders and 0.3 to 1.8 units beside
-the middle line, whose frontmost vertex is furthest forward. The front of the torso from 0.8 below it to 0.2 above rises by the whole
-difference, so the bust keeps its shape; above and below, the rise falls off by a smoothstep over twice the lift (at least 1.5 units), and
-it is scaled by the vertex's torso-bone weight and a smoothstep from the spine's depth (0) to the bust's (1), so the back, arms and legs stay.
-A narrow Gaussian instead folded the chest above a 2-unit lift and stretched the bust into a cone. Then slimming runs.
+the middle line, whose frontmost vertex is furthest forward; its top is the bottom of the first slice above whose front is back halfway to
+the collar's. The front of the torso from 0.8 below the bust to its top (at least 0.2 above) rises by the whole difference, so the bust keeps
+its shape. Below, the rise falls off by a smoothstep over twice the lift (at least 1.5 units); above, almost linearly up to 0.4 above the
+clavicles' joint (at least 1.4 times the lift), so the upper chest is squashed evenly and the bust's top slopes down from the collar. The rise
+is scaled by the vertex's torso-bone weight and a smoothstep from the spine's depth (0) to the bust's (1), so the back, arms and legs stay.
+**Observed**: a narrow Gaussian folded the chest above a 2-unit lift and stretched the bust into a cone; a smoothstep fade reaching into the
+neck (whose vertices ride the head) left a ledge above the bust. Then slimming runs.
 
 ## Human weights
 
 The editor's body sliders scale the game's bones (engine docs/animation.md "Body shape sliders"): Chest scales `Spine2`, Stomach and Waist
 `Spine1`, Neck `Neck`, the bust sliders the female rig's `L Boob` and `R Boob`. **Observed** (all four Meshy Leoma and Crevan bodies): the
 models' weights leave `Spine2` and `Neck` empty, carrying the chest on `Spine1` and the clavicles and the neck on the head, so Stomach and
-Waist dragged the chest and Chest did nothing; the Leoma tails are bound to a thigh or a toe. After slimming, on the surface with uv seams
+Waist dragged the chest and Chest did nothing; the Leoma tails are bound to a thigh or a toe. On the surface with uv seams
 welded:
 
-1. Tails: a vertex carried by a leg bone, behind depth -0.6 and over 0.8 units from every human vertex, goes to `Bip01 Pelvis`; so do its
-   neighbours carried by the same bone, behind -0.6 and over 0.3 units from the human (the tail's root).
-2. Each vertex carried by the pelvis, spines, neck, clavicles, upper arms, thighs or the bust bones, or by the head below the game's head
+1. Tails (before slimming): a vertex carried by a leg bone, behind depth -0.6 and over 0.8 units from every human vertex, goes to `Bip01 Pelvis`; so do its
+   neighbours carried by the same bone, behind -0.6 and over 0.3 units from the human (the tail's root). Slimming leaves the tail alone and
+   fades out within 1.5 units of it, so the back is not pulled in around the tail's root (**Observed**, male Leoma: a notch above the tail).
+2. After slimming, each vertex carried by the pelvis, spines, neck, clavicles, upper arms, thighs or the bust bones, or by the head below the game's head
    joint, blends to the human's weights there (the six nearest human torso, neck, head, upper-limb vertices' weights by inverse distance):
    fully within 0.5 units of the human, not at all beyond 1.2.
 3. The changed vertices and two rings around them are smoothed: four rounds, each halfway to the neighbours' mean.

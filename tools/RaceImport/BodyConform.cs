@@ -68,15 +68,22 @@ public sealed class BodyConform
     }
 
     /// <summary>
+    /// Within this distance of a kept vertex (a tail's) the correction fades to nothing, so the body around a tail's root is not pulled in under
+    /// it (a notch: Matthew, male Leoma, 2026-11-23).
+    /// </summary>
+    const float KeptReach = 1.5f;
+
+    /// <summary>
     /// Rounds of smoothing of the corrections over the surface, so neighbouring vertices move alike (no creases where bones or the fade change).
     /// </summary>
     const int SmoothingRounds = 12;
 
     /// <summary>
     /// The positions pulled in, each vertex moved by the weighted sum of its bones' corrections, smoothed over the mesh's surface
-    /// (<paramref name="indices"/>) and scaled by <paramref name="strength"/> (0 none, 1 full).
+    /// (<paramref name="indices"/>) and scaled by <paramref name="strength"/> (0 none, 1 full); vertices marked in <paramref name="kept"/> (a
+    /// tail's) and those near them are not moved.
     /// </summary>
-    public Vector3[] Apply(Vector3[] positions, Dictionary<ushort, float>[] weights, int[] indices, float strength)
+    public Vector3[] Apply(Vector3[] positions, Dictionary<ushort, float>[] weights, int[] indices, float strength, bool[]? kept = null)
     {
         var offsets = new Vector3[positions.Length];
         for (int v = 0; v < positions.Length; v++)
@@ -85,8 +92,26 @@ public sealed class BodyConform
                 if (_bones.TryGetValue(handle, out var bone)) offsets[v] += weight * Correction(positions[v], bone.Axis, bone.Extent);
         }
 
+        if (kept is not null) Spare(offsets, positions, kept);
         offsets = Smoothed(offsets, positions, indices);
+        if (kept is not null) Spare(offsets, positions, kept);
         return [.. positions.Select((p, v) => p + strength * offsets[v])];
+    }
+
+    /// <summary>
+    /// Scales each offset by a smoothstep of its vertex's distance to the nearest kept vertex, from 0 (at it) to 1 (<see cref="KeptReach"/> away).
+    /// </summary>
+    static void Spare(Vector3[] offsets, Vector3[] positions, bool[] kept)
+    {
+        var keptPoints = positions.Where((_, v) => kept[v]).ToArray();
+        if (keptPoints.Length == 0) return;
+
+        for (int v = 0; v < offsets.Length; v++)
+        {
+            float distance = MathF.Sqrt(keptPoints.Min(k => Vector3.DistanceSquared(k, positions[v])));
+            float t = Math.Clamp(distance / KeptReach, 0, 1);
+            offsets[v] *= t * t * (3 - 2 * t);
+        }
     }
 
     /// <summary>
