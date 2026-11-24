@@ -5,7 +5,8 @@ namespace KenshiRaces;
 /// played in place. Each is a disabled COMBAT_TECHNIQUE whose <c>anim name</c> is the clip, so a mod plays it as a mod combat move
 /// (<c>ModContext.AddCombatMove</c>, <see cref="AnimationRecords.Technique"/>); the clips are in the ANIMATION_FILE
 /// <see cref="AnimationRecords.File"/>, linked to every race on the game's human skeletons. Generated from the export's clip list; ids
-/// <c>100-</c> to <c>158-KenshiRaces.mod</c> in name order, new clips taking the next free id.
+/// <c>100-</c> to <c>158-KenshiRaces.mod</c> in name order for the first models' 59 clips, then <c>159-</c> to <c>171-</c> for the
+/// spidercrab's 13, each new clip taking the next free id.
 /// </summary>
 public static class RaceAnimations
 {
@@ -305,6 +306,71 @@ public static class RaceAnimations
     public static readonly RaceAnimation WaveForHelp3 = new("kr_wave_for_help_3", "Wave_for_Help_3", 3.167f, Technique(158));
 
     /// <summary>
+    /// Meshy's <c>Attack</c>, 2.77 s.
+    /// </summary>
+    public static readonly RaceAnimation Attack = new("kr_attack", "Attack", 2.767f, Technique(159));
+
+    /// <summary>
+    /// Meshy's <c>Block6</c>, 1.67 s.
+    /// </summary>
+    public static readonly RaceAnimation Block6 = new("kr_block6", "Block6", 1.667f, Technique(160));
+
+    /// <summary>
+    /// Meshy's <c>Block9</c>, 2.77 s.
+    /// </summary>
+    public static readonly RaceAnimation Block9 = new("kr_block9", "Block9", 2.767f, Technique(161));
+
+    /// <summary>
+    /// Meshy's <c>Boxing_Guard_Prep_Straight_Punch</c>, 3.97 s.
+    /// </summary>
+    public static readonly RaceAnimation BoxingGuardPrepStraightPunch = new("kr_boxing_guard_prep_straight_punch", "Boxing_Guard_Prep_Straight_Punch", 3.967f, Technique(162));
+
+    /// <summary>
+    /// Meshy's <c>Broadsword___Left</c>, 2.97 s.
+    /// </summary>
+    public static readonly RaceAnimation BroadswordLeft = new("kr_broadsword_left", "Broadsword___Left", 2.967f, Technique(163));
+
+    /// <summary>
+    /// Meshy's <c>Broadsword___Right</c>, 2.97 s.
+    /// </summary>
+    public static readonly RaceAnimation BroadswordRight = new("kr_broadsword_right", "Broadsword___Right", 2.967f, Technique(164));
+
+    /// <summary>
+    /// Meshy's <c>Broadsword___Thrust</c>, 2.97 s.
+    /// </summary>
+    public static readonly RaceAnimation BroadswordThrust = new("kr_broadsword_thrust", "Broadsword___Thrust", 2.967f, Technique(165));
+
+    /// <summary>
+    /// Meshy's <c>Broadsword___Top</c>, 2.97 s.
+    /// </summary>
+    public static readonly RaceAnimation BroadswordTop = new("kr_broadsword_top", "Broadsword___Top", 2.967f, Technique(166));
+
+    /// <summary>
+    /// Meshy's <c>Broadsword___Top_2</c>, 2.97 s.
+    /// </summary>
+    public static readonly RaceAnimation BroadswordTop2 = new("kr_broadsword_top_2", "Broadsword___Top_2", 2.967f, Technique(167));
+
+    /// <summary>
+    /// Meshy's <c>Charged_Slash</c>, 2.20 s.
+    /// </summary>
+    public static readonly RaceAnimation ChargedSlash = new("kr_charged_slash", "Charged_Slash", 2.2f, Technique(168));
+
+    /// <summary>
+    /// Meshy's <c>mage_soell_cast_6</c>, 2.27 s.
+    /// </summary>
+    public static readonly RaceAnimation MageSoellCast6 = new("kr_mage_soell_cast_6", "mage_soell_cast_6", 2.267f, Technique(169));
+
+    /// <summary>
+    /// Meshy's <c>Reaping_Swing</c>, 5.90 s.
+    /// </summary>
+    public static readonly RaceAnimation ReapingSwing = new("kr_reaping_swing", "Reaping_Swing", 5.9f, Technique(170));
+
+    /// <summary>
+    /// Meshy's <c>Right_Hand_Sword_Slash</c>, 1.50 s.
+    /// </summary>
+    public static readonly RaceAnimation RightHandSwordSlash = new("kr_right_hand_sword_slash", "Right_Hand_Sword_Slash", 1.5f, Technique(171));
+
+    /// <summary>
     /// Every clip, in id order.
     /// </summary>
     public static IReadOnlyList<RaceAnimation> All { get; } =
@@ -316,7 +382,9 @@ public static class RaceAnimations
         FemaleBendOverPickUpInspect, FlirtyStrutInplace, FunkyWalk, GentlemansBow, JazzHandsInplace, JumpingJacks, KungFuPunch,
         MonsterWalk, ProneReload, Running, SitCrossLeggedOnFloor, StandAndChat, StandAndDrink, StandOnPoleAndBalance, StandToSideLying,
         StandToSitTransitionM, StepToSitTransition, SwimForward, SwimIdle, SwordShout, TalkWithHandsOpen, TextingWalk, VictoryFistPump,
-        WalkBackwardWithGunInplace, Walking, Walking2Inplace, WalkingWoman, WallPushJumpAndFlip, WaveForHelp3
+        WalkBackwardWithGunInplace, Walking, Walking2Inplace, WalkingWoman, WallPushJumpAndFlip, WaveForHelp3, Attack, Block6, Block9,
+        BoxingGuardPrepStraightPunch, BroadswordLeft, BroadswordRight, BroadswordThrust, BroadswordTop, BroadswordTop2,
+        ChargedSlash, MageSoellCast6, ReapingSwing, RightHandSwordSlash
     ];
 
     /// <summary>

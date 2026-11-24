@@ -1,6 +1,6 @@
 # Animations
 
-Kenshi Races ships an animation library: every clip of the races' source models (Meshy's animation library, 59 clips), retargeted onto the
+Kenshi Races ships an animation library: every clip of the races' source models (Meshy's animation library, 72 clips), retargeted onto the
 game's male and female skeletons, so any character on those skeletons can play it, humans, shek, hivers and skeletons as well as the fitted
 races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations)).
 
@@ -11,7 +11,7 @@ races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](
 - ANIMATION_FILE `40-KenshiRaces.mod` (`AnimationRecords.File`) names both. The data phase links it into the `animation files` of every race
   whose `male mesh` is under `data/character/meshes/` (except the Hive Queen's, which has its own skeleton) or is a fitted body
   (`/items/races/`), and `RaceRecords.FillRace` links it into new subraces, a dependent's too.
-- A disabled COMBAT_TECHNIQUE per clip (`100-` to `158-KenshiRaces.mod`, name order), `anim name` = the clip: disabled, so no fight picks it;
+- A disabled COMBAT_TECHNIQUE per clip (`100-` to `171-KenshiRaces.mod`: the first models' clips in name order, then the spidercrab's), `anim name` = the clip: disabled, so no fight picks it;
   a mod plays it as a mod combat move (engine docs/modding.md, "Combat moves").
 
 ## Making them
@@ -21,8 +21,10 @@ races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](
 
 1. `python tools/AnimationExport/split.py <model.glb> <clips folder>` per source model: one reference per clip, `Bip001` joints renamed to
    the Mixamo roles the Motion Lab reads. A later model overwrites a clip an earlier one gave; the male Leoma's goes last.
+   Source models: male Leoma ("Leonid Bare" and "Leonid" glbs), `leonidfemale`, `corvidmale`, `corvidfemale`, crabman, crabqueen and
+   `spidercrab` (its Running and Walking duplicate the Leoma's and are not taken).
 2. Per gender, `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference
-   <clip>.glb ...` (every clip): retargets them onto the game's body (about a minute for 59).
+   <clip>.glb ...` (every clip): retargets them onto the game's body (a few minutes for 72).
 3. `python tools/AnimationExport/export.py <out>/human_<gender>_rigged.glb <gender>_skeleton.skeleton
    KenshiRaces/items/animations/kenshiraces_anims_<gender>.skeleton <clips>.json`: names them `kr_<clip lower case>` and writes the file.
 
@@ -93,3 +95,16 @@ line, sway and bob kept. All face the game's forward: the root's yaw matches the
 | `kr_walking_woman` | `WalkingWoman` | `156-` | Walking_Woman | 0.97 |  |
 | `kr_wall_push_jump_and_flip` | `WallPushJumpAndFlip` | `157-` | Wall_Push_Jump_and_Flip | 2.00 | 1.3 |
 | `kr_wave_for_help_3` | `WaveForHelp3` | `158-` | Wave_for_Help_3 | 3.17 |  |
+| `kr_attack` | `Attack` | `159-` | Attack | 2.77 |  |
+| `kr_block6` | `Block6` | `160-` | Block6 | 1.67 |  |
+| `kr_block9` | `Block9` | `161-` | Block9 | 2.77 |  |
+| `kr_boxing_guard_prep_straight_punch` | `BoxingGuardPrepStraightPunch` | `162-` | Boxing_Guard_Prep_Straight_Punch | 3.97 |  |
+| `kr_broadsword_left` | `BroadswordLeft` | `163-` | Broadsword___Left | 2.97 | 1.1 |
+| `kr_broadsword_right` | `BroadswordRight` | `164-` | Broadsword___Right | 2.97 | 0.2 |
+| `kr_broadsword_thrust` | `BroadswordThrust` | `165-` | Broadsword___Thrust | 2.97 | 2.8 |
+| `kr_broadsword_top` | `BroadswordTop` | `166-` | Broadsword___Top | 2.97 | 1.0 |
+| `kr_broadsword_top_2` | `BroadswordTop2` | `167-` | Broadsword___Top_2 | 2.97 | 0.7 |
+| `kr_charged_slash` | `ChargedSlash` | `168-` | Charged_Slash | 2.20 |  |
+| `kr_mage_soell_cast_6` | `MageSoellCast6` | `169-` | mage_soell_cast_6 | 2.27 |  |
+| `kr_reaping_swing` | `ReapingSwing` | `170-` | Reaping_Swing | 5.90 | 0.4 |
+| `kr_right_hand_sword_slash` | `RightHandSwordSlash` | `171-` | Right_Hand_Sword_Slash | 1.50 |  |
