@@ -25,10 +25,14 @@ other mods add their own races and subraces with. GPL-3.0-or-later.
 ## Numbers
 
 Task types (`AddGoalType`, `AddJobType`) and dialogue codes (`AddDialogueCondition`, `AddDialogueEffect`) are shared by every loaded mod
-([mod number blocks](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/numbers.md)). Kenshi Races claims none.
+([mod number blocks](https://github.com/TheIvoryDisaster/GutenStructure/blob/beta/docs/numbers.md)).
+
+Block 5000-5099.
 
 | Number | Pool | Use |
 | --- | --- | --- |
+| 5000 | Dialogue condition | No introduction from Marlo is on its way (value 1), or one is (value 0) |
+| 5000 | Dialogue effect | Marlo sends for the race character whose record number is the value |
 
 ## Layout
 

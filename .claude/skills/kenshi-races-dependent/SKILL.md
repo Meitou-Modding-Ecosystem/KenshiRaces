@@ -19,7 +19,7 @@ with its helper; it never copies its records or files. Read `docs/depending-on-k
 ## Steps
 
 1. **Manifest**: `"dependencies": [{ "id": "kenshi.races", "version": ">=0.8.0 <0.9.0" }]` (match the current `KenshiRaces/meitou.json`
-   minor), `gameVersion` floor at least 0.22.2 (data phase).
+   minor), `gameVersion` floor at least 0.23.0.
 2. **Project**: add a `kenshi.races` entry to `meitou.lock.json` from the release notes of `kenshi-races-v<version>`, and move `engine/` to its
    engine commit.
 3. **Use a race**: link a subrace RACE (`Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`) in your CHARACTER's `race` list; set

@@ -28,7 +28,7 @@ In un repository creato da [MeitouModTemplate](https://github.com/Meitou-Modding
 
 ```json
 "apiVersion": 2,
-"gameVersion": ">=0.22.2",
+"gameVersion": ">=0.23.0",
 "dependencies": [{ "id": "kenshi.races", "version": ">=0.4.0 <0.5.0" }]
 ```
 

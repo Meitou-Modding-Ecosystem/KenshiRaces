@@ -32,7 +32,7 @@ public static class RaceRecords
     /// <summary>
     /// The CHARACTER's lists emptied: no kit, no money to spend.
     /// </summary>
-    static readonly string[] KitLists = ["backpack", "clothing", "inventory", "shopping", "weapons"];
+    internal static readonly string[] KitLists = ["backpack", "clothing", "inventory", "shopping", "weapons"];
 
     /// <summary>
     /// Adds <paramref name="group"/>'s RACE_GROUP and each of its subraces (<see cref="Add"/>).
@@ -196,7 +196,7 @@ public static class RaceRecords
     /// <summary>
     /// The game's record copied from: by id, else the lowest-id record of that type and name. Throws when there is neither.
     /// </summary>
-    static GameRecord Model(GameDatabase game, FcsRecordType type, string id, string name) =>
+    internal static GameRecord Model(GameDatabase game, FcsRecordType type, string id, string name) =>
         game.Find(id)
             ?? game.OfType(type).Where(r => r.Name == name).OrderBy(r => r.StringId, StringComparer.Ordinal).FirstOrDefault()
             ?? throw new InvalidOperationException($"The game data has no {type} '{name}' ({id}) to copy.");

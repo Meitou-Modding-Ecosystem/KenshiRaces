@@ -81,12 +81,34 @@ Ranges are the human ones (`data/editor/editor_data_human.xml`).
 DIALOGUE `1-KenshiRaces.mod`: the character says "You look like you could use another pair of hands.", the player answers "Join us." and
 action 18 (join squad) adds the character to the player's squad.
 
+## Getting the races
+
+Kenshi Races stays a framework: one NPC sells introductions, and the debug menu spawns the races. Code in `KenshiRaces/Introductions/`.
+
+- **Marlo the Far-Walker** (CHARACTER `200-`, squad `201-`, talk `202-`): a Drifter Greenlander in Armoured Rags (`2307-clothes_v1.mod`) and
+  an Ashland Hat (`55393-rebirth.mod`), of the Drifters (`51707-rebirth.mod`), in the bar of Black Scratch (TOWN `55656-rebirth.mod`; the bar
+  is the home of its "Adventurer Waystation Bar" residents, `44856-rebirth.mod`, else its first bar). Once the town's zone is loaded the mod
+  adds his platoon at the bar's first general node (else bar node), holds it in its name (saved, so he is added once) and walks him back
+  whenever he stands idle away from it.
+- **Introduction**: he tells of his travels beyond the maps and the friends he made there. "Introduce me to one of your friends." leads to a
+  race, then a character; each character choice needs 10,000 cats (DC 2) and no introduction on its way (condition 5000), pays him (DA 8) and
+  orders it (effect 5000, value = the character's record number). Three game days later the friend's platoon (squad `300 + number`, the
+  character alone, Drifters) is added 300 to 500 units from the player's first outpost and sent there; with no outpost the player is told
+  once and it waits until there is one. Loaded, it walks to the outpost's centre and offers to join with the [recruit talk](#recruiting).
+  The introduction ends when the friend joins, dies or leaves the world; until then Marlo refuses another. Messages tell the player each step.
+- **F10 Kenshi Races: spawn race**: the field takes a character's or subrace's name from the [table](#races) (`crabman`, `leomafemale`,
+  `leoma female`) and `join` (default: into the selected character's squad, else the first player squad) or `hostile` (alone, as a Dust
+  Bandit, `200-gamedata.base`, held where it stands); it spawns at the camera target.
+- The pending introduction is saved in the mod's save data (system `introductions`).
+
 ## Testing in game
 
 1. Enable Kenshi Races in the launcher (or `data/mods.cfg`).
-2. Console: `spawn leomafemale` (or any CHARACTER in the table) spawns at the cursor; talk to recruit, or F10 debug Recruit.
+2. F10 **Kenshi Races: spawn race** with `leomafemale` (or `crabman hostile`) spawns at the camera target; the console's `spawn leomafemale`
+   also works (talk to recruit).
 3. F10 **Kenshi Races: races** lists every fitted race loaded (this mod's and dependents').
 4. New game: the editor's race arrows reach Leoma, Crevan and Crabfolk.
+5. Black Scratch's bar: Marlo sells an introduction for 10,000 cats; it arrives at your outpost three game days later.
 
 ## Clothing
 
