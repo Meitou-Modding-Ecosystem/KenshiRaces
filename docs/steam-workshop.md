@@ -4,21 +4,35 @@ You create the mod's Workshop item once, by hand, from a release ZIP. After that
 runs on your Windows PC and uploads each new GitHub release to that item on a schedule. All steps run in **Windows PowerShell** on your PC,
 signed in to the Steam account that will own the item.
 
-The commands use these values. Set them once per PowerShell window, with your mod's folder name (as in `release.yml` `mod-folder`) and its
-first release version:
+The commands use these values. Set them once per PowerShell window:
 
 ```powershell
-$Mod = "ExampleMod"
-$Version = "0.1.0"
+$Repo = "Meitou-Modding-Ecosystem/KenshiRaces"
+$Slug = "kenshi-races"
+$Mod = "KenshiRaces"
+$Version = "0.10.3"
 $Work = "$HOME\Downloads\$Mod-Workshop"
 $Watcher = "$env:LOCALAPPDATA\WorkshopWatcher\WorkshopWatcher.ps1"
+$SteamUser = "your Steam account name"
 ```
+
+| Value | What it is | Where to find it |
+| --- | --- | --- |
+| `$Repo` | The GitHub repository, `<owner>/<name>`. | The repository's URL. |
+| `$Slug` | The tag prefix. Never changes. | `slug` in `.github/workflows/release.yml`. |
+| `$Mod` | The mod's folder name, which starts the ZIP's name. Never changes. | `mod-folder` in `.github/workflows/release.yml`. |
+| `$Version` | The release's version, without a `v`. Changes with each release. | `version` in the mod's `meitou.json`, or the release's title. |
+| `$SteamUser` | The name you sign in to Steam with, as given to the Workshop Watcher installer. | Your Steam login. |
+
+A release's tag is `$Slug-v$Version` (`kenshi-races-v0.10.3`) and its ZIP is `$Mod-$Version.zip` (`KenshiRaces-0.10.3.zip`), so the ZIP
+downloads from `https://github.com/$Repo/releases/download/$Slug-v$Version/$Mod-$Version.zip`. Copy `$Version` from a release that is not
+marked **Pre-release**: the `kenshi-races-beta` and `kenshi-races-<version>-beta.<commit>` prereleases have other tags and ZIP names.
 
 ## 1. Release the mod
 
 1. Merge `beta` into `main`, then open and merge a PR from `main` into `release` ([Branches](../README.md#branches)).
 2. Wait for the Release workflow on `release`. It tags the merge `<slug>-v<version>` with the version in `meitou.json` (for example
-   `example-mod-v0.1.0`) and creates a release with `<Mod>-<version>.zip` and `<Mod>-<version>.zip.sha256`. If that run fails before
+   `kenshi-races-v0.10.3`) and creates a release with `<Mod>-<version>.zip` and `<Mod>-<version>.zip.sha256`. If that run fails before
    tagging, `powershell -ExecutionPolicy Bypass -File tools\Tag-Release.ps1` pushes the tag by hand (`-DryRun` only prints the commands).
 
 ## 2. Install Workshop Watcher and sign in to Steam
@@ -33,12 +47,20 @@ guide. The installer downloads steamcmd to `%LOCALAPPDATA%\WorkshopWatcher\steam
 
    ```powershell
    New-Item -ItemType Directory -Force $Work
-   Invoke-WebRequest "https://github.com/<owner>/<repo>/releases/download/<slug>-v$Version/$Mod-$Version.zip" -OutFile "$Work\$Mod.zip"
+   $ProgressPreference = "SilentlyContinue"
+   Invoke-WebRequest "https://github.com/$Repo/releases/download/$Slug-v$Version/$Mod-$Version.zip" -OutFile "$Work\$Mod.zip"
    Expand-Archive "$Work\$Mod.zip" -DestinationPath $Work
    ```
 
    `$Work\$Mod` now holds `$Mod.dll`, `meitou.json` and `$Mod.mod`.
-2. Save the item's preview image as `$Work\preview.png`: PNG or JPG, under 1 MB, square (512 x 512 pixels works).
+2. Save the item's preview image as `$Work\preview.png`: PNG or JPG, under 1 MB, square (512 x 512 pixels works). Use exactly that
+   name, or change `previewfile` in step 4 to match.
+3. Check both paths. Each line must print `True`:
+
+   ```powershell
+   Test-Path "$Work\$Mod\meitou.json"
+   Test-Path "$Work\preview.png"
+   ```
 
 ## 4. Write the VDF
 
@@ -82,14 +104,18 @@ Rules for values:
 ## 5. Create the item
 
 ```powershell
-& "$env:LOCALAPPDATA\WorkshopWatcher\steamcmd\steamcmd.exe" +login <steam account name> +workshop_build_item "$Work\create.vdf" +quit
+& "$env:LOCALAPPDATA\WorkshopWatcher\steamcmd\steamcmd.exe" +login $SteamUser +workshop_build_item "$Work\create.vdf" +quit
 ```
 
-`<steam account name>` is the name you sign in to Steam with, as given to the installer. steamcmd uses the saved login. If it asks for a
-password or Steam Guard code, run `powershell -ExecutionPolicy Bypass -File $Watcher login`, then run the command again.
+steamcmd uses the saved login. If it asks for a password or Steam Guard code, run
+`powershell -ExecutionPolicy Bypass -File $Watcher login`, then run the command again.
 
-The run ends with `Success.`. Open Steam > your profile > Workshop Items, open the new item and copy the number after `?id=` in its URL:
-that is the item ID.
+steamcmd creates the item first and prints `Create new workshop item ( PublishFileID <item ID>)`: that number is the item ID. The run ends
+with `Success.`.
+
+If the run fails after that line (for example `ERROR! Failed to update workshop item (File Not Found)`, which means `contentfolder` or
+`previewfile` does not exist), the item already exists. Fix the cause, change `"0"` after `publishedfileid` in the step 4 command to the item ID, run that command,
+then run this one again. With `0`, it creates another item.
 
 ## 6. Finish the item's page
 
@@ -104,7 +130,7 @@ On the item's page in Steam:
 ## 7. Watch the item
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File $Watcher add-item -Repo <owner>/<repo> -AppId 233860 -ItemId <item ID> -Asset "$Mod-*.zip"
+powershell -ExecutionPolicy Bypass -File $Watcher add-item -Repo $Repo -AppId 233860 -ItemId <item ID> -Asset "$Mod-*.zip"
 powershell -ExecutionPolicy Bypass -File $Watcher run -DryRun
 ```
 
