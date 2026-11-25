@@ -7,7 +7,7 @@ map. It reads the rig's skeleton, human body and part map from the game install,
 ## Run it
 
 ```powershell
-dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [palms] [rigid] [attach=<part.glb>]...
+dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [skintone] [palms] [rigid] [attach=<part.glb>]...
 ```
 
 - `<Kenshi folder>`: the game folder (`data/` inside it), e.g. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
@@ -22,6 +22,8 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - `wings`: the arms carry wing membranes ([Wings](#wings)).
 - `headless`: replace the model's head with the human head, its face poses and the Greenlander's heads and hair ([Headless](#headless)).
 - `ears`: `headless`, keeping the model's ears on the human head ([Ears](#ears)).
+- `nohair`: `headless`, dropping the model's own hair with its head ([Headless](#headless)).
+- `skintone`: the skin takes the editor's skin tone with the human head ([Skin tone](#skin-tone)); writes `<stem>_mask.dds`.
 - `palms`: turn the hands palm to thigh ([Hands](#hands)); not for claws or pincers.
 - `rigid`: keep the model's own shape and weights ([Rigid](#rigid)); for mechanical bodies.
 - `attach=<part.glb>`: merge a static part (ears, wings, horns) into the body, placed by `tools/RaceImport/parts/<part>.json`
@@ -176,8 +178,11 @@ triangles, weights and the mesh's face poses (target 1, written to the fitted me
    the head's skin.
 3. The head is appended. Its vertices are left out of the part map.
 
+With `nohair` the model's hair goes too: the hair triangles ([Skin tone](#skin-tone) sorts them) reached from the dropped head's through
+other hair triangles, so long hair hanging down the back leaves with the head; a vertex another triangle keeps stays.
+
 The race then keeps the Greenlander's heads, hair and random faces and uses the face editor limits ([kenshi-races.md](kenshi-races.md#character-editor)).
-The head's skin is the HEAD texture's and the body's the model's, so their tones can differ at the rim.
+The head's skin is the HEAD texture's and the body's the model's, so their tones differ at the rim unless the body is imported `skintone`.
 
 ## Ears
 
@@ -209,6 +214,23 @@ twice as wide ([Textures](#textures)): the body's uvs (not the head's) move into
 half, two by two in `attach` order. Parts: `wolfears` (on `Bip01 Head`, at the top sides of the skull, rolled out 15°; hair may clip them)
 and `batwings` (folded, from the shoulder blades to mid thigh, `Spine2` down to `Pelvis`, yawed 45° so the outer edges fold back behind
 the arms, 0.3 behind the back).
+
+## Skin tone
+
+The body shader multiplies the colour texture by the editor's `Skin Tone` colour where the race's `body mask` (red) and the HEAD's `mask map`
+say skin (engine docs/characters.md "Shading, poses and LOD"). With `skintone` (`TextureClasses`, `SkinTone`):
+
+1. Each triangle is sorted by its texels in the base colour (512², mean over the triangle): skin when its mean chroma (largest channel less
+   smallest) is at least 0.07, else hair when its mean largest channel is at least 0.4, else other (clothing, hooves). **Observed**
+   (tiefling-female.glb): skin and horns 0.10 to 0.13 chroma, the top and shorts 0.03 to 0.06, the hair below 0.03 and 0.45 to 0.8 light.
+2. The skin triangles' texels (grown 4 px at 2048²) are repainted to the Greenlander heads' bare skin (`SkinTone.HumanSkin`) times their luma
+   over the skin's median luma, keeping the model's shading.
+3. `<stem>_mask.dds` (1024², BC1) is white over the final mesh's triangles whose three vertices came from skin (uv 0 to 1 only; the head takes
+   its HEAD's mask), grown a texel; drawn at the final uvs, so with [attachments](#attachments) the skin lies in its left half and the parts
+   stay black.
+
+Head and body then share one base colour and one multiplier, so every slider position tints them alike. The race takes the mask with
+`RaceBody.SkinTone` and the editor limits `kenshiraces_editor_tinted.xml` ([kenshi-races.md](kenshi-races.md#character-editor)).
 
 ## Rigid
 

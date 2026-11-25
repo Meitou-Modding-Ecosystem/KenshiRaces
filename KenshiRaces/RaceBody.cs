@@ -10,7 +10,9 @@ namespace KenshiRaces;
 /// <param name="NormalMap">Whether the body has a normal map.</param>
 /// <param name="HumanHead">Whether the body wears the human head (imported <c>headless</c>, docs/race-import.md "Headless"): the race then keeps the
 /// Greenlander's heads, hair, face sliders and random faces.</param>
-public sealed record RaceBody(string Folder, string Stem, bool NormalMap, bool HumanHead = false)
+/// <param name="SkinTone">Whether the body's skin takes the character editor's skin tone with the head (imported <c>skintone</c>,
+/// docs/race-import.md "Skin tone"): the race then has the body mask <c>&lt;Stem&gt;_mask.dds</c> and the tinted editor limits.</param>
+public sealed record RaceBody(string Folder, string Stem, bool NormalMap, bool HumanHead = false, bool SkinTone = false)
 {
     /// <summary>
     /// A record's path to one of the body's files: <c>.\mods\&lt;Folder&gt;\items\races\&lt;Stem&gt;&lt;suffix&gt;</c>, which the game resolves into
@@ -37,6 +39,11 @@ public sealed record RaceBody(string Folder, string Stem, bool NormalMap, bool H
     /// The part map's path (the body parts worn items hide).
     /// </summary>
     public string PartMap => File("_parts.png");
+
+    /// <summary>
+    /// The skin-tone body mask's path (white where the skin takes the editor's skin tone), empty without <see cref="SkinTone"/>.
+    /// </summary>
+    public string Mask => SkinTone ? File("_mask.dds") : "";
 }
 
 /// <summary>

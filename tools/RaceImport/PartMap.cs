@@ -133,9 +133,14 @@ public static class PartMap
     /// <summary>
     /// An 8-bit RGBA PNG: signature, header, one zlib-compressed data chunk, end.
     /// </summary>
-    static void WritePng(string path, Rgba image)
+    static void WritePng(string path, Rgba image) => File.WriteAllBytes(path, Png(image));
+
+    /// <summary>
+    /// <paramref name="image"/> encoded as an 8-bit RGBA PNG (<see cref="WritePng"/>).
+    /// </summary>
+    internal static byte[] Png(Rgba image)
     {
-        using var stream = File.Create(path);
+        using var stream = new MemoryStream();
         stream.Write([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);
 
         var header = new byte[13];
@@ -146,6 +151,7 @@ public static class PartMap
         WriteChunk(stream, "IHDR", header);
         WriteChunk(stream, "IDAT", Compressed(image));
         WriteChunk(stream, "IEND", []);
+        return stream.ToArray();
     }
 
     /// <summary>

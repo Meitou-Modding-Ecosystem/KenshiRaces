@@ -36,6 +36,12 @@ public static class RaceRecords
     public const string FaceEditorLimits = $@".\mods\{Races.Folder}\items\races\kenshiraces_editor_faces.xml";
 
     /// <summary>
+    /// The character editor's limits for the races whose skin takes the skin tone (<see cref="RaceBody.SkinTone"/>): <see cref="FaceEditorLimits"/>
+    /// with a skin tone slider from human tones through red and purple to blue-grey (docs/kenshi-races.md "Character editor").
+    /// </summary>
+    public const string TintedEditorLimits = $@".\mods\{Races.Folder}\items\races\kenshiraces_editor_tinted.xml";
+
+    /// <summary>
     /// The CHARACTER's lists emptied: no kit, no money to spend.
     /// </summary>
     internal static readonly string[] KitLists = ["backpack", "clothing", "inventory", "shopping", "weapons"];
@@ -84,7 +90,7 @@ public static class RaceRecords
         race.Bools["single gender"] = subrace.SingleGender;
         race.Bools["no shirts"] = true;
         race.Bools["playable"] = true;
-        race.Filenames["editor limits"] = subrace.HumanHead ? FaceEditorLimits : EditorLimits;
+        race.Filenames["editor limits"] = EditorLimitsOf(subrace);
         SetBody(race, "male", subrace.Body(female: false));
         SetBody(race, "female", subrace.Body(female: true));
 
@@ -92,6 +98,12 @@ public static class RaceRecords
         AnimationRecords.Link(race);
         if (subrace.Traits is { } traits) SetTraits(race, game, traits);
     }
+
+    /// <summary>
+    /// The editor limits a subrace's RACE uses: tinted with a skin tone, with faces with the human head, else the fitted bodies'.
+    /// </summary>
+    static string EditorLimitsOf(Subrace subrace) =>
+        (subrace.Male ?? subrace.Female)?.SkinTone == true ? TintedEditorLimits : subrace.HumanHead ? FaceEditorLimits : EditorLimits;
 
     /// <summary>
     /// The RACE fields <see cref="RaceRules"/> reads back: head gear allowed by name, footwear refused by name, no weapons, damage taken.
@@ -185,7 +197,8 @@ public static class RaceRecords
     }
 
     /// <summary>
-    /// One gender's body files: the mesh, colour texture, normal map and part map; the human body mask and strength normal maps cleared.
+    /// One gender's body files: the mesh, colour texture, normal map, part map and skin-tone mask (the human body mask without one); the strength
+    /// normal maps cleared.
     /// </summary>
     static void SetBody(FcsRecord race, string gender, RaceBody body)
     {
@@ -194,7 +207,7 @@ public static class RaceRecords
         race.Filenames[$"nm {gender}"] = body.Normals;
         race.Filenames[$"nm {gender} skinny"] = "";
         race.Filenames[$"nm {gender} strong"] = "";
-        race.Filenames[$"body mask {gender}"] = "";
+        race.Filenames[$"body mask {gender}"] = body.Mask;
         race.Filenames[$"part map {gender}"] = body.PartMap;
     }
 
