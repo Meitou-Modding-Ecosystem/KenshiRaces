@@ -5,15 +5,22 @@ namespace RaceImport;
 /// height the bust rises to (null: the rig's own), the neck's length as a share of the fitted one, whether the arms carry wings
 /// (<see cref="WingRig"/>) and whether the model's head is replaced by the human one (<see cref="HeadGraft"/>) and whether the model's ears stay on it (<see cref="HeadEars"/>)
 /// and whether the hands are turned palm to thigh (<see cref="BodyFit"/>, palms) and whether the model keeps its own weights and shape
-/// (<c>rigid</c>: no slimming, skin conform, tail move or human weights; for mechanical bodies whose parts must not stretch).
+/// (<c>rigid</c>: no slimming, skin conform, tail move or human weights; for mechanical bodies whose parts must not stretch), and the static part
+/// models merged into it (<see cref="Attachments"/>).
 /// </summary>
 public sealed record ImportOptions(HumanRig Rig, float Slim = 1, HumanRig? Bust = null, float Neck = 1, bool Wings = false, bool Headless = false,
     bool Ears = false, bool Palms = false, bool Rigid = false)
 {
     /// <summary>
+    /// The part models (.glb paths) attached, in order; each has its spec in <c>parts/&lt;stem&gt;.json</c>. Empty is the one shared empty array,
+    /// so options without parts compare equal.
+    /// </summary>
+    public IReadOnlyList<string> Attach { get; init; } = Array.Empty<string>();
+
+    /// <summary>
     /// The options from the command line's optional arguments, in any order: <c>male</c> / <c>female</c>, a slimming strength,
     /// <c>bust=male|female</c>, <c>neck=&lt;share&gt;</c>, <c>wings</c>, <c>headless</c>, <c>ears</c> (headless with the model's ears) and
-    /// <c>palms</c> and <c>rigid</c>; null for anything else.
+    /// <c>palms</c>, <c>rigid</c> and <c>attach=&lt;part.glb&gt;</c> (repeatable); null for anything else.
     /// </summary>
     public static ImportOptions? Parse(IEnumerable<string> arguments)
     {
@@ -40,6 +47,8 @@ public sealed record ImportOptions(HumanRig Rig, float Slim = 1, HumanRig? Bust 
         if (argument == "palms") return options with { Palms = true };
         if (argument == "rigid") return options with { Rigid = true };
         if (argument == "ears") return options with { Headless = true, Ears = true };
+        if (argument.StartsWith("attach=", StringComparison.Ordinal) && argument.Length > 7)
+            return options with { Attach = [.. options.Attach, argument[7..]] };
         if (argument.StartsWith("bust=", StringComparison.Ordinal))
             return HumanRig.Named(argument[5..]) is { } bust ? options with { Bust = bust } : null;
         if (argument.StartsWith("neck=", StringComparison.Ordinal))

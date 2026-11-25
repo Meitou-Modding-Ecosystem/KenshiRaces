@@ -36,18 +36,21 @@ public static class BodyImporter
         Restore(weights, wingWeights);
         var unheaded = new SkinnedMesh(positions, normals, body.Uvs, [], body.Indices, weights);
         var (mesh, source) = Headed(unheaded, options, kenshiFolder, human, kenshi);
+        var parts = options.Attach.Select(Attachment.Load).ToArray();
+        (mesh, source) = Attachments.Apply(mesh, source, parts, kenshi);
         mesh = mesh with { Tangents = Tangents(mesh.Positions, mesh.Normals, mesh.Uvs, mesh.Indices) };
         sleeved = [.. source.Select(v => v >= 0 && sleeved[v])];
 
         Directory.CreateDirectory(outFolder);
         SkinnedMeshWriter.Write(Path.Combine(outFolder, stem + ".mesh"), mesh, stem, rig.Skeleton);
-        bool normalMap = BodyTextures.Write(body, outFolder, stem, TextureSide);
-        int parts = WritePartMap(kenshiFolder, rig, Path.Combine(outFolder, stem + "_parts.png"), mesh, human, sleeved);
+        bool normalMap = BodyTextures.Write(body, parts, outFolder, stem, TextureSide);
+        bool[] attached = [.. source.Select(v => v < 0)];
+        int hideable = WritePartMap(kenshiFolder, rig, Path.Combine(outFolder, stem + "_parts.png"), mesh, human, sleeved, parts.Length > 0 ? attached : null);
 
         var min = mesh.Positions.Aggregate(Vector3.Min);
         var max = mesh.Positions.Aggregate(Vector3.Max);
         return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {mesh.Positions.Length} vertices, {mesh.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
-            $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts, " +
+            $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {hideable} vertices in hideable parts, {parts.Length} parts attached, " +
             $"{membrane.Count(m => m)} vertices of wing membrane, {mesh.Poses.Length} face poses, hands twisted {Twists(fit)}";
     }
 
@@ -80,13 +83,14 @@ public static class BodyImporter
     }
 
     /// <summary>
-    /// The part map of the fitted mesh from the rig's human one; returns how many vertices got a part.
+    /// The part map of the fitted mesh from the rig's human one, the <paramref name="attached"/> parts' vertices in none (and the map as wide as
+    /// the atlas); returns how many vertices got a part.
     /// </summary>
-    static int WritePartMap(string kenshiFolder, HumanRig rig, string path, SkinnedMesh mesh, HumanBody human, bool[] sleeved)
+    static int WritePartMap(string kenshiFolder, HumanRig rig, string path, SkinnedMesh mesh, HumanBody human, bool[] sleeved, bool[]? attached)
     {
         var humanMap = Rgba.Decode(File.ReadAllBytes(KenshiSkeleton.GameFile(kenshiFolder, rig.Mask)));
         var heaviest = mesh.Weights.Select(w => w.MaxBy(p => p.Value).Key).ToArray();
-        return PartMap.Write(path, mesh.Positions, mesh.Uvs, heaviest, human, humanMap, sleeved);
+        return PartMap.Write(path, mesh.Positions, mesh.Uvs, heaviest, human, humanMap, sleeved, attached, attached is not null);
     }
 
     /// <summary>

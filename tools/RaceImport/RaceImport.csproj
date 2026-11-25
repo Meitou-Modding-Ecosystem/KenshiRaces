@@ -24,6 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Specs of the static parts the attach option merges into a body (docs/race-import.md "Attachments"). -->
+    <None Include="parts/*.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="$(MeitouEngineDir)src/Meitou.Data/Meitou.Data.csproj" />
     <ProjectReference Include="../StructureImport/StructureImport.csproj" />
   </ItemGroup>
