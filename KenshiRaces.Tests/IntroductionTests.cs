@@ -83,13 +83,15 @@ public sealed class IntroductionTests
     }
 
     [Fact]
-    public void The_records_take_no_id_twice_nor_one_of_the_races()
+    public void The_records_take_no_id_twice_nor_one_of_the_races_or_the_animation_library()
     {
         var ids = IntroducerData.Build(Game()).Select(r => r.StringId).ToList();
         var races = Races.All.SelectMany(s => s.Characters.Select(c => c.Id).Append(s.RaceId)).ToHashSet();
+        var techniques = RaceAnimations.All.Select(a => a.TechniqueId).ToHashSet();
 
         Assert.Equal(ids.Count, ids.Distinct().Count());
         Assert.DoesNotContain(ids, races.Contains);
+        Assert.DoesNotContain(ids, techniques.Contains);
     }
 
     #endregion

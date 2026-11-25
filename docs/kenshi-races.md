@@ -1,7 +1,7 @@
 # Kenshi Races
 
-Five new races for the character editor, each with subraces, on the game's human skeletons (`kenshi.races`, no dependencies): every record
-added at load, the bodies fitted by the [race import](race-import.md). It also ships an [animation library](animations.md) of 112 clips for
+Eight new races for the character editor, each with subraces, on the game's human skeletons (`kenshi.races`, no dependencies): every record
+added at load, the bodies fitted by the [race import](race-import.md). It also ships an [animation library](animations.md) of 188 clips for
 every race on those skeletons. Mods use the races and clips, add subraces or add their own races:
 [depending-on-kenshi-races.md](depending-on-kenshi-races.md).
 
@@ -21,6 +21,7 @@ The editor lists each RACE_GROUP as a race and its RACEs as subraces (engine doc
 | Batfolk `34-` | batfolk `28-` | male, female | batfolkmale `29-`, batfolkfemale `35-` |
 | Wolfkin `39-` | wolfkin `36-` | male, female | wolfkinmale `37-`, wolfkinfemale `38-` |
 | Beepbot `41-` | beepbot `16-` | single | beepbot `20-` |
+| Owlkind `45-` | owlkind `43-` | single | owlkind `44-` |
 
 Ids end in `KenshiRaces.mod`. Subrace and CHARACTER names are one lowercase word, so the console's `spawn` takes them without quotes. Each body's
 files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leoma, Crevan, the spider crab, the ghost crab, the tiefling man, the Batfolk man, the Wolfkin and the beepbot). Male bodies are fitted to `male_skeleton`,
@@ -29,11 +30,13 @@ animations and voice (the game and Meitou make a single-gender race's characters
 hair and their skin takes the editor's skin tone with it (imported `nohair skintone`, [race import](race-import.md#skin-tone)); ram horns ride the head (`attach=horns.glb`, [attachments](race-import.md#attachments)). The Batfolk wear the human head (imported `wings headless`, [race import](race-import.md#headless)): the
 Greenlander's heads, hair and face sliders on their own bodies, their arm-wing membranes spanning arm and flank, opening as the arms rise. The Wolfkin wear it too; both races wear
 wolf ears on the skull, and the Batfolk folded bat wings on their backs ([attachments](race-import.md#attachments)). The beepbot, a skeletal robot, is a male fit imported `rigid`
-([race import](race-import.md#rigid)): its ribs, springs and joints keep their shape and its own weights. Source
+([race import](race-import.md#rigid)): its ribs, springs and joints keep their shape and its own weights. The Owlkind woman keeps her own beaked,
+feathered head and talons; like the crab queen she is a male fit with a female bust (`male bust=female`), so single gender with the male
+animations and voice until an Owlkind man exists. Source
 models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
 Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`, `spidercrab.glb`, `ghostcrab.glb` and
 `tiefling-female.glb` (female, `nohair skintone attach=horns.glb`) and `tieflingmale-rigged.glb` (male, `nohair skintone palms attach=horns.glb`: its palms faced forward), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless attach=wolfears.glb attach=batwings.glb`, and
-`wolfman-rigged.glb` (male, a Mixamo rig) and `wolfwoman-rigged.glb` (female), both `headless palms attach=wolfears.glb`; beepbot from `beepbot-highpoly.glb` (1M vertices, unrigged), decimated to 40,000
+`wolfman-rigged.glb` (male, a Mixamo rig) and `wolfwoman-rigged.glb` (female), both `headless palms attach=wolfears.glb`; owlkind from `owlkindfemale-rigged.glb` (`male bust=female`); beepbot from `beepbot-highpoly.glb` (1M vertices, unrigged), decimated to 40,000
 triangles with its normals baked, carrying the weights of the Meshy rig of the low-poly `beepbot-rigged.glb` (nearest face, same frame after
 that rig's scale 1.711 and lift 0.85 m), `rigid`.
 
@@ -65,9 +68,9 @@ XP) and `stats bad` (x0.8), `strength` 1.2 for strength, which the game lays ove
 | leoma | strength, sabres, athletics, weapon smith, labouring | armour smith, farming, polearms, heavy weapons, robotics | 100 / 120 / 120 / 120 / 120 | all |
 | crevan | perception, stealth, lockpicking, thieving, assassination, robotics, dodge | the weapons above, farming, labouring | 140 / 100 / 100 / 90 / 90 | `no shoes`; head gear only named `Ashland...` (the Ashland Hat, the Ashlander Stormgoggles) |
 | crabman, crabqueen, spidercrab, ghostcrab | martial arts, strength, toughness, melee attack and defence, swimming, labouring, engineering | dodge, turrets, crossbows, precision shooting, stealth, lockpicking, thieving, assassination, field medic, weapon, armour and crossbow smith | 100 / 200 / 200 / 250 / 120 | `no hats`; no footwear named `Sandals`; no weapons or crossbows |
-| tiefling, batfolk, wolfkin, beepbot | (the Greenlander's) | (the Greenlander's) | 100 / 100 / 100 / 100 / 100 | all |
+| tiefling, batfolk, wolfkin, beepbot, owlkind | (the Greenlander's) | (the Greenlander's) | 100 / 100 / 100 / 100 / 100 | all |
 
-- The spider and ghost crabs share the Crabfolk traits until their own are settled; the tiefling, the Batfolk, the Wolfkin and the beepbot have none yet.
+- The spider and ghost crabs share the Crabfolk traits until their own are settled; the tiefling, the Batfolk, the Wolfkin, the beepbot and the Owlkind have none yet.
 - Gear limits beyond the RACE's slot flags are a wear rule (engine docs/modding.md "Wear rules", `RaceRules`) read from the RACE's own
   fields `kenshi races hats only` and `kenshi races no footwear` ('|'-separated names) and `kenshi races no weapons`, so a dependent's subrace
   with traits gets them. They refuse equipping, buying into a slot and a loaded save's worn gear; a generated character's weapons are not
