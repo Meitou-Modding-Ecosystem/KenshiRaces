@@ -35,7 +35,8 @@ public static class BodyImporter
         var (positions, conformed) = new SkinConform(kenshi, human).Apply(slimmed, weights, body.Indices, options.Slim, spared);
         int copied = HumanWeights.Apply(positions, body.Indices, weights, tail, kenshi, human);
         Restore(weights, wingWeights);
-        var (mesh, source) = Headed(new SkinnedMesh(positions, normals, body.Uvs, [], body.Indices, weights), options, kenshiFolder, human);
+        var unheaded = new SkinnedMesh(positions, normals, body.Uvs, [], body.Indices, weights);
+        var (mesh, source) = Headed(unheaded, options, kenshiFolder, human, kenshi);
         mesh = mesh with { Tangents = Tangents(mesh.Positions, mesh.Normals, mesh.Uvs, mesh.Indices) };
         sleeved = [.. source.Select(v => v >= 0 && sleeved[v])];
 
@@ -55,10 +56,14 @@ public static class BodyImporter
     /// The fitted mesh with the human head grafted on when the options say headless (<see cref="HeadGraft"/>), and each vertex's source vertex
     /// (-1 for the head's).
     /// </summary>
-    static (SkinnedMesh Mesh, int[] Source) Headed(SkinnedMesh mesh, ImportOptions options, string kenshiFolder, HumanBody human) =>
-        options.Headless
-            ? HeadGraft.Apply(mesh, human, HumanHead.Load(kenshiFolder, options.Rig))
-            : (mesh, [.. Enumerable.Range(0, mesh.Positions.Length)]);
+    static (SkinnedMesh Mesh, int[] Source) Headed(SkinnedMesh mesh, ImportOptions options, string kenshiFolder, HumanBody human,
+        KenshiSkeleton kenshi)
+    {
+        if (!options.Headless) return (mesh, [.. Enumerable.Range(0, mesh.Positions.Length)]);
+
+        ushort? ears = options.Ears ? kenshi.Handle("Bip01 Head") : null;
+        return HeadGraft.Apply(mesh, human, HumanHead.Load(kenshiFolder, options.Rig), ears);
+    }
 
     /// <summary>
     /// The part map of the fitted mesh from the rig's human one; returns how many vertices got a part.

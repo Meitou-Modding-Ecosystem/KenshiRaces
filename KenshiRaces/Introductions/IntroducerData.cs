@@ -65,6 +65,8 @@ static class IntroducerData
         [Races.TieflingCharacter] = "tiefling",
         [Races.BatfolkMaleCharacter] = "Batfolk man",
         [Races.BatfolkFemaleCharacter] = "Batfolk woman",
+        [Races.WolfkinMaleCharacter] = "Wolfkin man",
+        [Races.WolfkinFemaleCharacter] = "Wolfkin woman",
     };
 
     /// <summary>
@@ -240,7 +242,8 @@ static class IntroducerData
         Line(AskFriends, Player, [Friends], "Strange places. Strange people too?"),
         Line(Friends, Him, [Doubt, .. Choices],
             "Friends, I'd call them. Lion folk with manes like a beak thing's ruff. Crow people, feathers and all, who'd steal the teeth from"
-                + " your mouth. Crabs that walk like men and think like them too. And a lass with horns who smiles like she knows how you'll die."),
+                + " your mouth. Crabs that walk like men and think like them too. A lass with horns who smiles like she knows how you'll die."
+                + " Bats with faces like ours, and wolves who'll hear you before you see them."),
         Line(Doubt, Player, [Proof], "You expect me to believe that?"),
         Line(Proof, Him, Choices,
             "No. Nobody does. That's why I'm drinking alone in Black Scratch. But a man gets lonely out there, and a friend owes a favour."
@@ -275,6 +278,8 @@ static class IntroducerData
         [Races.CrabfolkGroup] = "Crab people, from the shallows past the end of the world. Which shell do you want?",
         [Races.TieflingGroup] = "Her. I'll warn her you're coming. Don't ask about the horns.",
         [Races.BatfolkGroup] = "The Batfolk. Faces like yours, wings like nothing you've seen. They sleep all day and see in the dark. A man or a woman?",
+        [Races.WolfkinGroup] =
+            "The Wolfkin. They hear you coming a mile off, and they run in packs. Loyal to the bone, once you're one of theirs. A man or a woman?",
     };
 
     /// <summary>
@@ -287,6 +292,7 @@ static class IntroducerData
         [Races.CrabfolkGroup] = "The crabs.",
         [Races.TieflingGroup] = "The woman with horns.",
         [Races.BatfolkGroup] = "The bat people.",
+        [Races.WolfkinGroup] = "The wolf people.",
     };
 
     /// <summary>
@@ -305,6 +311,8 @@ static class IntroducerData
         [Races.TieflingCharacter] = "Bring her.",
         [Races.BatfolkMaleCharacter] = "A Batfolk man.",
         [Races.BatfolkFemaleCharacter] = "A Batfolk woman.",
+        [Races.WolfkinMaleCharacter] = "A Wolfkin man.",
+        [Races.WolfkinFemaleCharacter] = "A Wolfkin woman.",
     };
 
     /// <summary>

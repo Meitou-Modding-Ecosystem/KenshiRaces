@@ -22,17 +22,36 @@ public static class HeadGraft
     const float Sink = 0.05f;
 
     /// <summary>
-    /// The fitted body with the head grafted on, and for each of its vertices the body vertex it was (-1 for the head's).
+    /// The fitted body with the head grafted on, and for each of its vertices the body vertex it was (-1 for the head's). With
+    /// <paramref name="earBone"/> the model's ears stay (<see cref="HeadEars"/>), carried by that bone.
     /// </summary>
-    public static (SkinnedMesh Mesh, int[] Source) Apply(SkinnedMesh body, HumanBody human, HumanHead head)
+    public static (SkinnedMesh Mesh, int[] Source) Apply(SkinnedMesh body, HumanBody human, HumanHead head, ushort? earBone = null)
     {
         var rim = Rim(head);
         var near = Enumerable.Range(0, body.Positions.Length).Where(v => Distance(body.Positions[v], rim) < Band).ToHashSet();
         var dropped = Dropped(body.Positions, near, human);
         var sunk = Sunk(body, near, human);
+        if (earBone is { } bone) sunk = KeepEars(sunk, dropped, head, bone);
         var source = Enumerable.Range(0, body.Positions.Length).Where(v => !dropped[v]).ToArray();
         var mesh = Joined(sunk, source, head);
         return (mesh, [.. source, .. Enumerable.Repeat(-1, head.Positions.Length)]);
+    }
+
+    /// <summary>
+    /// The body with its ears placed on the human head (<see cref="HeadEars"/>), no longer <paramref name="dropped"/>, carried by
+    /// <paramref name="bone"/> alone.
+    /// </summary>
+    static SkinnedMesh KeepEars(SkinnedMesh body, bool[] dropped, HumanHead head, ushort bone)
+    {
+        var positions = (Vector3[])body.Positions.Clone();
+        var weights = body.Weights.ToArray();
+        foreach (int v in HeadEars.Place(positions, body.Indices, dropped, head))
+        {
+            dropped[v] = false;
+            weights[v] = new Dictionary<ushort, float> { [bone] = 1 };
+        }
+
+        return body with { Positions = positions, Weights = weights };
     }
 
     /// <summary>

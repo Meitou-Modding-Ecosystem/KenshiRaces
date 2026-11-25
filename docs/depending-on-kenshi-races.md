@@ -14,8 +14,8 @@ In a repo made from [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosys
 {
   "id": "kenshi.races",
   "repo": "Meitou-Modding-Ecosystem/KenshiRaces",
-  "tag": "kenshi-races-v0.9.0",
-  "asset": "KenshiRaces-0.9.0.zip",
+  "tag": "kenshi-races-v0.10.0",
+  "asset": "KenshiRaces-0.10.0.zip",
   "sha256": "<Zip SHA-256 from the notes>",
   "folder": "KenshiRaces",
   "engine": "<Submodule engine commit from the notes>"
@@ -31,7 +31,7 @@ In a repo made from [MeitouModTemplate](https://github.com/Meitou-Modding-Ecosys
 ```json
 "apiVersion": 2,
 "gameVersion": ">=0.23.0",
-"dependencies": [{ "id": "kenshi.races", "version": ">=0.9.0 <0.10.0" }]
+"dependencies": [{ "id": "kenshi.races", "version": ">=0.10.0 <0.11.0" }]
 ```
 
 - Before 1.0 a minor version may break the API, so cap the range at the next minor.
@@ -51,11 +51,12 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- RACEs (subraces): `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`, `BatfolkRace`.
+- RACEs (subraces): `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`, `BatfolkRace`, `WolfkinRace`.
 - CHARACTERs (kitless, recruitable): `LeomaMaleCharacter`, `LeomaFemaleCharacter`, `CrevanMaleCharacter`, `CrevanFemaleCharacter`,
-  `CrabmanCharacter`, `CrabQueenCharacter`, `SpidercrabCharacter`, `GhostcrabCharacter`, `TieflingCharacter`, `BatfolkMaleCharacter`, `BatfolkFemaleCharacter`.
-- RACE_GROUPs (the editor's races): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`, `TieflingGroup`, `BatfolkGroup`. `Races.Recruit` is the "Join us." talk.
-- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen`, `Spidercrab`, `Ghostcrab`, `Tiefling`, `Batfolk` (`Subrace`) and `Races.Groups` describe them. Table:
+  `CrabmanCharacter`, `CrabQueenCharacter`, `SpidercrabCharacter`, `GhostcrabCharacter`, `TieflingCharacter`, `BatfolkMaleCharacter`, `BatfolkFemaleCharacter`,
+  `WolfkinMaleCharacter`, `WolfkinFemaleCharacter`.
+- RACE_GROUPs (the editor's races): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`, `TieflingGroup`, `BatfolkGroup`, `WolfkinGroup`. `Races.Recruit` is the "Join us." talk.
+- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen`, `Spidercrab`, `Ghostcrab`, `Tiefling`, `Batfolk`, `Wolfkin` (`Subrace`) and `Races.Groups` describe them. Table:
   [kenshi-races.md "Races"](kenshi-races.md#races).
 
 ## 4. Add a subrace or a race

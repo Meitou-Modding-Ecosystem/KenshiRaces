@@ -7,7 +7,7 @@ map. It reads the rig's skeleton, human body and part map from the game install,
 ## Run it
 
 ```powershell
-dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless]
+dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears]
 ```
 
 - `<Kenshi folder>`: the game folder (`data/` inside it), e.g. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
@@ -21,6 +21,7 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - `neck=<share>`: the neck's length as a share of the fitted one, default 1 (the Crabman uses 0.7).
 - `wings`: the arms carry wing membranes ([Wings](#wings)).
 - `headless`: replace the model's head with the human head, its face poses and the Greenlander's heads and hair ([Headless](#headless)).
+- `ears`: `headless`, keeping the model's ears on the human head ([Ears](#ears)).
 - Writes `<stem>.mesh`, `<stem>_d.dds`, `<stem>_n.dds` (only when the model has a normal map) and `<stem>_parts.png`; the log line gives the
   vertex count, scale, bounds, how many vertices fall in hideable parts, the wing membrane's vertices and the face poses.
 - Keep the `.glb` outside the repo (tens of MB); commit the four outputs. `.gitignore` lets `*/items/races/*.mesh` and `*.dds` through.
@@ -29,7 +30,8 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 ## What the model needs
 
 - One skinned mesh whose skin has the Biped joints `Bip001 Pelvis`, `Spine`, `Spine1`, `Spine2`, `Neck`, `Head`, both `Clavicle`, `UpperArm`,
-  `Forearm`, `Hand`, `Thigh`, `Calf`, `Foot`, `Toe0`, and `mixamorig:HeadTop_End` above the head. Extra joints (fingers, tails, helpers)
+  `Forearm`, `Hand`, `Thigh`, `Calf`, `Foot`, `Toe0`, and `mixamorig:HeadTop_End` above the head, or the same joints by their Mixamo names
+  (`mixamorig:Hips`, `Spine`, `LeftArm`, `LeftForeArm`, `LeftUpLeg`, ...), which the import renames to the Biped's (`SourceBody`). Extra joints (fingers, tails, helpers)
   follow their nearest Biped ancestor; one without, which no vertex uses (a stray root bone), follows the pelvis. **Verified** on Leoma, Crevan, Crabman and the Crab Queen (Meshy exports).
 - A base colour texture; a metallic-roughness and a normal texture are used when present.
 - Any rest pose: T-pose and A-pose both fit (the game's bind pose has the arms down).
@@ -158,6 +160,14 @@ triangles, weights and the mesh's face poses (target 1, written to the fitted me
 
 The race then keeps the Greenlander's heads, hair and random faces and uses the face editor limits ([kenshi-races.md](kenshi-races.md#character-editor)).
 The head's skin is the HEAD texture's and the body's the model's, so their tones can differ at the rim.
+
+## Ears
+
+With `ears` the model's own ears stay (`HeadEars`): on each side, the dropped head vertices from the skull's highest point down 0.35 of the
+head's height and within half that across, joined to that point through the model's surface. Their base's middle is mapped from the model's
+skull (its other dropped vertices' box) to the human head's box, snapped to the head's nearest vertex and moved 0.1 inside it, and the ear is
+scaled 1.4 about it, so it stands out of the skull and the hair; every ear vertex is carried by `Bip01 Head` alone. Ears fused with the
+model's hair bring some of it along; hats clip them. A separate ears model bolts on the same way.
 
 ## Textures
 
