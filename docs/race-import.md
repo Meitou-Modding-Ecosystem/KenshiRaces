@@ -145,11 +145,16 @@ the turns. Crab claws are pincers, not palms: leave the option off for them.
 Meshy binds an arm wing's membrane to helper bones and the spine, which pins it to fixed points as the arm moves. With `wings`, before the
 fit (`WingRig`), every vertex past an arm's shoulder (its side of the upper arm joint, above the `Spine` joint) is bound by its place along the
 arm instead: the upper arm, the forearm or the hand, blended over 15% of the forearm's length either side of the elbow and the wrist, the
-hand's segment reaching 0.8 forearms past the wrist for wing tips. The membrane is what hangs below the arm further than 1.1 times the reach of
-the arm's skin above it at that point (measured in eight stretches along the arm). It is turned about the arm (shoulder to wrist) so that it
-hangs behind it instead (-Z, the model faces +Z), over half a skin reach more, and drawn in to 0.7 of its reach: the game's bind pose has
-the arms down, where a membrane below the arm would pass through the body. Its weights are kept through the human weights' copy, and the
-skin conforms leave it alone. Kenshi's skeleton has no wing bones, so the wings move only with the arms.
+hand's segment reaching 0.8 forearms past the wrist for wing tips. The membrane is what hangs below the arm further than 0.7 times the reach of
+the arm's skin above it at that point (measured in eight stretches along the arm).
+
+After the fit (`WingSpread`) each membrane vertex shares its weight between its arm bones and `Bip01 Spine2`, so the membrane spans arm and
+flank like a bat's: it opens as the arm rises or reaches and closes as it falls. The model shows the wing spread (arms out), the game's bind
+pose has the arms down, so the vertex is placed where that blend takes it back to the model's spread wing when the game turns each arm bone
+back to the model's direction. Of the blends (0 to 1 on the arm, in hundredths) each vertex takes the one that places it nearest the arm's bones, then is drawn
+within 0.25 units of them: a lowered arm hides its folded membrane inside itself, and the spread wing comes back within that much of the
+model's. The membrane's weights are kept through the human weights' copy, and the skin conforms leave it alone. Kenshi's skeleton has no wing
+bones, so the wings move only with the arms.
 
 In the part map the membrane up to the wrist is white (the upper-arm bands), which every sleeved item hides (jackets, coats, robes, plate
 jackets, skin suits); a membrane needs no hide part of its own. Past the wrist it keeps its nearest human part (hands show).

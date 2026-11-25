@@ -27,7 +27,7 @@ files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leo
 female ones to `female_skeleton`; the crab and tiefling bodies are male fits, so the crab queen and the tiefling (both women, `bust=female`)
 are single gender with the male animations and voice (the game and Meitou make a single-gender race's characters male). The tiefling's tail is
 carried by `Spine`. The Batfolk wear the human head (imported `wings headless`, [race import](race-import.md#headless)): the
-Greenlander's heads, hair and face sliders on their own bodies, their arm-wing membranes riding the arms and folded behind them. The Wolfkin wear it too, with their own wolf
+Greenlander's heads, hair and face sliders on their own bodies, their arm-wing membranes spanning arm and flank, opening as the arms rise. The Wolfkin wear it too, with their own wolf
 ears on the skull (imported `ears`, [race import](race-import.md#ears)). The beepbot, a skeletal robot, is a male fit imported `rigid`
 ([race import](race-import.md#rigid)): its ribs, springs and joints keep their shape and its own weights. Source
 models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
