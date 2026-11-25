@@ -25,7 +25,7 @@ public static class BodyImporter
         var kenshi = KenshiSkeleton.Load(kenshiFolder, rig);
         var human = HumanBody.Load(kenshiFolder, rig);
         var bustHuman = options.Bust is { } bust && bust != rig ? HumanBody.Load(kenshiFolder, bust) : human;
-        var fit = new BodyFit(body, kenshi, options.Neck);
+        var fit = new BodyFit(body, kenshi, options.Neck, options.Palms);
         var (fitted, normals, weights) = fit.Repose();
         var (lifted, lift) = BustLift.Apply(fitted, weights, kenshi, bustHuman);
         var wingWeights = Kept(weights, membrane);
@@ -49,7 +49,7 @@ public static class BodyImporter
         var max = mesh.Positions.Aggregate(Vector3.Max);
         return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {mesh.Positions.Length} vertices, {mesh.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
             $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts, " +
-            $"{membrane.Count(m => m)} vertices of wing membrane, {mesh.Poses.Length} face poses";
+            $"{membrane.Count(m => m)} vertices of wing membrane, {mesh.Poses.Length} face poses, hands twisted {Twists(fit)}";
     }
 
     /// <summary>
@@ -133,4 +133,10 @@ public static class BodyImporter
             bitangents[v] += bitangent;
         }
     }
+
+    /// <summary>
+    /// The hands the fit twisted, in degrees (<c>L 92, R -88</c>), or <c>none</c>.
+    /// </summary>
+    static string Twists(BodyFit fit) =>
+        fit.HandTwists.Count == 0 ? "none" : string.Join(", ", fit.HandTwists.Select(p => $"{p.Key} {p.Value * 180 / MathF.PI:0}"));
 }
