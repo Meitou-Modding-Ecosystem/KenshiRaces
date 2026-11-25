@@ -4,7 +4,7 @@ using RaceImport;
 namespace KenshiRaces.Tests;
 
 /// <summary>
-/// The arm wings' rebinding and fold (docs/race-import.md "Wings") on a synthetic T-posed pair of arms with a membrane hanging below each.
+/// The arm wings' rebinding (docs/race-import.md "Wings") on a synthetic T-posed pair of arms with a membrane hanging below each.
 /// </summary>
 public sealed class WingRigTests
 {
@@ -14,18 +14,15 @@ public sealed class WingRigTests
     const int Skin = 0, Membrane = 1, Tip = 2, Torso = 3;
 
     [Fact]
-    public void The_membrane_below_the_arm_is_folded_behind_it_and_drawn_in()
+    public void The_membrane_below_the_arm_is_marked_and_left_in_place()
     {
         var body = Arms();
 
         var (membrane, sleeved) = WingRig.Apply(body);
 
-        var p = body.Positions[Membrane];
         Assert.True(membrane[Membrane]);
         Assert.True(sleeved[Membrane]);
-        Assert.True(p.Z < -0.1f, $"behind the arm: {p}");
-        Assert.InRange(p.Y, 1.35f, 1.45f);
-        Assert.InRange(Vector3.Distance(p, new Vector3(0.4f, 1.4f, 0)), 0.1f, 0.15f);
+        Assert.Equal(new Vector3(0.4f, 1.22f, 0), body.Positions[Membrane]);
     }
 
     [Fact]

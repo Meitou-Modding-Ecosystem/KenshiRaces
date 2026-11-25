@@ -27,6 +27,7 @@ public static class BodyImporter
         var bustHuman = options.Bust is { } bust && bust != rig ? HumanBody.Load(kenshiFolder, bust) : human;
         var fit = new BodyFit(body, kenshi, options.Neck, options.Palms);
         var (fitted, normals, weights) = fit.Repose();
+        if (options.Wings) new WingSpread(fit, kenshi).Apply(body, membrane, fitted, normals, weights);
         var (lifted, lift) = BustLift.Apply(fitted, weights, kenshi, bustHuman);
         var wingWeights = Kept(weights, membrane);
         var tail = HumanWeights.MoveTails(lifted, body.Indices, weights, kenshi, human);
