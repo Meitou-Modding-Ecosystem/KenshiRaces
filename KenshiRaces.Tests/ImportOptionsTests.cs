@@ -38,6 +38,14 @@ public sealed class ImportOptionsTests
     }
 
     [Fact]
+    public void Nohair_keeps_the_head_human_and_skintone_is_a_flag()
+    {
+        var options = ImportOptions.Parse(["female", "nohair", "skintone"]);
+
+        Assert.Equal(new ImportOptions(HumanRig.Female, Headless: true, NoHair: true, SkinTone: true), options);
+    }
+
+    [Fact]
     public void Palms_is_a_flag()
     {
         var options = ImportOptions.Parse(["palms", "female"]);

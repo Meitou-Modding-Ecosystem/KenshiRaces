@@ -31,7 +31,8 @@ public static class Races
     /// </summary>
     public const string LeomaMaleCharacter = "11-" + FileName, CrabmanCharacter = "13-" + FileName, CrabQueenCharacter = "15-" + FileName,
         LeomaFemaleCharacter = "17-" + FileName, CrevanMaleCharacter = "19-" + FileName, CrevanFemaleCharacter = "21-" + FileName,
-        SpidercrabCharacter = "23-" + FileName, GhostcrabCharacter = "25-" + FileName, TieflingCharacter = "27-" + FileName,
+        SpidercrabCharacter = "23-" + FileName, GhostcrabCharacter = "25-" + FileName, TieflingFemaleCharacter = "27-" + FileName,
+        TieflingMaleCharacter = "42-" + FileName,
         BatfolkMaleCharacter = "29-" + FileName, BatfolkFemaleCharacter = "35-" + FileName,
         WolfkinMaleCharacter = "37-" + FileName, WolfkinFemaleCharacter = "38-" + FileName, BeepbotCharacter = "20-" + FileName;
 
@@ -133,10 +134,11 @@ public static class Races
         [new("ghostcrab", GhostcrabCharacter, false)], CrabfolkTraits);
 
     /// <summary>
-    /// The tieflings: a woman's body fitted to the male skeleton with a woman's bust (single gender, like the crab queen), a Greenlander's traits.
+    /// The tieflings: a human head and face (the Greenlander's heads, hair and face sliders) with ram horns, on horned-tailed bodies whose skin
+    /// takes the editor's skin tone with the head (<see cref="RaceBody.SkinTone"/>); a Greenlander's traits.
     /// </summary>
-    public static readonly Subrace Tiefling = new("tiefling", TieflingRace, Body("tiefling", false), null,
-        [new("tiefling", TieflingCharacter, false)]);
+    public static readonly Subrace Tiefling = new("tiefling", TieflingRace, TonedBody("tieflingmale", true), TonedBody("tieflingfemale", false),
+        [new("tieflingmale", TieflingMaleCharacter, false), new("tieflingfemale", TieflingFemaleCharacter, true)]);
 
     /// <summary>
     /// Bat people: a human head and face (the Greenlander's heads, hair and face sliders) on a furred body with wing membranes along the arms,
@@ -186,4 +188,9 @@ public static class Races
     /// One of the mod's bodies wearing the human head (<see cref="RaceBody.HumanHead"/>).
     /// </summary>
     static RaceBody HeadedBody(string name, bool normalMap) => Body(name, normalMap) with { HumanHead = true };
+
+    /// <summary>
+    /// One of the mod's bodies wearing the human head whose skin takes the editor's skin tone (<see cref="RaceBody.SkinTone"/>).
+    /// </summary>
+    static RaceBody TonedBody(string name, bool normalMap) => HeadedBody(name, normalMap) with { SkinTone = true };
 }

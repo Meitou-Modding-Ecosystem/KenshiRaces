@@ -53,7 +53,7 @@ public void EditData(ModDataContext c)
 
 - RACEs (subraces): `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`, `BatfolkRace`, `WolfkinRace`, `BeepbotRace`.
 - CHARACTERs (kitless, recruitable): `LeomaMaleCharacter`, `LeomaFemaleCharacter`, `CrevanMaleCharacter`, `CrevanFemaleCharacter`,
-  `CrabmanCharacter`, `CrabQueenCharacter`, `SpidercrabCharacter`, `GhostcrabCharacter`, `TieflingCharacter`, `BatfolkMaleCharacter`, `BatfolkFemaleCharacter`,
+  `CrabmanCharacter`, `CrabQueenCharacter`, `SpidercrabCharacter`, `GhostcrabCharacter`, `TieflingMaleCharacter`, `TieflingFemaleCharacter`, `BatfolkMaleCharacter`, `BatfolkFemaleCharacter`,
   `WolfkinMaleCharacter`, `WolfkinFemaleCharacter`, `BeepbotCharacter`.
 - RACE_GROUPs (the editor's races): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`, `TieflingGroup`, `BatfolkGroup`, `WolfkinGroup`, `BeepbotGroup`. `Races.Recruit` is the "Join us." talk.
 - `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen`, `Spidercrab`, `Ghostcrab`, `Tiefling`, `Batfolk`, `Wolfkin`, `Beepbot` (`Subrace`) and `Races.Groups` describe them. Table:
@@ -82,6 +82,9 @@ public void EditData(ModDataContext c)
 - A body imported `headless` (it wears the human head, [race import](race-import.md#headless)) is `new RaceBody(..., HumanHead: true)`: its
   subrace keeps the Greenlander's heads, hair and random faces and gets the face editor limits (`RaceRecords.FaceEditorLimits`: human face
   sliders, chest, bust).
+- A body imported `skintone` as well ([race import](race-import.md#skin-tone)) is `new RaceBody(..., HumanHead: true, SkinTone: true)`: its
+  `<stem>_mask.dds` becomes the RACE's `body mask` and the subrace gets `RaceRecords.TintedEditorLimits`, so one Skin Tone slider tints head
+  and body alike.
 - `RaceRecords.Add(c, subrace, talk)`: `talk` is a DIALOGUE id for the characters, `null` for none.
 - A race of your own: `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` adds the RACE_GROUP and every subrace.
 - Subraces are `playable` with Kenshi Races' editor limits (`RaceRecords.EditorLimits`); `FillRace` / `FillCharacter` fill records you add
