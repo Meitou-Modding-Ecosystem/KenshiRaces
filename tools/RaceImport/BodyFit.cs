@@ -80,6 +80,22 @@ public sealed class BodyFit
     /// </summary>
     const float MinStretch = 0.6f, MaxStretch = 1.6f;
 
+    /// <summary>
+    /// A hand turned less than this about the forearm (radians) is left as the model has it; only a hand turned the wrong way (palms forward or
+    /// back where the game's face the thighs) is twisted.
+    /// </summary>
+    const float MinHandTwist = 0.5f;
+
+    /// <summary>
+    /// A hand whose breadth is less than this many times its thickness across the forearm has no clear palm, and is left as it is.
+    /// </summary>
+    const float MinHandFlatness = 1.1f;
+
+    /// <summary>
+    /// The share of a hand's twist the forearm takes, so the turn spreads over wrist and elbow instead of wringing one of them.
+    /// </summary>
+    const float ForearmTwistShare = 0.5f;
+
     #endregion
 
     #region Fit
@@ -105,6 +121,11 @@ public sealed class BodyFit
     readonly float _neck;
 
     /// <summary>
+    /// Whether the hands are turned palm to thigh (<see cref="TwistHands"/>); claws and pincers keep the model's turn.
+    /// </summary>
+    readonly bool _palms;
+
+    /// <summary>
     /// The model's scale to the game's units: the game's head height over the model's (head joint above its lowest vertex).
     /// </summary>
     public float Scale { get; }
@@ -115,14 +136,21 @@ public sealed class BodyFit
     public IReadOnlyDictionary<string, BoneFit> Fits { get; }
 
     /// <summary>
-    /// Works out the fits of <paramref name="body"/> onto <paramref name="kenshi"/>, the neck <paramref name="neck"/> times its fitted length.
+    /// The turn given to each twisted hand (<c>L</c>, <c>R</c>) about its forearm, radians (<see cref="TwistHands"/>).
+    /// </summary>
+    public Dictionary<string, float> HandTwists { get; } = [];
+
+    /// <summary>
+    /// Works out the fits of <paramref name="body"/> onto <paramref name="kenshi"/>, the neck <paramref name="neck"/> times its fitted length,
+    /// the hands turned palm to thigh with <paramref name="palms"/>.
     /// Throws when the model lacks a Biped joint the fit needs.
     /// </summary>
-    public BodyFit(SourceBody body, KenshiSkeleton kenshi, float neck = 1)
+    public BodyFit(SourceBody body, KenshiSkeleton kenshi, float neck = 1, bool palms = false)
     {
         _body = body;
         _kenshi = kenshi;
         _neck = neck;
+        _palms = palms;
         _source = body.JointNames.Select((n, i) => (Name: Short(n) ?? n, i)).GroupBy(p => p.Name).ToDictionary(g => g.Key, g => body.JointPositions[g.First().i]);
         Scale = HeadHeight(kenshi) / (Source("Head").Y - body.Positions.Min(p => p.Y));
         Fits = BuildFits();
@@ -137,6 +165,7 @@ public sealed class BodyFit
         var torso = AddTorso(fits);
         LowerHead(fits, torso);
         AddFeet(fits);
+        if (_palms) TwistHands(fits);
         return fits;
     }
 
@@ -211,6 +240,99 @@ public sealed class BodyFit
             fits[side + " Toe0"] = fit;
         }
     }
+
+    /// <summary>
+    /// Each hand turned about its forearm so its palm faces the thigh as the game's do (seen from the front, the game's hand shows its thumb
+    /// edge, its breadth running front to back; **Verified** on <c>human_male.mesh</c> and <c>human_female.mesh</c>): the fit turns a bone
+    /// onto the game's direction but keeps its twist, so a model whose palms face forward or down in its rest pose kept them so.
+    /// </summary>
+    void TwistHands(Dictionary<string, BoneFit> fits)
+    {
+        foreach (var side in new[] { "L", "R" })
+        {
+            string hand = side + " Hand", forearm = side + " Forearm";
+            if (!fits.ContainsKey(hand) || !fits.ContainsKey(forearm)) continue;
+
+            var axis = Vector3.Normalize(Kenshi(hand) - Kenshi(forearm));
+            float angle = HandTwist(fits, hand, axis);
+            if (MathF.Abs(angle) < MinHandTwist) continue;
+
+            fits[hand] = Twisted(fits[hand], axis, angle);
+            fits[forearm] = Twisted(fits[forearm], axis, angle * ForearmTwistShare);
+            HandTwists[side] = angle;
+        }
+    }
+
+    /// <summary>
+    /// The turn about <paramref name="axis"/> (radians, within a quarter turn either way) that takes the fitted hand's breadth to the game's,
+    /// front to back; 0 when the hand has no clear palm.
+    /// </summary>
+    float HandTwist(Dictionary<string, BoneFit> fits, string hand, Vector3 axis)
+    {
+        var points = HandVertices(fits, hand).Select(v => fits[hand].Apply(_body.Positions[v], Scale)).ToArray();
+        if (points.Length < 8) return 0;
+
+        var (breadth, flatness) = Breadth(points, axis);
+        if (flatness < MinHandFlatness) return 0;
+
+        var wanted = Vector3.Normalize(Flatten(Vector3.UnitZ, axis));
+        float angle = MathF.Atan2(Vector3.Dot(Vector3.Cross(breadth, wanted), axis), Vector3.Dot(breadth, wanted));
+        if (angle > MathF.PI / 2) angle -= MathF.PI;
+        if (angle < -MathF.PI / 2) angle += MathF.PI;
+        return angle;
+    }
+
+    /// <summary>
+    /// The vertices mostly carried by <paramref name="hand"/> or the joints that follow it (fingers, claws).
+    /// </summary>
+    IEnumerable<int> HandVertices(Dictionary<string, BoneFit> fits, string hand)
+    {
+        var joints = Enumerable.Range(0, _body.JointNames.Length).Where(j => FollowedBone(fits, j) == hand).ToHashSet();
+        return Enumerable.Range(0, _body.Positions.Length).Where(v => _body.Influences[v].Where(p => joints.Contains(p.Joint)).Sum(p => p.Weight) > 0.5f);
+    }
+
+    /// <summary>
+    /// The fitted bone a model joint follows: its own, or its nearest fitted ancestor's; null for none.
+    /// </summary>
+    string? FollowedBone(Dictionary<string, BoneFit> fits, int joint)
+    {
+        while (joint >= 0 && !(Short(_body.JointNames[joint]) is { } bone && fits.ContainsKey(bone))) joint = _body.JointParents[joint];
+        return joint < 0 ? null : Short(_body.JointNames[joint]);
+    }
+
+    /// <summary>
+    /// The direction across <paramref name="axis"/> along which <paramref name="points"/> spread most, and how many times their spread across it
+    /// that spread is.
+    /// </summary>
+    static (Vector3 Breadth, float Flatness) Breadth(Vector3[] points, Vector3 axis)
+    {
+        var u = Perpendicular(axis);
+        var w = Vector3.Cross(axis, u);
+        var middle = points.Aggregate(Vector3.Zero, (a, p) => a + p) / points.Length;
+        float uu = 0, uw = 0, ww = 0;
+        foreach (var p in points)
+        {
+            float a = Vector3.Dot(p - middle, u), b = Vector3.Dot(p - middle, w);
+            uu += a * a;
+            uw += a * b;
+            ww += b * b;
+        }
+
+        float half = (uu + ww) / 2, root = MathF.Sqrt(((uu - ww) / 2) * ((uu - ww) / 2) + uw * uw);
+        float theta = MathF.Atan2(2 * uw, uu - ww) / 2;
+        float flatness = MathF.Sqrt((half + root) / MathF.Max(half - root, 1e-9f));
+        return (Vector3.Normalize(MathF.Cos(theta) * u + MathF.Sin(theta) * w), flatness);
+    }
+
+    /// <summary>
+    /// A fit turned afterwards by <paramref name="angle"/> about <paramref name="axis"/> through its target joint.
+    /// </summary>
+    static BoneFit Twisted(BoneFit fit, Vector3 axis, float angle) => fit with { Linear = fit.Linear * Matrix4x4.CreateFromAxisAngle(axis, angle) };
+
+    /// <summary>
+    /// A direction with its part along <paramref name="axis"/> removed.
+    /// </summary>
+    static Vector3 Flatten(Vector3 direction, Vector3 axis) => direction - axis * Vector3.Dot(direction, axis);
 
     #endregion
 

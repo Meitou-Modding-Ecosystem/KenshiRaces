@@ -7,7 +7,7 @@ map. It reads the rig's skeleton, human body and part map from the game install,
 ## Run it
 
 ```powershell
-dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears]
+dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [palms]
 ```
 
 - `<Kenshi folder>`: the game folder (`data/` inside it), e.g. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
@@ -22,6 +22,7 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - `wings`: the arms carry wing membranes ([Wings](#wings)).
 - `headless`: replace the model's head with the human head, its face poses and the Greenlander's heads and hair ([Headless](#headless)).
 - `ears`: `headless`, keeping the model's ears on the human head ([Ears](#ears)).
+- `palms`: turn the hands palm to thigh ([Hands](#hands)); not for claws or pincers.
 - Writes `<stem>.mesh`, `<stem>_d.dds`, `<stem>_n.dds` (only when the model has a normal map) and `<stem>_parts.png`; the log line gives the
   vertex count, scale, bounds, how many vertices fall in hideable parts, the wing membrane's vertices and the face poses.
 - Keep the `.glb` outside the repo (tens of MB); commit the four outputs. `.gitignore` lets `*/items/races/*.mesh` and `*.dds` through.
@@ -128,6 +129,15 @@ Drifter's and Padded Leather Jacket 1, Sleeveless Longcoat and Dustcoat 2, Longc
 jackets, skin suits and Crab Armour 7; Holy Servant Rags, Monk Pants and hoods 0. Items with 0 hide nothing; slimming covers those.
 **Observed** (`FemaleMask_Default.png` at `human_female.mesh` uvs): red the bust (1,102 vertices), white the upper-arm bands (560), green the
 belly (250).
+
+## Hands
+
+The fit turns each bone onto the game's direction but keeps its twist, so a model whose palms face forward or down in its rest pose keeps
+them so (the wolves' paws faced forward). The game's hands hang palm to thigh, their breadth running front to back (**Verified** on
+`human_male.mesh` and `human_female.mesh`); the skeleton has no finger bones, so a hand is one rigid shape on `Bip01 L Hand` / `R Hand`. With
+`palms` each hand is turned about its forearm so the breadth of the vertices it carries (fingers included) runs front to back, the forearm taking
+half the turn so neither wrist nor elbow wrings; a turn under about 30 degrees, or a hand without a clear palm, is left alone. The log line gives
+the turns. Crab claws are pincers, not palms: leave the option off for them.
 
 ## Wings
 

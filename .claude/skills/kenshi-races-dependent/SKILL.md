@@ -25,7 +25,7 @@ with its helper; it never copies its records or files. Read `docs/depending-on-k
 3. **Use a race**: link a subrace RACE (`Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`, `BatfolkRace`, `WolfkinRace`) in your CHARACTER's `race` list; set
    `female chance` for leoma, crevan, batfolk and wolfkin, which have both genders.
 4. **New subrace**: per body `dotnet run --project <KenshiRaces>/tools/RaceImport -c Release -- <model.glb> <Kenshi> <Mod>/items/races <stem>
-   [male|female] [slim] [bust=female] [neck=<share>] [wings] [headless] [ears]`; check the log line (scale near 10 to 13 for a human-sized model, hideable vertices
+   [male|female] [slim] [bust=female] [neck=<share>] [wings] [headless] [ears] [palms]`; check the log line (scale near 10 to 13 for a human-sized model, hideable vertices
    above 0, human weights on hundreds of vertices, a tail's vertices on the pelvis for a tailed body). Then `RaceRecords.Add(c, new Subrace(...))` and `RaceRecords.JoinGroup(c, Races.CrabfolkGroup, id)`
    (or `AddGroup` for a race of your own). Give it `Traits:` (`RaceTraits`: aptitudes, `Health`, gear limits, `Fists`, `DamageTaken`), e.g.
    `Races.CrabfolkTraits` for a crab. A `headless` body (human head, face sliders, hair) is `RaceBody(..., HumanHead: true)`; `wings` binds
