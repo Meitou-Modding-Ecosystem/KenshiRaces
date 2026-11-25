@@ -7,7 +7,7 @@ map. It reads the rig's skeleton, human body and part map from the game install,
 ## Run it
 
 ```powershell
-dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [palms]
+dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [palms] [rigid]
 ```
 
 - `<Kenshi folder>`: the game folder (`data/` inside it), e.g. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
@@ -23,6 +23,7 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - `headless`: replace the model's head with the human head, its face poses and the Greenlander's heads and hair ([Headless](#headless)).
 - `ears`: `headless`, keeping the model's ears on the human head ([Ears](#ears)).
 - `palms`: turn the hands palm to thigh ([Hands](#hands)); not for claws or pincers.
+- `rigid`: keep the model's own shape and weights ([Rigid](#rigid)); for mechanical bodies.
 - Writes `<stem>.mesh`, `<stem>_d.dds`, `<stem>_n.dds` (only when the model has a normal map) and `<stem>_parts.png`; the log line gives the
   vertex count, scale, bounds, how many vertices fall in hideable parts, the wing membrane's vertices and the face poses.
 - Keep the `.glb` outside the repo (tens of MB); commit the four outputs. `.gitignore` lets `*/items/races/*.mesh` and `*.dds` through.
@@ -178,6 +179,15 @@ head's height and within half that across, joined to that point through the mode
 skull (its other dropped vertices' box) to the human head's box, snapped to the head's nearest vertex and moved 0.1 inside it, and the ear is
 scaled 1.4 about it, so it stands out of the skull and the hair; every ear vertex is carried by `Bip01 Head` alone. Ears fused with the
 model's hair bring some of it along; hats clip them. A separate ears model bolts on the same way.
+
+## Rigid
+
+With `rigid` the fitted body skips slimming, the skin conform, the tail move and the human weights: every vertex keeps the weights of its
+model's joints (each on the game bone its joint follows) and its fitted place. **Observed** (beepbot, a skeletal robot with an open rib cage on
+a spring spine): the human weights gave the ribs clavicle and upper-arm weights, so an arm swung across the chest (`kr_charged_slash`) drew
+the rib cage into a sheet; with `rigid` ribs and joints stay solid. The editor's Chest and Neck sliders do nothing on such a body (Meshy
+leaves `Spine2` and `Neck` without vertices, [Human weights](#human-weights)), and clothing fits only as far as the body sits inside the
+human's.
 
 ## Textures
 

@@ -3,7 +3,7 @@
 [Français](translations/fr/README.md) · [Deutsch](translations/de/README.md) · [Español](translations/es/README.md) · [Italiano](translations/it/README.md) · [Português do Brasil](translations/pt-BR/README.md) · [Русский](translations/ru/README.md) · [日本語](translations/ja/README.md) · [한국어](translations/ko/README.md) · [简体中文](translations/zh-CN/README.md)
 
 New races for [MeitouClient](https://github.com/Meitou-Modding-Ecosystem/MeitouClient) on the game's human skeletons, playable in the character
-editor: Leoma and Crevan (male and female), the Crabfolk (crabman, crabqueen, spidercrab, ghostcrab), the Tiefling, the Batfolk and the Wolfkin (male and female, with human faces), an animation library of 135 clips for every human-skeleton race, and the framework
+editor: Leoma and Crevan (male and female), the Crabfolk (crabman, crabqueen, spidercrab, ghostcrab), the Tiefling, the Batfolk and the Wolfkin (male and female, with human faces), the Beepbot (a skeletal robot), an animation library of 135 clips for every human-skeleton race, and the framework
 other mods add their own races and subraces with. GPL-3.0-or-later.
 
 - The races, their records and testing them in game: [docs/kenshi-races.md](docs/kenshi-races.md).

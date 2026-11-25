@@ -51,12 +51,12 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- RACEs (subraces): `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`, `BatfolkRace`, `WolfkinRace`.
+- RACEs (subraces): `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`, `BatfolkRace`, `WolfkinRace`, `BeepbotRace`.
 - CHARACTERs (kitless, recruitable): `LeomaMaleCharacter`, `LeomaFemaleCharacter`, `CrevanMaleCharacter`, `CrevanFemaleCharacter`,
   `CrabmanCharacter`, `CrabQueenCharacter`, `SpidercrabCharacter`, `GhostcrabCharacter`, `TieflingCharacter`, `BatfolkMaleCharacter`, `BatfolkFemaleCharacter`,
-  `WolfkinMaleCharacter`, `WolfkinFemaleCharacter`.
-- RACE_GROUPs (the editor's races): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`, `TieflingGroup`, `BatfolkGroup`, `WolfkinGroup`. `Races.Recruit` is the "Join us." talk.
-- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen`, `Spidercrab`, `Ghostcrab`, `Tiefling`, `Batfolk`, `Wolfkin` (`Subrace`) and `Races.Groups` describe them. Table:
+  `WolfkinMaleCharacter`, `WolfkinFemaleCharacter`, `BeepbotCharacter`.
+- RACE_GROUPs (the editor's races): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`, `TieflingGroup`, `BatfolkGroup`, `WolfkinGroup`, `BeepbotGroup`. `Races.Recruit` is the "Join us." talk.
+- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen`, `Spidercrab`, `Ghostcrab`, `Tiefling`, `Batfolk`, `Wolfkin`, `Beepbot` (`Subrace`) and `Races.Groups` describe them. Table:
   [kenshi-races.md "Races"](kenshi-races.md#races).
 
 ## 4. Add a subrace or a race

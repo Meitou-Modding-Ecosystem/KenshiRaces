@@ -1,6 +1,6 @@
 ---
 name: kenshi-races-dependent
-description: Use when making a Meitou code mod depend on Kenshi Races, using the Leoma, Crevan, Crabfolk, Tiefling, Batfolk or Wolfkin races, adding a subrace (e.g. a hermit crab), playing its animation library (wave, dance, throw...), or fitting a new rigged .glb body as a race.
+description: Use when making a Meitou code mod depend on Kenshi Races, using the Leoma, Crevan, Crabfolk, Tiefling, Batfolk, Wolfkin or Beepbot races, adding a subrace (e.g. a hermit crab), playing its animation library (wave, dance, throw...), or fitting a new rigged .glb body as a race.
 ---
 
 # Build on Kenshi Races
@@ -22,11 +22,11 @@ with its helper; it never copies its records or files. Read `docs/depending-on-k
    minor), `gameVersion` floor at least 0.23.0.
 2. **Project**: add a `kenshi.races` entry to `meitou.lock.json` from the release notes of `kenshi-races-v<version>`, and move `engine/` to its
    engine commit.
-3. **Use a race**: link a subrace RACE (`Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`, `BatfolkRace`, `WolfkinRace`) in your CHARACTER's `race` list; set
+3. **Use a race**: link a subrace RACE (`Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`, `BatfolkRace`, `WolfkinRace`, `BeepbotRace`) in your CHARACTER's `race` list; set
    `female chance` for leoma, crevan, batfolk and wolfkin, which have both genders.
 4. **New subrace**: per body `dotnet run --project <KenshiRaces>/tools/RaceImport -c Release -- <model.glb> <Kenshi> <Mod>/items/races <stem>
-   [male|female] [slim] [bust=female] [neck=<share>] [wings] [headless] [ears] [palms]`; check the log line (scale near 10 to 13 for a human-sized model, hideable vertices
-   above 0, human weights on hundreds of vertices, a tail's vertices on the pelvis for a tailed body). Then `RaceRecords.Add(c, new Subrace(...))` and `RaceRecords.JoinGroup(c, Races.CrabfolkGroup, id)`
+   [male|female] [slim] [bust=female] [neck=<share>] [wings] [headless] [ears] [palms] [rigid]`; check the log line (scale near 10 to 13 for a human-sized model, hideable vertices
+   above 0, human weights on hundreds of vertices (none with `rigid`, for mechanical bodies whose parts must not stretch), a tail's vertices on the pelvis for a tailed body). Then `RaceRecords.Add(c, new Subrace(...))` and `RaceRecords.JoinGroup(c, Races.CrabfolkGroup, id)`
    (or `AddGroup` for a race of your own). Give it `Traits:` (`RaceTraits`: aptitudes, `Health`, gear limits, `Fists`, `DamageTaken`), e.g.
    `Races.CrabfolkTraits` for a crab. A `headless` body (human head, face sliders, hair) is `RaceBody(..., HumanHead: true)`; `wings` binds
    arm-wing membranes to the arm and folds them behind it.
