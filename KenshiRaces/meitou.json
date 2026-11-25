@@ -2,7 +2,7 @@
   "id": "kenshi.races",
   "version": "0.15.0",
   "apiVersion": 3,
-  "gameVersion": ">=0.23.1",
+  "gameVersion": ">=0.23.2",
   "assemblies": [
     "KenshiRaces.dll"
   ],
