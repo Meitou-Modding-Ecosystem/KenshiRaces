@@ -90,9 +90,11 @@ public void EditData(ModDataContext c)
 - Subraces are `playable` with Kenshi Races' editor limits (`RaceRecords.EditorLimits`); `FillRace` / `FillCharacter` fill records you add
   yourself (`c.Add`) when you want to change more fields after.
 - The ids are yours: records of your own `.mod` file name.
-- Traits: `new Subrace(..., Traits: new RaceTraits(good, bad) { Health = ..., NoHats, NoShoes, HatsOnly, NoFootwear, NoWeapons, Fists,
+- Traits: `new Subrace(..., Traits: new RaceTraits(good, bad) { Model, Health = ..., NoHats, NoShoes, HatsOnly, NoFootwear, NoWeapons, Fists,
   DamageTaken })` sets aptitudes (x1.2 / x0.8), part hit points, gear limits, fists and the share of each blow that lands
-  ([kenshi-races.md](kenshi-races.md#traits)); a hermit crab can reuse `Races.CrabfolkTraits`. Without traits a subrace keeps the Greenlander's.
+  ([kenshi-races.md](kenshi-races.md#traits)); a hermit crab can reuse `Races.CrabfolkTraits`. Without traits a subrace keeps the Greenlander's. `Model = RaceModel.Skeleton`
+  copies the Skeleton's RACE instead (robot health, repairs, no hunger), as `Races.BeepbotTraits` does; empty `good` and `bad` keep the
+  model's aptitudes.
 
 ## 6. Play its animations
 

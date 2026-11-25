@@ -120,6 +120,25 @@ public sealed class RaceRecordsTests
     }
 
     [Fact]
+    public void A_skeleton_subrace_copies_the_Skeletons_mechanics_with_its_own_body_and_gear_slots()
+    {
+        var race = new FcsRecord { StringId = Races.BeepbotRace, RecordType = FcsRecordType.Race, Name = "beepbot" };
+
+        RaceRecords.FillRace(race, Game(), Races.Beepbot);
+
+        Assert.True(race.Bools["is robot"]);
+        Assert.Equal(0, race.Floats["hunger rate"]);
+        Assert.Equal(6, race.Ints["heal stat"]);
+        Assert.Equal([28, 11], race.Ints.Where(p => p.Key.StartsWith("stats good")).Select(p => p.Value));
+        Assert.Equal(200, Assert.Single(race.References["combat anatomy"]).Value1);
+        Assert.Equal("robo-fists.mod", Assert.Single(race.References["fists lv1"]).TargetStringId);
+        Assert.False(race.Bools["no hats"]);
+        Assert.True(race.Bools["no shoes"]);
+        Assert.Empty(race.References["heads male"]);
+        Assert.Equal(Races.Beepbot.Body(female: false).Mesh, race.Filenames["male mesh"]);
+    }
+
+    [Fact]
     public void Gear_limits_refuse_head_gear_off_the_list_named_footwear_and_weapons()
     {
         var db = Gear();
@@ -168,7 +187,7 @@ public sealed class RaceRecordsTests
     }
 
     /// <summary>
-    /// A database holding a Greenlander and a Drifter (with a sword in its kit), from a data file written to a temporary folder.
+    /// A database holding a Greenlander, a Skeleton and a Drifter (with a sword in its kit), from a data file written to a temporary folder.
     /// </summary>
     static GameDatabase Game()
     {
@@ -188,6 +207,17 @@ public sealed class RaceRecordsTests
         [
             Part("32-test.mod", "Head"), Part("29-test.mod", "Right Arm"), Part("101-test.mod", "Chest"), Part("31-test.mod", "Right Leg"),
         ];
+        var skeleton = new FcsRecord { StringId = RaceModel.Skeleton.Id, RecordType = FcsRecordType.Race, Name = "Skeleton" };
+        skeleton.Bools["is robot"] = true;
+        skeleton.Bools["no hats"] = true;
+        skeleton.Bools["no shoes"] = true;
+        skeleton.Floats["hunger rate"] = 0;
+        skeleton.Ints["heal stat"] = 6;
+        skeleton.Ints["stats good0"] = 28;
+        skeleton.Ints["stats good1"] = 11;
+        skeleton.References["combat anatomy"] = [new("32-test.mod", 80, 200, 0)];
+        skeleton.References["heads male"] = [new("4-heads.mod", 100, 0, 0)];
+        skeleton.References["fists lv1"] = [new("robo-fists.mod", 0, 0, 0)];
         var drifter = new FcsRecord { StringId = RaceRecords.Drifter, RecordType = FcsRecordType.Character, Name = "Drifter" };
         drifter.Ints["strength"] = 7;
         drifter.Ints["female chance"] = 50;
@@ -195,7 +225,7 @@ public sealed class RaceRecordsTests
         var sword = new FcsRecord { StringId = "9-test.mod", RecordType = FcsRecordType.Weapon, Name = "Sword" };
 
         string path = Path.Combine(Directory.CreateTempSubdirectory("kenshiraces").FullName, "test.mod");
-        return Load([greenlander, drifter, sword, .. parts]);
+        return Load([greenlander, skeleton, drifter, sword, .. parts]);
     }
 
     /// <summary>

@@ -49,6 +49,16 @@ public static class Races
     public const string CrabFists = "50-" + FileName;
 
     /// <summary>
+    /// A Skeleton's mechanics (no hunger, robot health and repairs, the Skeleton's aptitudes and fists), but every hat and no boots.
+    /// </summary>
+    public static readonly RaceTraits BeepbotTraits = new([], [])
+    {
+        Model = RaceModel.Skeleton,
+        NoHats = false,
+        NoShoes = true,
+    };
+
+    /// <summary>
     /// Strong, sword-loving lions: tougher all over, bad at armour, farming, polearms, heavy weapons and robotics.
     /// </summary>
     public static readonly RaceTraits LeomaTraits = new(
@@ -157,9 +167,10 @@ public static class Races
 
     /// <summary>
     /// Scrap-built skeletal robots in a rag skirt (male fit, single gender), imported <c>rigid</c> so their ribs and joints keep their shape;
-    /// a Greenlander's traits.
+    /// a skeleton subrace (<see cref="BeepbotTraits"/>).
     /// </summary>
-    public static readonly Subrace Beepbot = new("beepbot", BeepbotRace, Body("beepbot", true), null, [new("beepbot", BeepbotCharacter, false)]);
+    public static readonly Subrace Beepbot = new("beepbot", BeepbotRace, Body("beepbot", true), null, [new("beepbot", BeepbotCharacter, false)],
+        BeepbotTraits);
 
     /// <summary>
     /// Owl women: their own feathered, beaked heads and taloned hands and feet (male fit with a female bust, single gender, as the crab queen);
