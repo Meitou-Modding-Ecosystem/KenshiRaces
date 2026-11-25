@@ -262,14 +262,19 @@ public sealed class BodyFit
         {
             int j = i;
             while (j >= 0 && !(Short(_body.JointNames[j]) is { } bone && Fits.ContainsKey(bone))) j = _body.JointParents[j];
-            if (j < 0) throw new InvalidDataException($"joint {_body.JointNames[i]} has no fitted ancestor");
+            if (j < 0 && Carries(i)) throw new InvalidDataException($"joint {_body.JointNames[i]} has no fitted ancestor");
 
-            string name = Short(_body.JointNames[j])!;
+            string name = j < 0 ? "Pelvis" : Short(_body.JointNames[j])!;
             follow[i] = (name, Fits[name]);
         }
 
         return follow;
     }
+
+    /// <summary>
+    /// Whether any vertex is weighted to joint <paramref name="joint"/> (a joint none carries, like a stray root bone, may lack a fitted ancestor).
+    /// </summary>
+    bool Carries(int joint) => _body.Influences.Any(influences => influences.Any(p => p.Joint == joint));
 
     #endregion
 

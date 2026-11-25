@@ -63,6 +63,8 @@ static class IntroducerData
         [Races.SpidercrabCharacter] = "spider crab",
         [Races.GhostcrabCharacter] = "ghost crab",
         [Races.TieflingCharacter] = "tiefling",
+        [Races.BatfolkMaleCharacter] = "Batfolk man",
+        [Races.BatfolkFemaleCharacter] = "Batfolk woman",
     };
 
     /// <summary>
@@ -272,6 +274,7 @@ static class IntroducerData
         [Races.CrevanGroup] = "The Crevan. Clever, light-fingered, and they never forget a face. Count your cats after. A man or a woman?",
         [Races.CrabfolkGroup] = "Crab people, from the shallows past the end of the world. Which shell do you want?",
         [Races.TieflingGroup] = "Her. I'll warn her you're coming. Don't ask about the horns.",
+        [Races.BatfolkGroup] = "The Batfolk. Faces like yours, wings like nothing you've seen. They sleep all day and see in the dark. A man or a woman?",
     };
 
     /// <summary>
@@ -283,6 +286,7 @@ static class IntroducerData
         [Races.CrevanGroup] = "The crow people.",
         [Races.CrabfolkGroup] = "The crabs.",
         [Races.TieflingGroup] = "The woman with horns.",
+        [Races.BatfolkGroup] = "The bat people.",
     };
 
     /// <summary>
@@ -299,6 +303,8 @@ static class IntroducerData
         [Races.SpidercrabCharacter] = "A spider crab.",
         [Races.GhostcrabCharacter] = "A ghost crab.",
         [Races.TieflingCharacter] = "Bring her.",
+        [Races.BatfolkMaleCharacter] = "A Batfolk man.",
+        [Races.BatfolkFemaleCharacter] = "A Batfolk woman.",
     };
 
     /// <summary>

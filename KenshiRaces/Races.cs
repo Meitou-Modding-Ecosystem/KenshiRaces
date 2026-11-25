@@ -3,7 +3,7 @@ using Meitou.Data.Gameplay.Bodies;
 namespace KenshiRaces;
 
 /// <summary>
-/// The races Kenshi Races adds (docs/kenshi-races.md "Races"): four races of the character editor, Leoma, Crevan, Crabfolk and Tiefling, with their
+/// The races Kenshi Races adds (docs/kenshi-races.md "Races"): five races of the character editor, Leoma, Crevan, Crabfolk, Tiefling and Batfolk, with their
 /// subraces. Dependents use the ids in their own records (a CHARACTER's <c>race</c>, a squad's members) and add subraces with
 /// <see cref="RaceRecords.JoinGroup"/>. Subrace and character names are one lowercase word, so the console's <c>spawn</c> takes them unquoted.
 /// </summary>
@@ -23,19 +23,22 @@ public static class Races
     /// The RACE ids (one per subrace).
     /// </summary>
     public const string LeomaRace = "10-" + FileName, CrabmanRace = "12-" + FileName, CrabQueenRace = "14-" + FileName,
-        CrevanRace = "18-" + FileName, SpidercrabRace = "22-" + FileName, GhostcrabRace = "24-" + FileName, TieflingRace = "26-" + FileName;
+        CrevanRace = "18-" + FileName, SpidercrabRace = "22-" + FileName, GhostcrabRace = "24-" + FileName, TieflingRace = "26-" + FileName,
+        BatfolkRace = "28-" + FileName;
 
     /// <summary>
     /// The CHARACTER ids.
     /// </summary>
     public const string LeomaMaleCharacter = "11-" + FileName, CrabmanCharacter = "13-" + FileName, CrabQueenCharacter = "15-" + FileName,
         LeomaFemaleCharacter = "17-" + FileName, CrevanMaleCharacter = "19-" + FileName, CrevanFemaleCharacter = "21-" + FileName,
-        SpidercrabCharacter = "23-" + FileName, GhostcrabCharacter = "25-" + FileName, TieflingCharacter = "27-" + FileName;
+        SpidercrabCharacter = "23-" + FileName, GhostcrabCharacter = "25-" + FileName, TieflingCharacter = "27-" + FileName,
+        BatfolkMaleCharacter = "29-" + FileName, BatfolkFemaleCharacter = "35-" + FileName;
 
     /// <summary>
     /// The RACE_GROUP ids: the races the character editor lists.
     /// </summary>
-    public const string LeomaGroup = "30-" + FileName, CrevanGroup = "31-" + FileName, CrabfolkGroup = "32-" + FileName, TieflingGroup = "33-" + FileName;
+    public const string LeomaGroup = "30-" + FileName, CrevanGroup = "31-" + FileName, CrabfolkGroup = "32-" + FileName, TieflingGroup = "33-" + FileName,
+        BatfolkGroup = "34-" + FileName;
 
     /// <summary>
     /// The WEAPON the Crabfolk punch with (<see cref="RaceFists"/>).
@@ -135,16 +138,23 @@ public static class Races
         [new("tiefling", TieflingCharacter, false)]);
 
     /// <summary>
+    /// Bat people: a human head and face (the Greenlander's heads, hair and face sliders) on a furred body with wing membranes along the arms,
+    /// folded behind them; a Greenlander's traits.
+    /// </summary>
+    public static readonly Subrace Batfolk = new("batfolk", BatfolkRace, HeadedBody("batfolkmale", true), HeadedBody("batfolkfemale", false),
+        [new("batfolkmale", BatfolkMaleCharacter, false), new("batfolkfemale", BatfolkFemaleCharacter, true)]);
+
+    /// <summary>
     /// The character editor's races.
     /// </summary>
     public static readonly RaceGroup LeomaRaces = new("Leoma", LeomaGroup, [Leoma]), CrevanRaces = new("Crevan", CrevanGroup, [Crevan]),
         Crabfolk = new("Crabfolk", CrabfolkGroup, [Crabman, CrabQueen, Spidercrab, Ghostcrab]),
-        TieflingRaces = new("Tiefling", TieflingGroup, [Tiefling]);
+        TieflingRaces = new("Tiefling", TieflingGroup, [Tiefling]), BatfolkRaces = new("Batfolk", BatfolkGroup, [Batfolk]);
 
     /// <summary>
     /// Every race of the mod, in the editor's order.
     /// </summary>
-    public static IReadOnlyList<RaceGroup> Groups { get; } = [LeomaRaces, CrevanRaces, Crabfolk, TieflingRaces];
+    public static IReadOnlyList<RaceGroup> Groups { get; } = [LeomaRaces, CrevanRaces, Crabfolk, TieflingRaces, BatfolkRaces];
 
     /// <summary>
     /// Every subrace of the mod.
@@ -155,4 +165,9 @@ public static class Races
     /// One of the mod's bodies: its files are <c>kenshiraces_&lt;name&gt;*</c> in the mod's folder.
     /// </summary>
     static RaceBody Body(string name, bool normalMap) => new(Folder, "kenshiraces_" + name, normalMap);
+
+    /// <summary>
+    /// One of the mod's bodies wearing the human head (<see cref="RaceBody.HumanHead"/>).
+    /// </summary>
+    static RaceBody HeadedBody(string name, bool normalMap) => Body(name, normalMap) with { HumanHead = true };
 }

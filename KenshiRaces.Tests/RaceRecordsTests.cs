@@ -36,6 +36,34 @@ public sealed class RaceRecordsTests
     }
 
     [Fact]
+    public void A_subrace_wearing_the_human_head_keeps_the_Greenlanders_heads_hair_and_random_faces_with_the_face_sliders()
+    {
+        var race = new FcsRecord { StringId = Races.BatfolkRace, RecordType = FcsRecordType.Race, Name = "batfolk" };
+
+        RaceRecords.FillRace(race, Game(), Races.Batfolk);
+
+        Assert.Equal("1-heads.mod", Assert.Single(race.References["heads male"]).TargetStringId);
+        Assert.Equal("2-heads.mod", Assert.Single(race.References["heads female"]).TargetStringId);
+        Assert.Equal("3-hair.mod", Assert.Single(race.References["hairs"]).TargetStringId);
+        Assert.Equal(5, race.Ints["morph num"]);
+        Assert.Equal(RaceRecords.FaceEditorLimits, race.Filenames["editor limits"]);
+        Assert.False(race.Bools["single gender"]);
+    }
+
+    [Fact]
+    public void A_subrace_with_its_own_head_has_no_heads_hair_or_random_faces()
+    {
+        var race = new FcsRecord { StringId = Races.LeomaRace, RecordType = FcsRecordType.Race, Name = "leoma" };
+
+        RaceRecords.FillRace(race, Game(), Races.Leoma);
+
+        Assert.Empty(race.References["heads male"]);
+        Assert.Empty(race.References["heads female"]);
+        Assert.Empty(race.References["hairs"]);
+        Assert.Equal(0, race.Ints["morph num"]);
+    }
+
+    [Fact]
     public void A_single_gender_subrace_wears_its_one_body_for_both_and_names_no_normal_map_without_one()
     {
         var race = new FcsRecord { StringId = Races.CrabmanRace, RecordType = FcsRecordType.Race, Name = "crabman" };
@@ -123,6 +151,10 @@ public sealed class RaceRecordsTests
         var greenlander = new FcsRecord { StringId = RaceRecords.Greenlander, RecordType = FcsRecordType.Race, Name = "Greenlander" };
         greenlander.Floats["walk speed"] = 1.25f;
         greenlander.Filenames["male mesh"] = "human_male.mesh";
+        greenlander.Ints["morph num"] = 5;
+        greenlander.References["heads male"] = [new("1-heads.mod", 100, 0, 0)];
+        greenlander.References["heads female"] = [new("2-heads.mod", 100, 0, 0)];
+        greenlander.References["hairs"] = [new("3-hair.mod", 100, 0, 0)];
         greenlander.Ints["stats good0"] = 4;
         greenlander.Ints["stats good1"] = 12;
         greenlander.Ints["stats bad0"] = 0;

@@ -21,6 +21,14 @@ public sealed class ImportOptionsTests
         Assert.Equal(new ImportOptions(HumanRig.Male, 0.5f, HumanRig.Female, 0.7f), options);
     }
 
+    [Fact]
+    public void Wings_and_headless_are_flags()
+    {
+        var options = ImportOptions.Parse(["female", "headless", "wings"]);
+
+        Assert.Equal(new ImportOptions(HumanRig.Female, Wings: true, Headless: true), options);
+    }
+
     [Theory]
     [InlineData("bust=crab")]
     [InlineData("neck=short")]

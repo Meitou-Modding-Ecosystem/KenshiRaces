@@ -21,37 +21,69 @@ public static class BodyImporter
     {
         var rig = options.Rig;
         var body = SourceBody.Load(model);
+        var (membrane, sleeved) = options.Wings ? WingRig.Apply(body) : (new bool[body.Positions.Length], new bool[body.Positions.Length]);
         var kenshi = KenshiSkeleton.Load(kenshiFolder, rig);
         var human = HumanBody.Load(kenshiFolder, rig);
         var bustHuman = options.Bust is { } bust && bust != rig ? HumanBody.Load(kenshiFolder, bust) : human;
         var fit = new BodyFit(body, kenshi, options.Neck);
         var (fitted, normals, weights) = fit.Repose();
         var (lifted, lift) = BustLift.Apply(fitted, weights, kenshi, bustHuman);
+        var wingWeights = Kept(weights, membrane);
         var tail = HumanWeights.MoveTails(lifted, body.Indices, weights, kenshi, human);
-        var slimmed = new BodyConform(kenshi, human).Apply(lifted, weights, body.Indices, options.Slim, tail);
-        var (positions, conformed) = new SkinConform(kenshi, human).Apply(slimmed, weights, body.Indices, options.Slim, tail);
+        bool[] spared = [.. tail.Zip(membrane, (t, m) => t || m)];
+        var slimmed = new BodyConform(kenshi, human).Apply(lifted, weights, body.Indices, options.Slim, spared);
+        var (positions, conformed) = new SkinConform(kenshi, human).Apply(slimmed, weights, body.Indices, options.Slim, spared);
         int copied = HumanWeights.Apply(positions, body.Indices, weights, tail, kenshi, human);
-        var mesh = new SkinnedMesh(positions, normals, body.Uvs, Tangents(positions, normals, body.Uvs, body.Indices), body.Indices, weights);
+        Restore(weights, wingWeights);
+        var (mesh, source) = Headed(new SkinnedMesh(positions, normals, body.Uvs, [], body.Indices, weights), options, kenshiFolder, human);
+        mesh = mesh with { Tangents = Tangents(mesh.Positions, mesh.Normals, mesh.Uvs, mesh.Indices) };
+        sleeved = [.. source.Select(v => v >= 0 && sleeved[v])];
 
         Directory.CreateDirectory(outFolder);
         SkinnedMeshWriter.Write(Path.Combine(outFolder, stem + ".mesh"), mesh, stem, rig.Skeleton);
         bool normalMap = BodyTextures.Write(body, outFolder, stem, TextureSide);
-        int parts = WritePartMap(kenshiFolder, rig, Path.Combine(outFolder, stem + "_parts.png"), mesh, human);
+        int parts = WritePartMap(kenshiFolder, rig, Path.Combine(outFolder, stem + "_parts.png"), mesh, human, sleeved);
 
-        var min = positions.Aggregate(Vector3.Min);
-        var max = positions.Aggregate(Vector3.Max);
-        return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {positions.Length} vertices, {body.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
-            $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts";
+        var min = mesh.Positions.Aggregate(Vector3.Min);
+        var max = mesh.Positions.Aggregate(Vector3.Max);
+        return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {mesh.Positions.Length} vertices, {mesh.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
+            $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts, " +
+            $"{membrane.Count(m => m)} vertices of wing membrane, {mesh.Poses.Length} face poses";
     }
+
+    /// <summary>
+    /// The fitted mesh with the human head grafted on when the options say headless (<see cref="HeadGraft"/>), and each vertex's source vertex
+    /// (-1 for the head's).
+    /// </summary>
+    static (SkinnedMesh Mesh, int[] Source) Headed(SkinnedMesh mesh, ImportOptions options, string kenshiFolder, HumanBody human) =>
+        options.Headless
+            ? HeadGraft.Apply(mesh, human, HumanHead.Load(kenshiFolder, options.Rig))
+            : (mesh, [.. Enumerable.Range(0, mesh.Positions.Length)]);
 
     /// <summary>
     /// The part map of the fitted mesh from the rig's human one; returns how many vertices got a part.
     /// </summary>
-    static int WritePartMap(string kenshiFolder, HumanRig rig, string path, SkinnedMesh mesh, HumanBody human)
+    static int WritePartMap(string kenshiFolder, HumanRig rig, string path, SkinnedMesh mesh, HumanBody human, bool[] sleeved)
     {
         var humanMap = Rgba.Decode(File.ReadAllBytes(KenshiSkeleton.GameFile(kenshiFolder, rig.Mask)));
         var heaviest = mesh.Weights.Select(w => w.MaxBy(p => p.Value).Key).ToArray();
-        return PartMap.Write(path, mesh.Positions, mesh.Uvs, heaviest, human, humanMap);
+        return PartMap.Write(path, mesh.Positions, mesh.Uvs, heaviest, human, humanMap, sleeved);
+    }
+
+    /// <summary>
+    /// Copies of the weights of the vertices <paramref name="kept"/> marks (the wing membrane's, which the torso's weight copy must not touch).
+    /// </summary>
+    static Dictionary<int, Dictionary<ushort, float>> Kept(Dictionary<ushort, float>[] weights, bool[] kept) =>
+        Enumerable.Range(0, weights.Length)
+            .Where(v => kept[v])
+            .ToDictionary(v => v, v => new Dictionary<ushort, float>(weights[v]));
+
+    /// <summary>
+    /// Puts back the weights <see cref="Kept"/> saved.
+    /// </summary>
+    static void Restore(Dictionary<ushort, float>[] weights, Dictionary<int, Dictionary<ushort, float>> kept)
+    {
+        foreach (var (v, w) in kept) weights[v] = w;
     }
 
     /// <summary>

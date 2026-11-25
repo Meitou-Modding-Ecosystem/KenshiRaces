@@ -31,9 +31,16 @@ public static class PartMap
     static readonly HashSet<uint> PartColours = [0xFFFFFF, 0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF, 0xFF8000, 0x8000FF, 0x008080];
 
     /// <summary>
-    /// Writes <paramref name="path"/> for a body of the given fitted positions, uvs and heaviest bones; returns how many vertices got a part.
+    /// The part of wing membrane (<see cref="WingRig"/>): the human's upper-arm bands (white), which every sleeved item hides (jackets, coats,
+    /// robes, plate jackets, skin suits; docs/race-import.md "Part map").
     /// </summary>
-    public static int Write(string path, Vector3[] positions, Vector2[] uvs, ushort[] bones, HumanBody human, Rgba humanMap)
+    const uint Membrane = 0xFFFFFF;
+
+    /// <summary>
+    /// Writes <paramref name="path"/> for a body of the given fitted positions, uvs and heaviest bones, with the vertices
+    /// <paramref name="membrane"/> marks in <see cref="Membrane"/>; returns how many vertices got a part.
+    /// </summary>
+    public static int Write(string path, Vector3[] positions, Vector2[] uvs, ushort[] bones, HumanBody human, Rgba humanMap, bool[] membrane)
     {
         var map = new Rgba(Side, Side);
         var parts = Grown(human, humanMap);
@@ -42,8 +49,11 @@ public static class PartMap
         int marked = 0;
         for (int v = 0; v < positions.Length; v++)
         {
+            if (uvs[v].Y < 0) continue; // the grafted human head's, coloured from the head texture
+
             int nearest = Nearest(positions[v], byBone.GetValueOrDefault(bones[v]) ?? all, human.Positions);
-            if (parts[nearest] is not { } colour) continue;
+            uint? part = membrane[v] ? Membrane : parts[nearest];
+            if (part is not { } colour) continue;
 
             Set(map, uvs[v], colour);
             marked++;
