@@ -7,7 +7,7 @@ map. It reads the rig's skeleton, human body and part map from the game install,
 ## Run it
 
 ```powershell
-dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears]
+dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [palms]
 ```
 
 - `<Kenshi folder>`: the game folder (`data/` inside it), e.g. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
@@ -22,6 +22,7 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - `wings`: the arms carry wing membranes ([Wings](#wings)).
 - `headless`: replace the model's head with the human head, its face poses and the Greenlander's heads and hair ([Headless](#headless)).
 - `ears`: `headless`, keeping the model's ears on the human head ([Ears](#ears)).
+- `palms`: turn the hands palm to thigh ([Hands](#hands)); not for claws or pincers.
 - Writes `<stem>.mesh`, `<stem>_d.dds`, `<stem>_n.dds` (only when the model has a normal map) and `<stem>_parts.png`; the log line gives the
   vertex count, scale, bounds, how many vertices fall in hideable parts, the wing membrane's vertices and the face poses.
 - Keep the `.glb` outside the repo (tens of MB); commit the four outputs. `.gitignore` lets `*/items/races/*.mesh` and `*.dds` through.
@@ -129,6 +130,15 @@ jackets, skin suits and Crab Armour 7; Holy Servant Rags, Monk Pants and hoods 0
 **Observed** (`FemaleMask_Default.png` at `human_female.mesh` uvs): red the bust (1,102 vertices), white the upper-arm bands (560), green the
 belly (250).
 
+## Hands
+
+The fit turns each bone onto the game's direction but keeps its twist, so a model whose palms face forward or down in its rest pose keeps
+them so (the wolves' paws faced forward). The game's hands hang palm to thigh, their breadth running front to back (**Verified** on
+`human_male.mesh` and `human_female.mesh`); the skeleton has no finger bones, so a hand is one rigid shape on `Bip01 L Hand` / `R Hand`. With
+`palms` each hand is turned about its forearm so the breadth of the vertices it carries (fingers included) runs front to back, the forearm taking
+half the turn so neither wrist nor elbow wrings; a turn under about 30 degrees, or a hand without a clear palm, is left alone. The log line gives
+the turns. Crab claws are pincers, not palms: leave the option off for them.
+
 ## Wings
 
 Meshy binds an arm wing's membrane to helper bones and the spine, which pins it to fixed points as the arm moves. With `wings`, before the
@@ -152,7 +162,7 @@ which the body shader colours from the HEAD record's texture at uv + (0, 1) (eng
 triangles, weights and the mesh's face poses (target 1, written to the fitted mesh with offsets only, as the game's bodies store them; 23 on
 `human_male.mesh`, 29 on `human_female.mesh`). After the fit:
 
-1. The fitted vertices within 0.8 units of the head's open neck rim (more than a fitted triangle) move 0.05 under the closest point of the
+1. The fitted vertices within 0.8 units of the head's open neck rim (the lowest loop of open edges; the eye sockets are open too) (more than a fitted triangle) move 0.05 under the closest point of the
    human's skin and take its weights there (barycentric), so the body's neck runs into the human's along the rim with no gap.
 2. The other fitted vertices whose nearest human vertex is the head's are dropped with their triangles; what the cut leaves open lies under
    the head's skin.

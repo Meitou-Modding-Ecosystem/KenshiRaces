@@ -31,7 +31,7 @@ ears on the skull (imported `ears`, [race import](race-import.md#ears)). Source
 models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
 Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`, `spidercrab.glb`, `ghostcrab.glb` and
 `tiefling-female.glb` (`bust=female`), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless`, and `wolfman-rigged.glb` (male, a Mixamo rig)
-and `wolfwoman-rigged.glb` (female), both `ears`.
+and `wolfwoman-rigged.glb` (female), both `ears palms`.
 
 ## Records
 
