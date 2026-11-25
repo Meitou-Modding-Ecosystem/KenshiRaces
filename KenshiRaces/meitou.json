@@ -1,8 +1,10 @@
 {
   "id": "kenshi.races",
-  "version": "0.10.3",
+  "version": "0.10.4",
   "apiVersion": 3,
-  "gameVersion": ">=0.23.0",
-  "assemblies": ["KenshiRaces.dll"],
+  "gameVersion": ">=0.23.1",
+  "assemblies": [
+    "KenshiRaces.dll"
+  ],
   "entry": "KenshiRaces.KenshiRacesMod"
 }
