@@ -202,7 +202,7 @@ public sealed class BodyFit
     {
         var anchors = TorsoAnchors.Where(b => _source.ContainsKey(b) && _kenshi.Has(KenshiPrefix + b)).ToArray();
         var (rotation, translation) = RigidFit.Fit([.. anchors.Select(b => Scale * Source(b))], [.. anchors.Select(Kenshi)]);
-        foreach (var bone in Torso.Where(anchors.Contains))
+        foreach (var bone in Torso.Where(b => _source.ContainsKey(b) && _kenshi.Has(KenshiPrefix + b)))
         {
             var target = Vector3.TransformNormal(Scale * Source(bone), rotation) + translation;
             fits[bone] = new BoneFit(Source(bone), target, rotation, null, 1);
