@@ -26,13 +26,13 @@ Ids end in `KenshiRaces.mod`. Subrace and CHARACTER names are one lowercase word
 files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leoma, Crevan, the spider crab, the ghost crab, the tiefling man, the Batfolk man, the Wolfkin and the beepbot). Male bodies are fitted to `male_skeleton`,
 female ones to `female_skeleton`; the crab bodies are male fits, so the crab queen (a woman, `bust=female`) is single gender with the male
 animations and voice (the game and Meitou make a single-gender race's characters male). The tieflings wear the human head without their own
-hair and their skin takes the editor's skin tone with it (imported `nohair skintone`, [race import](race-import.md#skin-tone)). The Batfolk wear the human head (imported `wings headless`, [race import](race-import.md#headless)): the
+hair and their skin takes the editor's skin tone with it (imported `nohair skintone`, [race import](race-import.md#skin-tone)); ram horns ride the head (`attach=horns.glb`, [attachments](race-import.md#attachments)). The Batfolk wear the human head (imported `wings headless`, [race import](race-import.md#headless)): the
 Greenlander's heads, hair and face sliders on their own bodies, their arm-wing membranes spanning arm and flank, opening as the arms rise. The Wolfkin wear it too; both races wear
 wolf ears on the skull, and the Batfolk folded bat wings on their backs ([attachments](race-import.md#attachments)). The beepbot, a skeletal robot, is a male fit imported `rigid`
 ([race import](race-import.md#rigid)): its ribs, springs and joints keep their shape and its own weights. Source
 models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
 Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`, `spidercrab.glb`, `ghostcrab.glb` and
-`tiefling-female.glb` (female, `nohair skintone`) and `tieflingmale-rigged.glb` (male, `nohair skintone palms`: its palms faced forward), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless attach=wolfears.glb attach=batwings.glb`, and
+`tiefling-female.glb` (female, `nohair skintone attach=horns.glb`) and `tieflingmale-rigged.glb` (male, `nohair skintone palms attach=horns.glb`: its palms faced forward), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless attach=wolfears.glb attach=batwings.glb`, and
 `wolfman-rigged.glb` (male, a Mixamo rig) and `wolfwoman-rigged.glb` (female), both `headless palms attach=wolfears.glb`; beepbot from `beepbot-highpoly.glb` (1M vertices, unrigged), decimated to 40,000
 triangles with its normals baked, carrying the weights of the Meshy rig of the low-poly `beepbot-rigged.glb` (nearest face, same frame after
 that rig's scale 1.711 and lift 0.85 m), `rigid`.

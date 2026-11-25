@@ -211,7 +211,8 @@ model's hair bring some of it along; hats clip them. A separate ears model is an
 A double-sided material's triangles are doubled facing back (the game culls back faces). The part's vertices are no body part in the
 [part map](#part-map) (clothing never hides them) and have no source vertex (-1, like the head's). The body texture becomes an atlas
 twice as wide ([Textures](#textures)): the body's uvs (not the head's) move into its left half, each part's into a 1024² tile of the right
-half, two by two in `attach` order. Parts: `wolfears` (on `Bip01 Head`, at the top sides of the skull, rolled out 15°; hair may clip them)
+half, two by two in `attach` order. Parts: `wolfears` (on `Bip01 Head`, at the top sides of the skull, rolled out 15°; hair may clip them),
+`horns` (the tieflings' ram horns on `Bip01 Head`, rooted in the scalp's top sides from their inner end, rolled out 25° and tipped back 10°)
 and `batwings` (folded, from the shoulder blades to mid thigh, `Spine2` down to `Pelvis`, yawed 45° so the outer edges fold back behind
 the arms, 0.3 behind the back).
 
