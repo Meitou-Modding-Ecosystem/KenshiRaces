@@ -86,13 +86,36 @@ public sealed class SourceBody
             Uvs = [.. geometry.Uvs],
             Indices = [.. geometry.Indices],
             Influences = [.. geometry.Influences],
-            JointNames = [.. joints.Select(j => j.Joint.Name ?? "")],
+            JointNames = [.. joints.Select(j => Biped(j.Joint.Name ?? ""))],
             JointParents = Parents(joints.Select(j => j.Joint).ToArray()),
             JointPositions = [.. joints.Select(j => j.Joint.WorldMatrix.Translation)],
             BaseColourImage = Image(material?.FindChannel("BaseColor")),
             MetallicRoughnessImage = Image(material?.FindChannel("MetallicRoughness")),
             NormalImage = Image(material?.FindChannel("Normal")),
         };
+    }
+
+    /// <summary>
+    /// Mixamo's body joints (<c>mixamorig:</c>, which Meshy also exports) by their Biped names; the rest (fingers, toe ends) keep theirs.
+    /// </summary>
+    static readonly Dictionary<string, string> MixamoJoints = new()
+    {
+        ["Hips"] = "Pelvis", ["Spine"] = "Spine", ["Spine1"] = "Spine1", ["Spine2"] = "Spine2", ["Neck"] = "Neck", ["Head"] = "Head",
+        ["LeftShoulder"] = "L Clavicle", ["LeftArm"] = "L UpperArm", ["LeftForeArm"] = "L Forearm", ["LeftHand"] = "L Hand",
+        ["RightShoulder"] = "R Clavicle", ["RightArm"] = "R UpperArm", ["RightForeArm"] = "R Forearm", ["RightHand"] = "R Hand",
+        ["LeftUpLeg"] = "L Thigh", ["LeftLeg"] = "L Calf", ["LeftFoot"] = "L Foot", ["LeftToeBase"] = "L Toe0",
+        ["RightUpLeg"] = "R Thigh", ["RightLeg"] = "R Calf", ["RightFoot"] = "R Foot", ["RightToeBase"] = "R Toe0",
+    };
+
+    /// <summary>
+    /// A joint's name with a Mixamo body joint renamed to its Biped one (<c>mixamorig:LeftForeArm</c> is <c>Bip001 L Forearm</c>).
+    /// </summary>
+    public static string Biped(string name)
+    {
+        const string mixamo = "mixamorig:";
+        if (!name.StartsWith(mixamo, StringComparison.Ordinal)) return name;
+
+        return MixamoJoints.TryGetValue(name[mixamo.Length..], out string? biped) ? "Bip001 " + biped : name;
     }
 
     /// <summary>

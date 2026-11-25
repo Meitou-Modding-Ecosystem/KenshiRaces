@@ -1,6 +1,6 @@
 # Animations
 
-Kenshi Races ships an animation library: every clip of the races' source models (Meshy's animation library, 112 clips), retargeted onto the
+Kenshi Races ships an animation library: every clip of the races' source models (Meshy's animation library, 135 clips), retargeted onto the
 game's male and female skeletons, so any character on those skeletons can play it, humans, shek, hivers and skeletons as well as the fitted
 races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations)).
 
@@ -11,7 +11,8 @@ races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](
 - ANIMATION_FILE `40-KenshiRaces.mod` (`AnimationRecords.File`) names both. The data phase links it into the `animation files` of every race
   whose `male mesh` is under `data/character/meshes/` (except the Hive Queen's, which has its own skeleton) or is a fitted body
   (`/items/races/`), and `RaceRecords.FillRace` links it into new subraces, a dependent's too.
-- A disabled COMBAT_TECHNIQUE per clip (`100-` to `211-KenshiRaces.mod`: the first models' clips in name order, then the spidercrab's, the ghostcrab's and the Batfolk's), `anim name` = the clip: disabled, so no fight picks it;
+- A disabled COMBAT_TECHNIQUE per clip (`100-` to `234-KenshiRaces.mod`: the first models' clips in name order, then the spidercrab's, the ghostcrab's, the Batfolk's and
+  the Wolfkin's), `anim name` = the clip: disabled, so no fight picks it;
   a mod plays it as a mod combat move (engine docs/modding.md, "Combat moves").
 
 ## Making them
@@ -20,17 +21,17 @@ races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](
 `../PZAKenshiMotionLab`) and the game's `data/character/meshes`:
 
 1. `python tools/AnimationExport/split.py <model.glb> <clips folder>` per source model: one reference per clip, `Bip001` joints renamed to
-   the Mixamo roles the Motion Lab reads. A later model overwrites a clip an earlier one gave; the male Leoma's goes last.
+   the Mixamo roles the Motion Lab reads (a Mixamo rig such as `wolfman-rigged` already has them). A later model overwrites a clip an earlier one gave; the male Leoma's goes last.
    Source models: male Leoma ("Leonid Bare" and "Leonid" glbs), `leonidfemale`, `corvidmale`, `corvidfemale`, crabman, crabqueen and
-   `spidercrab`, `ghostcrab`, `batman-rigged` and `batgirl-rigged` (clips they share with an earlier model, such as Running and Walking, are not taken).
+   `spidercrab`, `ghostcrab`, `batman-rigged`, `batgirl-rigged`, `wolfman-rigged` and `wolfwoman-rigged` (clips they share with an earlier model, such as Running and Walking, are not taken).
 2. Per gender, `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference
-   <clip>.glb ...` (every clip): retargets them onto the game's body (a few minutes for 112).
+   <clip>.glb ...` (every clip): retargets them onto the game's body (a few minutes for 135).
 3. `python tools/AnimationExport/export.py <out>/human_<gender>_rigged.glb <gender>_skeleton.skeleton
    KenshiRaces/items/animations/kenshiraces_anims_<gender>.skeleton <clips>.json`: names them `kr_<clip lower case>` and writes the file.
 
 Every clip plays in place: where a source clip travelled (the Travel column, metres), the root's ground travel is taken out as a straight
 line, sway and bob kept. All face the game's forward: the root's yaw matches the bind pose's -90°, as the game's own idles do (**Verified**,
-`idle_stand_normal` in `male_skeleton.skeleton`). A new clip also needs its line in `RaceAnimations`, with the next free technique id (212 on), and its row here.
+`idle_stand_normal` in `male_skeleton.skeleton`). A new clip also needs its line in `RaceAnimations`, with the next free technique id (235 on), and its row here.
 
 ## Clips
 
@@ -148,3 +149,26 @@ line, sway and bob kept. All face the game's forward: the root's yaw matches the
 | `kr_wave_for_help_2` | `WaveForHelp2` | `209-` | Wave_for_Help_2 | 1.50 |  |
 | `kr_wave_for_help_4` | `WaveForHelp4` | `210-` | Wave_for_Help_4 | 4.67 |  |
 | `kr_wave_one_hand` | `WaveOneHand` | `211-` | Wave_One_Hand | 4.07 |  |
+| `kr_riding_yeehaw` | `RidingYeehaw` | `212-` | Riding_Yeehaw | 2.97 | 0.1 |
+| `kr_riding_calm` | `RidingCalm` | `213-` | Riding_calm | 2.97 |  |
+| `kr_sidelying_reach_help` | `SideLyingReachHelp` | `214-` | SideLying_Reach_Help | 14.67 | 0.1 |
+| `kr_sit_dodge` | `SitDodge` | `215-` | Sit_Dodge | 8.87 |  |
+| `kr_sit_and_doze_off` | `SitAndDozeOff` | `216-` | Sit_and_Doze_Off | 17.27 |  |
+| `kr_sit_and_drink` | `SitAndDrink` | `217-` | Sit_and_Drink | 11.17 |  |
+| `kr_sit_on_chair_arms_crossed` | `SitOnChairArmsCrossed` | `218-` | Sit_on_Chair_Arms_Crossed | 2.37 |  |
+| `kr_skill_01` | `Skill01` | `219-` | Skill_01 | 1.07 | 0.2 |
+| `kr_skill_02` | `Skill02` | `220-` | Skill_02 | 1.27 | 0.2 |
+| `kr_skill_03` | `Skill03` | `221-` | Skill_03 | 1.60 | 0.3 |
+| `kr_skip_forward` | `SkipForward` | `222-` | Skip_Forward | 2.80 |  |
+| `kr_touch_and_run` | `TouchAndRun` | `223-` | Touch_and_Run | 3.17 |  |
+| `kr_triple_combo_attack` | `TripleComboAttack` | `224-` | Triple_Combo_Attack | 4.33 | 1.6 |
+| `kr_two_handed_parry` | `TwoHandedParry` | `225-` | Two_Handed_Parry | 1.30 |  |
+| `kr_unarmed_vault` | `UnarmedVault` | `226-` | Unarmed_Vault | 0.80 | 3.0 |
+| `kr_upside_down_rope_hang` | `UpsideDownRopeHang` | `227-` | Upside_Down_Rope_Hang | 2.37 | 0.1 |
+| `kr_upside_down_rope_hang_1` | `UpsideDownRopeHang1` | `228-` | Upside_Down_Rope_Hang_1 | 2.73 |  |
+| `kr_upside_down_rope_hang_2` | `UpsideDownRopeHang2` | `229-` | Upside_Down_Rope_Hang_2 | 1.50 | 0.1 |
+| `kr_vault_and_land` | `VaultAndLand` | `230-` | Vault_and_Land | 3.00 | 1.5 |
+| `kr_vault_with_rifle` | `VaultWithRifle` | `231-` | Vault_with_Rifle | 0.80 | 2.6 |
+| `kr_victory_cheer` | `VictoryCheer` | `232-` | Victory_Cheer | 9.30 |  |
+| `kr_wake_up_and_look_up` | `WakeUpAndLookUp` | `233-` | Wake_Up_and_Look_Up | 3.50 |  |
+| `kr_victory` | `Victory` | `234-` | victory | 8.53 |  |
