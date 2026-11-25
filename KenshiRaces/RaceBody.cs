@@ -8,7 +8,9 @@ namespace KenshiRaces;
 /// <param name="Folder">The folder of the mod holding the files, under the game's <c>mods</c> folder (or the Workshop's).</param>
 /// <param name="Stem">The files' common name, e.g. <c>kenshiraces_leomamale</c>; unique across mods, since the game finds files by bare name.</param>
 /// <param name="NormalMap">Whether the body has a normal map.</param>
-public sealed record RaceBody(string Folder, string Stem, bool NormalMap)
+/// <param name="HumanHead">Whether the body wears the human head (imported <c>headless</c>, docs/race-import.md "Headless"): the race then keeps the
+/// Greenlander's heads, hair, face sliders and random faces.</param>
+public sealed record RaceBody(string Folder, string Stem, bool NormalMap, bool HumanHead = false)
 {
     /// <summary>
     /// A record's path to one of the body's files: <c>.\mods\&lt;Folder&gt;\items\races\&lt;Stem&gt;&lt;suffix&gt;</c>, which the game resolves into
@@ -62,6 +64,11 @@ public sealed record Subrace(string Name, string RaceId, RaceBody? Male, RaceBod
     /// Whether the race has one gender: the editor shows "-" for gender and every character wears the one body.
     /// </summary>
     public bool SingleGender => Male is null || Female is null;
+
+    /// <summary>
+    /// Whether the subrace's bodies wear the human head (<see cref="RaceBody.HumanHead"/>).
+    /// </summary>
+    public bool HumanHead => (Male ?? Female)?.HumanHead == true;
 
     /// <summary>
     /// The body a gender wears: its own, else the other's.

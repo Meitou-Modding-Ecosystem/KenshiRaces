@@ -5,7 +5,7 @@ namespace RaceImport;
 
 /// <summary>
 /// Writes a skinned Ogre binary mesh, <c>[MeshSerializer_v1.100]</c>: one submesh with its own geometry (position, normal, uv, tangent), up to
-/// four bone assignments per vertex, a link to the game's skeleton and the bounds (engine docs/formats/ogre-mesh.md).
+/// four bone assignments per vertex, a link to the game's skeleton, the bounds and any poses (engine docs/formats/ogre-mesh.md).
 /// </summary>
 public static class SkinnedMeshWriter
 {
@@ -16,10 +16,11 @@ public static class SkinnedMeshWriter
 
     /// <summary>
     /// Chunk ids: header, mesh, submesh, submesh operation, bone assignment, geometry, declaration, element, vertex buffer, buffer data,
-    /// skeleton link, bounds.
+    /// skeleton link, bounds, poses, pose, pose vertex.
     /// </summary>
     const ushort Header = 0x1000, MeshChunk = 0x3000, SubMesh = 0x4000, SubMeshOperation = 0x4010, BoneAssignment = 0x4100, Geometry = 0x5000,
-        Declaration = 0x5100, Element = 0x5110, VertexBuffer = 0x5200, BufferData = 0x5210, SkeletonLink = 0x6000, Bounds = 0x9000;
+        Declaration = 0x5100, Element = 0x5110, VertexBuffer = 0x5200, BufferData = 0x5210, SkeletonLink = 0x6000, Bounds = 0x9000,
+        PosesChunk = 0xC000, PoseChunk = 0xC100, PoseVertex = 0xC111;
 
     /// <summary>
     /// Element types (float2, float3, float4) and semantics (position, normal, texture coordinates, tangent).
@@ -51,8 +52,35 @@ public static class SkinnedMeshWriter
             WriteSubMesh(w, mesh, material);
             Chunk(w, SkeletonLink, () => WriteString(w, skeleton));
             WriteBounds(w, mesh.Positions);
+            if (mesh.Poses.Length > 0) WritePoses(w, mesh.Poses);
         });
     }
+
+    /// <summary>
+    /// The poses, each on the submesh's vertices (target 1) without normal offsets, as the game's human bodies store them.
+    /// </summary>
+    static void WritePoses(BinaryWriter w, MeshPose[] poses) => Chunk(w, PosesChunk, () =>
+    {
+        foreach (var pose in poses) WritePose(w, pose);
+    });
+
+    /// <summary>
+    /// One pose: name, target, no normals, then its vertices' offsets.
+    /// </summary>
+    static void WritePose(BinaryWriter w, MeshPose pose) => Chunk(w, PoseChunk, () =>
+    {
+        WriteString(w, pose.Name);
+        w.Write((ushort)1);
+        w.Write(false);
+        foreach (var (vertex, offset) in pose.Offsets)
+        {
+            Chunk(w, PoseVertex, () =>
+            {
+                w.Write((uint)vertex);
+                WriteVector(w, offset);
+            });
+        }
+    });
 
     /// <summary>
     /// The submesh: material, indices, geometry, operation and bone assignments.
@@ -194,4 +222,10 @@ public static class SkinnedMeshWriter
 /// A fitted body ready to write: per-vertex position, normal, uv, tangent (w the bitangent's sign) and bone weights by handle; triangle indices.
 /// </summary>
 public sealed record SkinnedMesh(Vector3[] Positions, Vector3[] Normals, Vector2[] Uvs, Vector4[] Tangents, int[] Indices,
-    Dictionary<ushort, float>[] Weights);
+    Dictionary<ushort, float>[] Weights)
+{
+    /// <summary>
+    /// Morph targets of its vertices (the human head's face poses, <see cref="HeadGraft"/>).
+    /// </summary>
+    public MeshPose[] Poses { get; init; } = [];
+}

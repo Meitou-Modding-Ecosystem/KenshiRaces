@@ -1,7 +1,7 @@
 # Kenshi Races
 
-Four new races for the character editor, each with subraces, on the game's human skeletons (`kenshi.races`, no dependencies): every record
-added at load, the bodies fitted by the [race import](race-import.md). It also ships an [animation library](animations.md) of 88 clips for
+Five new races for the character editor, each with subraces, on the game's human skeletons (`kenshi.races`, no dependencies): every record
+added at load, the bodies fitted by the [race import](race-import.md). It also ships an [animation library](animations.md) of 112 clips for
 every race on those skeletons. Mods use the races and clips, add subraces or add their own races:
 [depending-on-kenshi-races.md](depending-on-kenshi-races.md).
 
@@ -18,15 +18,17 @@ The editor lists each RACE_GROUP as a race and its RACEs as subraces (engine doc
 | | spidercrab `22-` | single | spidercrab `23-` |
 | | ghostcrab `24-` | single | ghostcrab `25-` |
 | Tiefling `33-` | tiefling `26-` | single | tiefling `27-` |
+| Batfolk `34-` | batfolk `28-` | male, female | batfolkmale `29-`, batfolkfemale `35-` |
 
 Ids end in `KenshiRaces.mod`. Subrace and CHARACTER names are one lowercase word, so the console's `spawn` takes them without quotes. Each body's
-files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leoma, Crevan, the spider crab and the ghost crab). Male bodies are fitted to `male_skeleton`,
+files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leoma, Crevan, the spider crab, the ghost crab and the Batfolk man). Male bodies are fitted to `male_skeleton`,
 female ones to `female_skeleton`; the crab and tiefling bodies are male fits, so the crab queen and the tiefling (both women, `bust=female`)
 are single gender with the male animations and voice (the game and Meitou make a single-gender race's characters male). The tiefling's tail is
-carried by `Spine`. Source
+carried by `Spine`. The Batfolk wear the human head (imported `wings headless`, [race import](race-import.md#headless)): the
+Greenlander's heads, hair and face sliders on their own bodies, their arm-wing membranes riding the arms and folded behind them. Source
 models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
 Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`, `spidercrab.glb`, `ghostcrab.glb` and
-`tiefling-female.glb` (`bust=female`).
+`tiefling-female.glb` (`bust=female`), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless`.
 
 ## Records
 
@@ -34,9 +36,11 @@ Added in the data phase from the loaded game's own records (`RaceRecords`), so `
 
 - RACE_GROUP: the race's name and its subraces' RACEs, in the editor's order.
 - RACE (subrace): a copy of Greenlander (`17-gamedata.quack`: stats, animations, voices) with each gender's mesh, colour texture, normal map
-  and part map (a single-gender subrace wears its one body for both); `single gender` unless it has both bodies; no heads or hair (a race
-  listing no head draws none; the body has its own); `morph num` 0; `no shirts` (shirts and pants paint the human body's uv layout); body mask
-  and strength normal maps cleared; `playable` with `editor limits` [`kenshiraces_editor.xml`](#character-editor).
+  and part map (a single-gender subrace wears its one body for both); `single gender` unless it has both bodies; no heads, hair or random faces
+  (`morph num` 0; a race listing no head draws none; the body has its own) unless its bodies wear the human head (`RaceBody.HumanHead`),
+  which keep the Greenlander's; `no shirts` (shirts and pants paint the human body's uv layout); body mask
+  and strength normal maps cleared; `playable` with `editor limits` [`kenshiraces_editor.xml`](#character-editor)
+  (`kenshiraces_editor_faces.xml` with the human head).
 - CHARACTER: a copy of Drifter (`2205-gamedata.base`) of the subrace and gender (`female chance` 100 or 0), no kit, money or bounty, with the
   recruit talk.
 - Engine: a CHARACTER's own `mesh` field overrides its race's body mesh.
@@ -54,9 +58,9 @@ XP) and `stats bad` (x0.8), `strength` 1.2 for strength, which the game lays ove
 | leoma | strength, sabres, athletics, weapon smith, labouring | armour smith, farming, polearms, heavy weapons, robotics | 100 / 120 / 120 / 120 / 120 | all |
 | crevan | perception, stealth, lockpicking, thieving, assassination, robotics, dodge | the weapons above, farming, labouring | 140 / 100 / 100 / 90 / 90 | `no shoes`; head gear only named `Ashland...` (the Ashland Hat, the Ashlander Stormgoggles) |
 | crabman, crabqueen, spidercrab, ghostcrab | martial arts, strength, toughness, melee attack and defence, swimming, labouring, engineering | dodge, turrets, crossbows, precision shooting, stealth, lockpicking, thieving, assassination, field medic, weapon, armour and crossbow smith | 100 / 200 / 200 / 250 / 120 | `no hats`; no footwear named `Sandals`; no weapons or crossbows |
-| tiefling | (the Greenlander's) | (the Greenlander's) | 100 / 100 / 100 / 100 / 100 | all |
+| tiefling, batfolk | (the Greenlander's) | (the Greenlander's) | 100 / 100 / 100 / 100 / 100 | all |
 
-- The spider and ghost crabs share the Crabfolk traits until their own are settled; the tiefling has none yet.
+- The spider and ghost crabs share the Crabfolk traits until their own are settled; the tiefling and the Batfolk have none yet.
 - Gear limits beyond the RACE's slot flags are a wear rule (engine docs/modding.md "Wear rules", `RaceRules`) read from the RACE's own
   fields `kenshi races hats only` and `kenshi races no footwear` ('|'-separated names) and `kenshi races no weapons`, so a dependent's subrace
   with traits gets them. They refuse equipping, buying into a slot and a loaded save's worn gear; a generated character's weapons are not
@@ -75,6 +79,10 @@ have none); Body holds Height, Frame, Posture, Shoulder set, Neck position, Leg 
 Chest, Stomach, Waist, Hips, Legs bulk, Legs shape and the bust sliders are left out: they scale the spine, pelvis, thigh and bust bones
 unevenly, which warped the fitted chests, busts and the small of the Leoma's back even with human weights (**Observed** in game, 2026-11-23).
 Ranges are the human ones (`data/editor/editor_data_human.xml`).
+
+Races wearing the human head use `kenshiraces_editor_faces.xml`: the same plus the face sliders of the human head's poses (each pose -100 to
+100), Chest, and for women Breast size, height and spacing. Their torsos are pulled onto the human's skin and carry its weights, which the
+chest and bust sliders were made for; whether they stay clean in game is not yet checked.
 
 ## Recruiting
 

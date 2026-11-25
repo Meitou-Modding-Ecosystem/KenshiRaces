@@ -64,6 +64,36 @@ public sealed class BodyFileTests
         Assert.DoesNotContain(limits.Ranges, r => torso.Contains(r.Name));
     }
 
+    public static TheoryData<string> HeadedStems => [.. Bodies().Where(b => b.Body.HumanHead).Select(b => b.Body.Stem)];
+
+    [Theory]
+    [MemberData(nameof(HeadedStems))]
+    public void A_body_wearing_the_human_head_carries_its_face_poses_on_head_textured_vertices(string stem)
+    {
+        var mesh = OgreMeshReader.Read(File.ReadAllBytes(Path.Combine(Folder(), stem + ".mesh")));
+        var data = Assert.Single(mesh.SubMeshes).VertexData!;
+        var uv = data.ReadFloats(data.Find(OgreVertexSemantic.TextureCoordinates)!);
+
+        Assert.Contains(mesh.Poses, p => p.Name == "big_eyes");
+        Assert.All(mesh.Poses, p => Assert.Equal(1, p.Target));
+        Assert.All(mesh.Poses.SelectMany(p => p.Vertices), v => Assert.True(uv[v.Index * 2 + 1] < 0, "a face pose moves only the head"));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void The_face_editor_limits_add_the_human_face_poses_the_chest_and_for_women_the_bust(bool female)
+    {
+        var limits = AppearanceLimits.Read(Path.Combine(Folder(), "kenshiraces_editor_faces.xml"), female, 0.2f);
+
+        Assert.NotNull(limits);
+        Assert.Contains(limits.Ranges, r => r.Target == "big_eyes" && r.Category == AppearanceCategory.Face);
+        Assert.Contains(limits.Ranges, r => r.Name == "Chest" && r.Category == AppearanceCategory.Body);
+        Assert.Equal(female, limits.Ranges.Any(r => r.Name == "Breast size"));
+        string[] torso = ["Stomach", "Waist", "Hips", "Legs bulk", "Legs shape"];
+        Assert.DoesNotContain(limits.Ranges, r => torso.Contains(r.Name));
+    }
+
     /// <summary>
     /// Every body of the mod's subraces with whether it is a female one.
     /// </summary>

@@ -7,7 +7,7 @@ map. It reads the rig's skeleton, human body and part map from the game install,
 ## Run it
 
 ```powershell
-dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>]
+dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless]
 ```
 
 - `<Kenshi folder>`: the game folder (`data/` inside it), e.g. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
@@ -19,8 +19,10 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - `bust=female`: raise the bust to the female human's height on a male fit (a single-gender woman such as the Crab Queen); default the rig's
   own human ([Bust](#bust)).
 - `neck=<share>`: the neck's length as a share of the fitted one, default 1 (the Crabman uses 0.7).
+- `wings`: the arms carry wing membranes ([Wings](#wings)).
+- `headless`: replace the model's head with the human head, its face poses and the Greenlander's heads and hair ([Headless](#headless)).
 - Writes `<stem>.mesh`, `<stem>_d.dds`, `<stem>_n.dds` (only when the model has a normal map) and `<stem>_parts.png`; the log line gives the
-  vertex count, scale, bounds and how many vertices fall in hideable parts.
+  vertex count, scale, bounds, how many vertices fall in hideable parts, the wing membrane's vertices and the face poses.
 - Keep the `.glb` outside the repo (tens of MB); commit the four outputs. `.gitignore` lets `*/items/races/*.mesh` and `*.dds` through.
 - A dependent mod runs it from a KenshiRaces clone with its own output folder (`<Mod>/items/races`) and stem.
 
@@ -28,7 +30,7 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 
 - One skinned mesh whose skin has the Biped joints `Bip001 Pelvis`, `Spine`, `Spine1`, `Spine2`, `Neck`, `Head`, both `Clavicle`, `UpperArm`,
   `Forearm`, `Hand`, `Thigh`, `Calf`, `Foot`, `Toe0`, and `mixamorig:HeadTop_End` above the head. Extra joints (fingers, tails, helpers)
-  follow their nearest Biped ancestor. **Verified** on Leoma, Crevan, Crabman and the Crab Queen (Meshy exports).
+  follow their nearest Biped ancestor; one without, which no vertex uses (a stray root bone), follows the pelvis. **Verified** on Leoma, Crevan, Crabman and the Crab Queen (Meshy exports).
 - A base colour texture; a metallic-roughness and a normal texture are used when present.
 - Any rest pose: T-pose and A-pose both fit (the game's bind pose has the arms down).
 
@@ -124,6 +126,38 @@ Drifter's and Padded Leather Jacket 1, Sleeveless Longcoat and Dustcoat 2, Longc
 jackets, skin suits and Crab Armour 7; Holy Servant Rags, Monk Pants and hoods 0. Items with 0 hide nothing; slimming covers those.
 **Observed** (`FemaleMask_Default.png` at `human_female.mesh` uvs): red the bust (1,102 vertices), white the upper-arm bands (560), green the
 belly (250).
+
+## Wings
+
+Meshy binds an arm wing's membrane to helper bones and the spine, which pins it to fixed points as the arm moves. With `wings`, before the
+fit (`WingRig`), every vertex past an arm's shoulder (its side of the upper arm joint, above the `Spine` joint) is bound by its place along the
+arm instead: the upper arm, the forearm or the hand, blended over 15% of the forearm's length either side of the elbow and the wrist, the
+hand's segment reaching 0.8 forearms past the wrist for wing tips. The membrane is what hangs below the arm further than 1.1 times the reach of
+the arm's skin above it at that point (measured in eight stretches along the arm). It is turned about the arm (shoulder to wrist) so that it
+hangs behind it instead (-Z, the model faces +Z), over half a skin reach more, and drawn in to 0.7 of its reach: the game's bind pose has
+the arms down, where a membrane below the arm would pass through the body. Its weights are kept through the human weights' copy, and the
+skin conforms leave it alone. Kenshi's skeleton has no wing bones, so the wings move only with the arms.
+
+In the part map the membrane up to the wrist is white (the upper-arm bands), which every sleeved item hides (jackets, coats, robes, plate
+jackets, skin suits); a membrane needs no hide part of its own. Past the wrist it keeps its nearest human part (hands show).
+
+The model's membrane must hang from the arm alone: one joined to the torso (batman-rigged's reaches the lats) keeps that part on the body.
+
+## Headless
+
+With `headless` the body wears the game's human head (`HumanHead`, `HeadGraft`): the vertices of the rig's human body whose uv lies below 0,
+which the body shader colours from the HEAD record's texture at uv + (0, 1) (engine docs/characters.md "Shading, poses and LOD"), with their
+triangles, weights and the mesh's face poses (target 1, written to the fitted mesh with offsets only, as the game's bodies store them; 23 on
+`human_male.mesh`, 29 on `human_female.mesh`). After the fit:
+
+1. The fitted vertices within 0.8 units of the head's open neck rim (more than a fitted triangle) move 0.05 under the closest point of the
+   human's skin and take its weights there (barycentric), so the body's neck runs into the human's along the rim with no gap.
+2. The other fitted vertices whose nearest human vertex is the head's are dropped with their triangles; what the cut leaves open lies under
+   the head's skin.
+3. The head is appended. Its vertices are left out of the part map.
+
+The race then keeps the Greenlander's heads, hair and random faces and uses the face editor limits ([kenshi-races.md](kenshi-races.md#character-editor)).
+The head's skin is the HEAD texture's and the body's the model's, so their tones can differ at the rim.
 
 ## Textures
 

@@ -30,6 +30,12 @@ public static class RaceRecords
     public const string EditorLimits = $@".\mods\{Races.Folder}\items\races\kenshiraces_editor.xml";
 
     /// <summary>
+    /// The character editor's limits for the races wearing the human head: <see cref="EditorLimits"/> with the human face sliders, the chest and the
+    /// bust (docs/kenshi-races.md "Character editor").
+    /// </summary>
+    public const string FaceEditorLimits = $@".\mods\{Races.Folder}\items\races\kenshiraces_editor_faces.xml";
+
+    /// <summary>
     /// The CHARACTER's lists emptied: no kit, no money to spend.
     /// </summary>
     internal static readonly string[] KitLists = ["backpack", "clothing", "inventory", "shopping", "weapons"];
@@ -68,8 +74,9 @@ public static class RaceRecords
 
     /// <summary>
     /// Fills a new RACE: Greenlander's fields and lists, then each gender's body files (a single-gender race wears its one body for both), no
-    /// heads or hair (the body has its own), no body morphs, no shirts (they paint the human body's uv layout), playable in the character
-    /// editor with <see cref="EditorLimits"/>, the animation library linked (<see cref="AnimationRecords"/>) and the subrace's traits.
+    /// heads, hair or random faces (the body has its own head) unless it wears the human head, no shirts (they paint the human body's uv layout),
+    /// playable in the character editor with <see cref="EditorLimits"/> (<see cref="FaceEditorLimits"/> with the human head), the animation
+    /// library linked (<see cref="AnimationRecords"/>) and the subrace's traits.
     /// </summary>
     public static void FillRace(FcsRecord race, GameDatabase game, Subrace subrace)
     {
@@ -77,12 +84,11 @@ public static class RaceRecords
         race.Bools["single gender"] = subrace.SingleGender;
         race.Bools["no shirts"] = true;
         race.Bools["playable"] = true;
-        race.Filenames["editor limits"] = EditorLimits;
-        race.Ints["morph num"] = 0;
+        race.Filenames["editor limits"] = subrace.HumanHead ? FaceEditorLimits : EditorLimits;
         SetBody(race, "male", subrace.Body(female: false));
         SetBody(race, "female", subrace.Body(female: true));
 
-        race.References["hairs"] = [];
+        if (!subrace.HumanHead) DropHead(race);
         AnimationRecords.Link(race);
         if (subrace.Traits is { } traits) SetTraits(race, game, traits);
     }
@@ -190,7 +196,17 @@ public static class RaceRecords
         race.Filenames[$"nm {gender} strong"] = "";
         race.Filenames[$"body mask {gender}"] = "";
         race.Filenames[$"part map {gender}"] = body.PartMap;
-        race.References[$"heads {gender}"] = [];
+    }
+
+    /// <summary>
+    /// No heads (a race listing none draws none), hair or random faces (<c>morph num</c>: a fitted head has no face poses).
+    /// </summary>
+    static void DropHead(FcsRecord race)
+    {
+        race.References["heads male"] = [];
+        race.References["heads female"] = [];
+        race.References["hairs"] = [];
+        race.Ints["morph num"] = 0;
     }
 
     /// <summary>

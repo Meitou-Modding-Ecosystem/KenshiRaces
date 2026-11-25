@@ -6,7 +6,8 @@ namespace KenshiRaces;
 /// (<c>ModContext.AddCombatMove</c>, <see cref="AnimationRecords.Technique"/>); the clips are in the ANIMATION_FILE
 /// <see cref="AnimationRecords.File"/>, linked to every race on the game's human skeletons. Generated from the export's clip list; ids
 /// <c>100-</c> to <c>158-KenshiRaces.mod</c> in name order for the first models' 59 clips, then <c>159-</c> to <c>171-</c> for the
-/// spidercrab's 13, <c>172-</c> to <c>187-</c> for the ghostcrab's 16, each new clip taking the next free id.
+/// spidercrab's 13, <c>172-</c> to <c>187-</c> for the ghostcrab's 16, <c>188-</c> to <c>211-</c> for the Batfolk's 24, each new clip taking the
+/// next free id.
 /// </summary>
 public static class RaceAnimations
 {
@@ -451,6 +452,126 @@ public static class RaceAnimations
     public static readonly RaceAnimation WeaponCombo2 = new("kr_weapon_combo_2", "Weapon_Combo_2", 4.5f, Technique(187));
 
     /// <summary>
+    /// Meshy's <c>Agree_Gesture</c>, 13.00 s.
+    /// </summary>
+    public static readonly RaceAnimation AgreeGesture = new("kr_agree_gesture", "Agree_Gesture", 13f, Technique(188));
+
+    /// <summary>
+    /// Meshy's <c>air_squat</c>, 1.87 s.
+    /// </summary>
+    public static readonly RaceAnimation AirSquat = new("kr_air_squat", "air_squat", 1.867f, Technique(189));
+
+    /// <summary>
+    /// Meshy's <c>Climb_Attempt_and_Fall_2</c>, 0.80 s.
+    /// </summary>
+    public static readonly RaceAnimation ClimbAttemptAndFall2 = new("kr_climb_attempt_and_fall_2", "Climb_Attempt_and_Fall_2", 0.8f, Technique(190));
+
+    /// <summary>
+    /// Meshy's <c>Climb_Left_with_Both_Limbs</c>, 1.17 s.
+    /// </summary>
+    public static readonly RaceAnimation ClimbLeftWithBothLimbs = new("kr_climb_left_with_both_limbs", "Climb_Left_with_Both_Limbs", 1.167f, Technique(191));
+
+    /// <summary>
+    /// Meshy's <c>Collect_Object</c>, 6.00 s.
+    /// </summary>
+    public static readonly RaceAnimation CollectObject = new("kr_collect_object", "Collect_Object", 6f, Technique(192));
+
+    /// <summary>
+    /// Meshy's <c>Confused_Scratch</c>, 11.50 s.
+    /// </summary>
+    public static readonly RaceAnimation ConfusedScratch = new("kr_confused_scratch", "Confused_Scratch", 11.5f, Technique(193));
+
+    /// <summary>
+    /// Meshy's <c>Crouch_and_Step_Back</c>, 2.67 s.
+    /// </summary>
+    public static readonly RaceAnimation CrouchAndStepBack = new("kr_crouch_and_step_back", "Crouch_and_Step_Back", 2.667f, Technique(194));
+
+    /// <summary>
+    /// Meshy's <c>Crouch_Pull_and_Throw</c>, 5.80 s.
+    /// </summary>
+    public static readonly RaceAnimation CrouchPullAndThrow = new("kr_crouch_pull_and_throw", "Crouch_Pull_and_Throw", 5.8f, Technique(195));
+
+    /// <summary>
+    /// Meshy's <c>Discuss_While_Moving</c>, 8.00 s.
+    /// </summary>
+    public static readonly RaceAnimation DiscussWhileMoving = new("kr_discuss_while_moving", "Discuss_While_Moving", 8f, Technique(196));
+
+    /// <summary>
+    /// Meshy's <c>Dive_Down_and_Land</c>, 1.60 s.
+    /// </summary>
+    public static readonly RaceAnimation DiveDownAndLand = new("kr_dive_down_and_land", "Dive_Down_and_Land", 1.6f, Technique(197));
+
+    /// <summary>
+    /// Meshy's <c>Dive_Down_and_Land_1</c>, 0.37 s.
+    /// </summary>
+    public static readonly RaceAnimation DiveDownAndLand1 = new("kr_dive_down_and_land_1", "Dive_Down_and_Land_1", 0.367f, Technique(198));
+
+    /// <summary>
+    /// Meshy's <c>Dive_Down_and_Land_2</c>, 3.07 s.
+    /// </summary>
+    public static readonly RaceAnimation DiveDownAndLand2 = new("kr_dive_down_and_land_2", "Dive_Down_and_Land_2", 3.067f, Technique(199));
+
+    /// <summary>
+    /// Meshy's <c>Elderly_Shaky_Walk</c>, 2.80 s.
+    /// </summary>
+    public static readonly RaceAnimation ElderlyShakyWalk = new("kr_elderly_shaky_walk", "Elderly_Shaky_Walk", 2.8f, Technique(200));
+
+    /// <summary>
+    /// Meshy's <c>Parkour_Vault_1</c>, 1.17 s.
+    /// </summary>
+    public static readonly RaceAnimation ParkourVault1 = new("kr_parkour_vault_1", "Parkour_Vault_1", 1.167f, Technique(201));
+
+    /// <summary>
+    /// Meshy's <c>Parkour_Vault_2</c>, 1.17 s.
+    /// </summary>
+    public static readonly RaceAnimation ParkourVault2 = new("kr_parkour_vault_2", "Parkour_Vault_2", 1.167f, Technique(202));
+
+    /// <summary>
+    /// Meshy's <c>Parkour_Vault_3</c>, 2.30 s.
+    /// </summary>
+    public static readonly RaceAnimation ParkourVault3 = new("kr_parkour_vault_3", "Parkour_Vault_3", 2.3f, Technique(203));
+
+    /// <summary>
+    /// Meshy's <c>Parkour_Vault_with_Roll</c>, 2.07 s.
+    /// </summary>
+    public static readonly RaceAnimation ParkourVaultWithRoll = new("kr_parkour_vault_with_roll", "Parkour_Vault_with_Roll", 2.067f, Technique(204));
+
+    /// <summary>
+    /// Meshy's <c>penguin_walk</c>, 2.00 s.
+    /// </summary>
+    public static readonly RaceAnimation PenguinWalk = new("kr_penguin_walk", "penguin_walk", 2f, Technique(205));
+
+    /// <summary>
+    /// Meshy's <c>Personalized_Gesture</c>, 2.00 s.
+    /// </summary>
+    public static readonly RaceAnimation PersonalizedGesture = new("kr_personalized_gesture", "Personalized_Gesture", 2f, Technique(206));
+
+    /// <summary>
+    /// Meshy's <c>Wave_for_Help</c>, 5.00 s.
+    /// </summary>
+    public static readonly RaceAnimation WaveForHelp = new("kr_wave_for_help", "Wave_for_Help", 5f, Technique(207));
+
+    /// <summary>
+    /// Meshy's <c>Wave_for_Help_1</c>, 0.50 s.
+    /// </summary>
+    public static readonly RaceAnimation WaveForHelp1 = new("kr_wave_for_help_1", "Wave_for_Help_1", 0.5f, Technique(208));
+
+    /// <summary>
+    /// Meshy's <c>Wave_for_Help_2</c>, 1.50 s.
+    /// </summary>
+    public static readonly RaceAnimation WaveForHelp2 = new("kr_wave_for_help_2", "Wave_for_Help_2", 1.5f, Technique(209));
+
+    /// <summary>
+    /// Meshy's <c>Wave_for_Help_4</c>, 4.67 s.
+    /// </summary>
+    public static readonly RaceAnimation WaveForHelp4 = new("kr_wave_for_help_4", "Wave_for_Help_4", 4.667f, Technique(210));
+
+    /// <summary>
+    /// Meshy's <c>Wave_One_Hand</c>, 4.07 s.
+    /// </summary>
+    public static readonly RaceAnimation WaveOneHand = new("kr_wave_one_hand", "Wave_One_Hand", 4.067f, Technique(211));
+
+    /// <summary>
     /// Every clip, in id order.
     /// </summary>
     public static IReadOnlyList<RaceAnimation> All { get; } =
@@ -467,7 +588,9 @@ public static class RaceAnimations
         ChargedSlash, MageSoellCast6, ReapingSwing, RightHandSwordSlash,
         LeftShortHookFromGuard, LeftSlash, LeftUppercutFromGuard, RightUpperHookFromGuard, RightUppercutFromGuard, WalkBackwardInplace,
         WalkBackwardWithGrenadeInplace, WalkFightForward, WalkForwardWhileShooting, WalkForwardWithBowAimed, WalkLeftWithGun,
-        WalkWithUmbrella, WalkWithUmbrellaInplace, WeaponCombo, WeaponCombo1, WeaponCombo2
+        WalkWithUmbrella, WalkWithUmbrellaInplace, WeaponCombo, WeaponCombo1, WeaponCombo2,
+        AgreeGesture, AirSquat, ClimbAttemptAndFall2, ClimbLeftWithBothLimbs, CollectObject, ConfusedScratch, CrouchAndStepBack, CrouchPullAndThrow, DiscussWhileMoving, DiveDownAndLand, DiveDownAndLand1, DiveDownAndLand2, ElderlyShakyWalk, ParkourVault1, ParkourVault2, ParkourVault3, ParkourVaultWithRoll, PenguinWalk, PersonalizedGesture,
+        WaveForHelp, WaveForHelp1, WaveForHelp2, WaveForHelp4, WaveOneHand
     ];
 
     /// <summary>

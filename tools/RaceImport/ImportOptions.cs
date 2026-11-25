@@ -2,13 +2,14 @@ namespace RaceImport;
 
 /// <summary>
 /// How a body is imported (docs/race-import.md "Run it"): the rig it is fitted to, the slimming strength (0 none, 1 full), whose human's bust
-/// height the bust rises to (null: the rig's own) and the neck's length as a share of the fitted one.
+/// height the bust rises to (null: the rig's own), the neck's length as a share of the fitted one, whether the arms carry wings
+/// (<see cref="WingRig"/>) and whether the model's head is replaced by the human one (<see cref="HeadGraft"/>).
 /// </summary>
-public sealed record ImportOptions(HumanRig Rig, float Slim = 1, HumanRig? Bust = null, float Neck = 1)
+public sealed record ImportOptions(HumanRig Rig, float Slim = 1, HumanRig? Bust = null, float Neck = 1, bool Wings = false, bool Headless = false)
 {
     /// <summary>
     /// The options from the command line's optional arguments, in any order: <c>male</c> / <c>female</c>, a slimming strength,
-    /// <c>bust=male|female</c> and <c>neck=&lt;share&gt;</c>; null for anything else.
+    /// <c>bust=male|female</c>, <c>neck=&lt;share&gt;</c>, <c>wings</c> and <c>headless</c>; null for anything else.
     /// </summary>
     public static ImportOptions? Parse(IEnumerable<string> arguments)
     {
@@ -30,6 +31,8 @@ public sealed record ImportOptions(HumanRig Rig, float Slim = 1, HumanRig? Bust 
     static ImportOptions? Apply(ImportOptions options, string argument)
     {
         if (HumanRig.Named(argument) is { } rig) return options with { Rig = rig };
+        if (argument == "wings") return options with { Wings = true };
+        if (argument == "headless") return options with { Headless = true };
         if (argument.StartsWith("bust=", StringComparison.Ordinal))
             return HumanRig.Named(argument[5..]) is { } bust ? options with { Bust = bust } : null;
         if (argument.StartsWith("neck=", StringComparison.Ordinal))
