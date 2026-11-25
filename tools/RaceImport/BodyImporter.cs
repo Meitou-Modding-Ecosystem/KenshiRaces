@@ -30,11 +30,9 @@ public static class BodyImporter
         if (options.Wings) new WingSpread(fit, kenshi).Apply(body, membrane, fitted, normals, weights);
         var (lifted, lift) = BustLift.Apply(fitted, weights, kenshi, bustHuman);
         var wingWeights = Kept(weights, membrane);
-        var tail = HumanWeights.MoveTails(lifted, body.Indices, weights, kenshi, human);
-        bool[] spared = [.. tail.Zip(membrane, (t, m) => t || m)];
-        var slimmed = new BodyConform(kenshi, human).Apply(lifted, weights, body.Indices, options.Slim, spared);
-        var (positions, conformed) = new SkinConform(kenshi, human).Apply(slimmed, weights, body.Indices, options.Slim, spared);
-        int copied = HumanWeights.Apply(positions, body.Indices, weights, tail, kenshi, human);
+        var (positions, conformed, copied, tail) = options.Rigid
+            ? (lifted, 0, 0, new bool[lifted.Length])
+            : Conformed(lifted, body.Indices, weights, membrane, kenshi, human, options.Slim);
         Restore(weights, wingWeights);
         var unheaded = new SkinnedMesh(positions, normals, body.Uvs, [], body.Indices, weights);
         var (mesh, source) = Headed(unheaded, options, kenshiFolder, human, kenshi);
@@ -51,6 +49,21 @@ public static class BodyImporter
         return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {mesh.Positions.Length} vertices, {mesh.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
             $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts, " +
             $"{membrane.Count(m => m)} vertices of wing membrane, {mesh.Poses.Length} face poses, hands twisted {Twists(fit)}";
+    }
+
+    /// <summary>
+    /// The lifted body slimmed and pulled onto the human skin with the human's torso weights (docs/race-import.md "Slimming", "Skin conform",
+    /// "Human weights"): the positions, how many vertices the conform moved, how many took human weights, and the tail's vertices.
+    /// </summary>
+    static (Vector3[] Positions, int Conformed, int Copied, bool[] Tail) Conformed(Vector3[] lifted, int[] indices,
+        Dictionary<ushort, float>[] weights, bool[] membrane, KenshiSkeleton kenshi, HumanBody human, float slim)
+    {
+        var tail = HumanWeights.MoveTails(lifted, indices, weights, kenshi, human);
+        bool[] spared = [.. tail.Zip(membrane, (t, m) => t || m)];
+        var slimmed = new BodyConform(kenshi, human).Apply(lifted, weights, indices, slim, spared);
+        var (positions, conformed) = new SkinConform(kenshi, human).Apply(slimmed, weights, indices, slim, spared);
+        int copied = HumanWeights.Apply(positions, indices, weights, tail, kenshi, human);
+        return (positions, conformed, copied, tail);
     }
 
     /// <summary>
