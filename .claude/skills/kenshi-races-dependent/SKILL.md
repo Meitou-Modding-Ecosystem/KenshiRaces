@@ -27,7 +27,7 @@ with its helper; it never copies its records or files. Read `docs/depending-on-k
 4. **New subrace**: per body `dotnet run --project <KenshiRaces>/tools/RaceImport -c Release -- <model.glb> <Kenshi> <Mod>/items/races <stem>
    [male|female] [slim] [bust=female] [neck=<share>] [wings] [headless] [ears] [palms] [rigid] [attach=<part.glb>]`; check the log line (scale near 10 to 13 for a human-sized model, hideable vertices
    above 0, human weights on hundreds of vertices (none with `rigid`, for mechanical bodies whose parts must not stretch), a tail's vertices on the pelvis for a tailed body). Then `RaceRecords.Add(c, new Subrace(...))` and `RaceRecords.JoinGroup(c, Races.CrabfolkGroup, id)`
-   (or `AddGroup` for a race of your own). Give it `Traits:` (`RaceTraits`: aptitudes, `Health`, gear limits, `Fists`, `DamageTaken`), e.g.
+   (or `AddGroup` for a race of your own). Give it `Traits:` (`RaceTraits`: `Model` (`RaceModel.Skeleton` for a robot, e.g. `Races.BeepbotTraits`), aptitudes, `Health`, gear limits, `Fists`, `DamageTaken`), e.g.
    `Races.CrabfolkTraits` for a crab. A `headless` body (human head, face sliders, hair) is `RaceBody(..., HumanHead: true)`, plus `SkinTone: true` when imported `skintone` (one Skin Tone slider tints head and body); `wings` binds
    arm-wing membranes between arm and flank; `attach=<part.glb>` merges a static part (ears, back wings, horns) placed by
    `tools/RaceImport/parts/<part>.json` (race-import.md "Attachments").

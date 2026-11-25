@@ -79,14 +79,15 @@ public static class RaceRecords
     }
 
     /// <summary>
-    /// Fills a new RACE: Greenlander's fields and lists, then each gender's body files (a single-gender race wears its one body for both), no
+    /// Fills a new RACE: its model's fields and lists (<see cref="RaceTraits.Model"/>, else the Greenlander's), then each gender's body files (a single-gender race wears its one body for both), no
     /// heads, hair or random faces (the body has its own head) unless it wears the human head, no shirts (they paint the human body's uv layout),
     /// playable in the character editor with <see cref="EditorLimits"/> (<see cref="FaceEditorLimits"/> with the human head), the animation
     /// library linked (<see cref="AnimationRecords"/>) and the subrace's traits.
     /// </summary>
     public static void FillRace(FcsRecord race, GameDatabase game, Subrace subrace)
     {
-        CopyFrom(Model(game, FcsRecordType.Race, Greenlander, GreenlanderName), race);
+        var model = subrace.Traits?.Model ?? RaceModel.Greenlander;
+        CopyFrom(Model(game, FcsRecordType.Race, model.Id, model.Name), race);
         race.Bools["single gender"] = subrace.SingleGender;
         race.Bools["no shirts"] = true;
         race.Bools["playable"] = true;
@@ -112,12 +113,13 @@ public static class RaceRecords
         NoWeaponsField = "kenshi races no weapons", DamageTakenField = "kenshi races damage taken";
 
     /// <summary>
-    /// Writes <paramref name="traits"/> into a new RACE (docs/kenshi-races.md "Traits"): the aptitude lists (replacing the Greenlander's), part
+    /// Writes <paramref name="traits"/> into a new RACE (docs/kenshi-races.md "Traits"): the aptitude lists (replacing the model's unless both are
+    /// empty), part
     /// health, the slot flags, the fists and the fields <see cref="RaceRules"/> reads.
     /// </summary>
     static void SetTraits(FcsRecord race, GameDatabase game, RaceTraits traits)
     {
-        SetAptitudes(race, traits);
+        if (traits.Good.Count + traits.Bad.Count > 0) SetAptitudes(race, traits);
         if (traits.Health is { } health) SetHealth(race, game, health);
         race.Bools["no hats"] = traits.NoHats;
         race.Bools["no shoes"] = traits.NoShoes;

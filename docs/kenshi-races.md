@@ -58,7 +58,8 @@ Added in the data phase from the loaded game's own records (`RaceRecords`), so `
 
 ## Traits
 
-Each subrace's `RaceTraits` replace the Greenlander's (`RaceRecords.FillRace`). Aptitudes are the RACE's `stats good` (x1.2 starting value and
+Each subrace's `RaceTraits` replace those of the game RACE it is copied from (`RaceTraits.Model`, `RaceRecords.FillRace`): the Greenlander,
+or the Skeleton (`17946-stick_people.mod`) for a skeleton subrace. Empty aptitude lists keep the model's, as do unset part health and fists. Aptitudes are the RACE's `stats good` (x1.2 starting value and
 XP) and `stats bad` (x0.8), `strength` 1.2 for strength, which the game lays over the lists (engine docs/game/character-stats.md "Races");
 "all weapons but ranged" are Katanas, Sabres, Hackers, Heavy Weapons, Blunt and Polearms; precision shooting is stat 36. Part health is each
 `combat anatomy` entry's value 1, the part's base hit points (the Greenlander's 100).
@@ -68,9 +69,13 @@ XP) and `stats bad` (x0.8), `strength` 1.2 for strength, which the game lays ove
 | leoma | strength, sabres, athletics, weapon smith, labouring | armour smith, farming, polearms, heavy weapons, robotics | 100 / 120 / 120 / 120 / 120 | all |
 | crevan | perception, stealth, lockpicking, thieving, assassination, robotics, dodge | the weapons above, farming, labouring | 140 / 100 / 100 / 90 / 90 | `no shoes`; head gear only named `Ashland...` (the Ashland Hat, the Ashlander Stormgoggles) |
 | crabman, crabqueen, spidercrab, ghostcrab | martial arts, strength, toughness, melee attack and defence, swimming, labouring, engineering | dodge, turrets, crossbows, precision shooting, stealth, lockpicking, thieving, assassination, field medic, weapon, armour and crossbow smith | 100 / 200 / 200 / 250 / 120 | `no hats`; no footwear named `Sandals`; no weapons or crossbows |
-| tiefling, batfolk, wolfkin, beepbot, owlkind | (the Greenlander's) | (the Greenlander's) | 100 / 100 / 100 / 100 / 100 | all |
+| beepbot (Skeleton model) | heavy weapons, turrets, robotics (the Skeleton's) | thieving, stealth, dodge (the Skeleton's) | 200 / 200 / 200 / 200 / 200 (the Skeleton's) | all hats; `no shoes` |
+| tiefling, batfolk, wolfkin, owlkind | (the Greenlander's) | (the Greenlander's) | 100 / 100 / 100 / 100 / 100 | all |
 
-- The spider and ghost crabs share the Crabfolk traits until their own are settled; the tiefling, the Batfolk, the Wolfkin, the beepbot and the Owlkind have none yet.
+- The spider and ghost crabs share the Crabfolk traits until their own are settled; the tiefling, the Batfolk, the Wolfkin and the Owlkind have none yet.
+- The beepbot keeps the rest of the Skeleton's RACE (base data, `Meitou.Tools record Skeleton`): `is robot`, `hunger rate` 0, `bleed rate`
+  0.1, `heal stat` 6 (repaired with Robotics), `heal rate` 2, weather immunity, `FISTS- robo`, no swimming, `combat move speed mult` 0.9,
+  `vision range mult` 1.25, and no limb replacements or severed limbs; its own body, no head and the animation library are set over them.
 - Gear limits beyond the RACE's slot flags are a wear rule (engine docs/modding.md "Wear rules", `RaceRules`) read from the RACE's own
   fields `kenshi races hats only` and `kenshi races no footwear` ('|'-separated names) and `kenshi races no weapons`, so a dependent's subrace
   with traits gets them. They refuse equipping, buying into a slot and a loaded save's worn gear; a generated character's weapons are not
