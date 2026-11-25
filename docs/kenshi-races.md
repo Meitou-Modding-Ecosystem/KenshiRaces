@@ -32,7 +32,7 @@ ears on the skull (imported `ears`, [race import](race-import.md#ears)). The bee
 ([race import](race-import.md#rigid)): its ribs, springs and joints keep their shape and its own weights. Source
 models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
 Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`, `spidercrab.glb`, `ghostcrab.glb` and
-`tiefling-female.glb` (female) and `tieflingmale-rigged.glb` (male), both `nohair skintone`, `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless`, and `wolfman-rigged.glb` (male, a Mixamo rig)
+`tiefling-female.glb` (female, `nohair skintone`) and `tieflingmale-rigged.glb` (male, `nohair skintone palms`: its palms faced forward), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless`, and `wolfman-rigged.glb` (male, a Mixamo rig)
 and `wolfwoman-rigged.glb` (female), both `ears palms`; beepbot from `beepbot-highpoly.glb` (1M vertices, unrigged), decimated to 40,000
 triangles with its normals baked, carrying the weights of the Meshy rig of the low-poly `beepbot-rigged.glb` (nearest face, same frame after
 that rig's scale 1.711 and lift 0.85 m), `rigid`.
