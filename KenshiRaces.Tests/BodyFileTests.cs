@@ -21,6 +21,7 @@ public sealed class BodyFileTests
         Assert.True(File.Exists(Path.Combine(Folder(), stem + "_d.dds")));
         Assert.True(File.Exists(Path.Combine(Folder(), stem + "_parts.png")));
         Assert.Equal(body.NormalMap, File.Exists(Path.Combine(Folder(), stem + "_n.dds")));
+        Assert.Equal(body.SkinTone, File.Exists(Path.Combine(Folder(), stem + "_mask.dds")));
     }
 
     [Theory]

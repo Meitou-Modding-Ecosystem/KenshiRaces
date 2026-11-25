@@ -51,6 +51,30 @@ public sealed class RaceRecordsTests
     }
 
     [Fact]
+    public void A_skin_toned_subrace_takes_its_bodies_masks_and_the_tinted_editor_limits()
+    {
+        var race = new FcsRecord { StringId = Races.TieflingRace, RecordType = FcsRecordType.Race, Name = "tiefling" };
+
+        RaceRecords.FillRace(race, Game(), Races.Tiefling);
+
+        Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_tieflingmale_mask.dds", race.Filenames["body mask male"]);
+        Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_tieflingfemale_mask.dds", race.Filenames["body mask female"]);
+        Assert.Equal(RaceRecords.TintedEditorLimits, race.Filenames["editor limits"]);
+        Assert.Equal("1-heads.mod", Assert.Single(race.References["heads male"]).TargetStringId);
+        Assert.False(race.Bools["single gender"]);
+    }
+
+    [Fact]
+    public void A_subrace_without_a_skin_tone_has_no_body_mask()
+    {
+        var race = new FcsRecord { StringId = Races.BatfolkRace, RecordType = FcsRecordType.Race, Name = "batfolk" };
+
+        RaceRecords.FillRace(race, Game(), Races.Batfolk);
+
+        Assert.Equal("", race.Filenames["body mask male"]);
+    }
+
+    [Fact]
     public void A_subrace_with_its_own_head_has_no_heads_hair_or_random_faces()
     {
         var race = new FcsRecord { StringId = Races.LeomaRace, RecordType = FcsRecordType.Race, Name = "leoma" };

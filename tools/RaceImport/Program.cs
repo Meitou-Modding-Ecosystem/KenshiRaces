@@ -5,7 +5,7 @@ using RaceImport;
 // (male or female, default male), the slimming strength (0 to 1, default 1), bust=male|female and neck=<share>.
 if (args.Length < 4 || ImportOptions.Parse(args.Skip(4)) is not { } options)
 {
-    Console.Error.WriteLine("Usage: RaceImport <model.glb> <Kenshi folder> <output folder> <stem> [male|female] [slim 0-1] [bust=male|female] [neck=<share>]");
+    Console.Error.WriteLine("Usage: RaceImport <model.glb> <Kenshi folder> <output folder> <stem> [male|female] [slim 0-1] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [skintone] [palms] [rigid]");
     return 2;
 }
 

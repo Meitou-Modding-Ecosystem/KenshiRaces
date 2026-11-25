@@ -101,7 +101,8 @@ public sealed class IntroductionTests
     [InlineData("leomafemale hostile", Races.LeomaFemaleCharacter, true)]
     [InlineData("Leoma Female", Races.LeomaFemaleCharacter, false)]
     [InlineData("hostile crevan", Races.CrevanMaleCharacter, true)]
-    [InlineData("tiefling join", Races.TieflingCharacter, false)]
+    [InlineData("tiefling join", Races.TieflingMaleCharacter, false)]
+    [InlineData("tieflingfemale", Races.TieflingFemaleCharacter, false)]
     [InlineData("crabqueen female", Races.CrabQueenCharacter, false)]
     [InlineData("beepbot hostile", Races.BeepbotCharacter, true)]
     public void The_spawn_field_names_a_character_or_a_subrace_and_hostile_or_not(string field, string id, bool hostile)

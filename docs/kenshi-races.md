@@ -17,22 +17,22 @@ The editor lists each RACE_GROUP as a race and its RACEs as subraces (engine doc
 | | crabqueen `14-` | single | crabqueen `15-` |
 | | spidercrab `22-` | single | spidercrab `23-` |
 | | ghostcrab `24-` | single | ghostcrab `25-` |
-| Tiefling `33-` | tiefling `26-` | single | tiefling `27-` |
+| Tiefling `33-` | tiefling `26-` | male, female | tieflingmale `42-`, tieflingfemale `27-` |
 | Batfolk `34-` | batfolk `28-` | male, female | batfolkmale `29-`, batfolkfemale `35-` |
 | Wolfkin `39-` | wolfkin `36-` | male, female | wolfkinmale `37-`, wolfkinfemale `38-` |
 | Beepbot `41-` | beepbot `16-` | single | beepbot `20-` |
 
 Ids end in `KenshiRaces.mod`. Subrace and CHARACTER names are one lowercase word, so the console's `spawn` takes them without quotes. Each body's
-files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leoma, Crevan, the spider crab, the ghost crab, the Batfolk man, the Wolfkin and the beepbot). Male bodies are fitted to `male_skeleton`,
-female ones to `female_skeleton`; the crab and tiefling bodies are male fits, so the crab queen and the tiefling (both women, `bust=female`)
-are single gender with the male animations and voice (the game and Meitou make a single-gender race's characters male). The tiefling's tail is
-carried by `Spine`. The Batfolk wear the human head (imported `wings headless`, [race import](race-import.md#headless)): the
+files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leoma, Crevan, the spider crab, the ghost crab, the tiefling man, the Batfolk man, the Wolfkin and the beepbot). Male bodies are fitted to `male_skeleton`,
+female ones to `female_skeleton`; the crab bodies are male fits, so the crab queen (a woman, `bust=female`) is single gender with the male
+animations and voice (the game and Meitou make a single-gender race's characters male). The tieflings wear the human head without their own
+hair and their skin takes the editor's skin tone with it (imported `nohair skintone`, [race import](race-import.md#skin-tone)). The Batfolk wear the human head (imported `wings headless`, [race import](race-import.md#headless)): the
 Greenlander's heads, hair and face sliders on their own bodies, their arm-wing membranes spanning arm and flank, opening as the arms rise. The Wolfkin wear it too, with their own wolf
 ears on the skull (imported `ears`, [race import](race-import.md#ears)). The beepbot, a skeletal robot, is a male fit imported `rigid`
 ([race import](race-import.md#rigid)): its ribs, springs and joints keep their shape and its own weights. Source
 models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
 Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`, `spidercrab.glb`, `ghostcrab.glb` and
-`tiefling-female.glb` (`bust=female`), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless`, and `wolfman-rigged.glb` (male, a Mixamo rig)
+`tiefling-female.glb` (female, `nohair skintone`) and `tieflingmale-rigged.glb` (male, `nohair skintone palms`: its palms faced forward), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless`, and `wolfman-rigged.glb` (male, a Mixamo rig)
 and `wolfwoman-rigged.glb` (female), both `ears palms`; beepbot from `beepbot-highpoly.glb` (1M vertices, unrigged), decimated to 40,000
 triangles with its normals baked, carrying the weights of the Meshy rig of the low-poly `beepbot-rigged.glb` (nearest face, same frame after
 that rig's scale 1.711 and lift 0.85 m), `rigid`.
@@ -45,9 +45,9 @@ Added in the data phase from the loaded game's own records (`RaceRecords`), so `
 - RACE (subrace): a copy of Greenlander (`17-gamedata.quack`: stats, animations, voices) with each gender's mesh, colour texture, normal map
   and part map (a single-gender subrace wears its one body for both); `single gender` unless it has both bodies; no heads, hair or random faces
   (`morph num` 0; a race listing no head draws none; the body has its own) unless its bodies wear the human head (`RaceBody.HumanHead`),
-  which keep the Greenlander's; `no shirts` (shirts and pants paint the human body's uv layout); body mask
-  and strength normal maps cleared; `playable` with `editor limits` [`kenshiraces_editor.xml`](#character-editor)
-  (`kenshiraces_editor_faces.xml` with the human head).
+  which keep the Greenlander's; `no shirts` (shirts and pants paint the human body's uv layout); `body mask` the body's skin-tone mask
+  (`RaceBody.SkinTone`) or cleared; strength normal maps cleared; `playable` with `editor limits` [`kenshiraces_editor.xml`](#character-editor)
+  (`kenshiraces_editor_faces.xml` with the human head, `kenshiraces_editor_tinted.xml` with a skin tone).
 - CHARACTER: a copy of Drifter (`2205-gamedata.base`) of the subrace and gender (`female chance` 100 or 0), no kit, money or bounty, with the
   recruit talk.
 - Engine: a CHARACTER's own `mesh` field overrides its race's body mesh.
@@ -90,6 +90,11 @@ Ranges are the human ones (`data/editor/editor_data_human.xml`).
 Races wearing the human head use `kenshiraces_editor_faces.xml`: the same plus the face sliders of the human head's poses (each pose -100 to
 100), Chest, and for women Breast size, height and spacing. Their torsos are pulled onto the human's skin and carry its weights, which the
 chest and bust sliders were made for; whether they stay clean in game is not yet checked.
+
+Skin-toned races (the tieflings) use `kenshiraces_editor_tinted.xml`: the faces file with a Skin Tone slider of 11 colours, the human tones
+(white, 251/219/219, 201/190/180, 137/119/102), then crimson, purple (the middle, so the editor's default), rose, plum, indigo, blue-grey and
+ash. A colour multiplies the Greenlander head's bare skin (204, 143, 112), which the body's skin is repainted to, so each is the wanted skin
+over that, at most 255 a channel (blue cannot rise above 112). Head and body take the same colour.
 
 ## Recruiting
 

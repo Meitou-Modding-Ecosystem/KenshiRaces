@@ -21,6 +21,9 @@ public static class BodyImporter
     {
         var rig = options.Rig;
         var body = SourceBody.Load(model);
+        var classes = options.NoHair || options.SkinTone
+            ? TextureClasses.Classify(body.BaseColourImage ?? throw new InvalidDataException("the model has no base colour texture"), body.Positions, body.Uvs, body.Indices)
+            : null;
         var (membrane, sleeved) = options.Wings ? WingRig.Apply(body) : (new bool[body.Positions.Length], new bool[body.Positions.Length]);
         var kenshi = KenshiSkeleton.Load(kenshiFolder, rig);
         var human = HumanBody.Load(kenshiFolder, rig);
@@ -35,20 +38,23 @@ public static class BodyImporter
             : Conformed(lifted, body.Indices, weights, membrane, kenshi, human, options.Slim);
         Restore(weights, wingWeights);
         var unheaded = new SkinnedMesh(positions, normals, body.Uvs, [], body.Indices, weights);
-        var (mesh, source) = Headed(unheaded, options, kenshiFolder, human, kenshi);
+        var hair = options.NoHair ? classes : null;
+        var (mesh, source) = Headed(unheaded, options, kenshiFolder, human, kenshi, hair);
         mesh = mesh with { Tangents = Tangents(mesh.Positions, mesh.Normals, mesh.Uvs, mesh.Indices) };
         sleeved = [.. source.Select(v => v >= 0 && sleeved[v])];
 
         Directory.CreateDirectory(outFolder);
         SkinnedMeshWriter.Write(Path.Combine(outFolder, stem + ".mesh"), mesh, stem, rig.Skeleton);
-        bool normalMap = BodyTextures.Write(body, outFolder, stem, TextureSide);
+        var painted = options.SkinTone && classes is not null ? SkinTone.Repainted(body, classes, TextureSide) : body;
+        bool normalMap = BodyTextures.Write(painted, outFolder, stem, TextureSide);
+        int toned = options.SkinTone && classes is not null ? WriteMask(outFolder, stem, mesh, source, body, classes) : 0;
         int parts = WritePartMap(kenshiFolder, rig, Path.Combine(outFolder, stem + "_parts.png"), mesh, human, sleeved);
 
         var min = mesh.Positions.Aggregate(Vector3.Min);
         var max = mesh.Positions.Aggregate(Vector3.Max);
         return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {mesh.Positions.Length} vertices, {mesh.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
             $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {parts} vertices in hideable parts, " +
-            $"{membrane.Count(m => m)} vertices of wing membrane, {mesh.Poses.Length} face poses, hands twisted {Twists(fit)}";
+            $"{membrane.Count(m => m)} vertices of wing membrane, {mesh.Poses.Length} face poses, {toned} skin-toned triangles, hands twisted {Twists(fit)}";
     }
 
     /// <summary>
@@ -71,13 +77,20 @@ public static class BodyImporter
     /// (-1 for the head's).
     /// </summary>
     static (SkinnedMesh Mesh, int[] Source) Headed(SkinnedMesh mesh, ImportOptions options, string kenshiFolder, HumanBody human,
-        KenshiSkeleton kenshi)
+        KenshiSkeleton kenshi, Texel[]? hair)
     {
         if (!options.Headless) return (mesh, [.. Enumerable.Range(0, mesh.Positions.Length)]);
 
         ushort? ears = options.Ears ? kenshi.Handle("Bip01 Head") : null;
-        return HeadGraft.Apply(mesh, human, HumanHead.Load(kenshiFolder, options.Rig), ears);
+        return HeadGraft.Apply(mesh, human, HumanHead.Load(kenshiFolder, options.Rig), ears, hair);
     }
+
+    /// <summary>
+    /// Writes the skin-tone body mask of the final mesh (<see cref="SkinTone.WriteMask"/>) over the model's skin triangles it kept; returns how
+    /// many triangles it covers.
+    /// </summary>
+    static int WriteMask(string outFolder, string stem, SkinnedMesh mesh, int[] source, SourceBody body, Texel[] classes) =>
+        SkinTone.WriteMask(outFolder, stem, mesh, source, body.Indices, classes);
 
     /// <summary>
     /// The part map of the fitted mesh from the rig's human one; returns how many vertices got a part.
