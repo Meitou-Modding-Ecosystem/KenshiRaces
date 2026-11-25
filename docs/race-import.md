@@ -152,7 +152,7 @@ which the body shader colours from the HEAD record's texture at uv + (0, 1) (eng
 triangles, weights and the mesh's face poses (target 1, written to the fitted mesh with offsets only, as the game's bodies store them; 23 on
 `human_male.mesh`, 29 on `human_female.mesh`). After the fit:
 
-1. The fitted vertices within 0.8 units of the head's open neck rim (more than a fitted triangle) move 0.05 under the closest point of the
+1. The fitted vertices within 0.8 units of the head's open neck rim (the lowest loop of open edges; the eye sockets are open too) (more than a fitted triangle) move 0.05 under the closest point of the
    human's skin and take its weights there (barycentric), so the body's neck runs into the human's along the rim with no gap.
 2. The other fitted vertices whose nearest human vertex is the head's are dropped with their triangles; what the cut leaves open lies under
    the head's skin.

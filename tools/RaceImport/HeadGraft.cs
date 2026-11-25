@@ -55,11 +55,22 @@ public static class HeadGraft
     }
 
     /// <summary>
-    /// The positions of the head's rim: the vertices on a welded edge that only one of its triangles has.
+    /// The positions of the head's neck rim: of the loops of welded edges that only one of its triangles has (the neck, and the eye sockets,
+    /// whose eyeballs are separate), the one reaching lowest.
     /// </summary>
     static Vector3[] Rim(HumanHead head)
     {
         var weld = Surface.Weld(head.Positions);
+        var open = OpenEdges(head, weld);
+        var neck = Loop(open, open.SelectMany(e => new[] { e.Item1, e.Item2 }).MinBy(w => Lowest(head, weld, w)));
+        return [.. Enumerable.Range(0, head.Positions.Length).Where(v => neck.Contains(weld[v])).Select(v => head.Positions[v]).Distinct()];
+    }
+
+    /// <summary>
+    /// The head's welded edges that only one of its triangles has.
+    /// </summary>
+    static List<(int, int)> OpenEdges(HumanHead head, int[] weld)
+    {
         var count = new Dictionary<(int, int), int>();
         for (int t = 0; t < head.Indices.Length; t += 3)
             for (int k = 0; k < 3; k++)
@@ -69,8 +80,27 @@ public static class HeadGraft
                 count[key] = count.GetValueOrDefault(key) + 1;
             }
 
-        var open = count.Where(p => p.Value == 1).SelectMany(p => new[] { p.Key.Item1, p.Key.Item2 }).ToHashSet();
-        return [.. Enumerable.Range(0, head.Positions.Length).Where(v => open.Contains(weld[v])).Select(v => head.Positions[v]).Distinct()];
+        return [.. count.Where(p => p.Value == 1).Select(p => p.Key)];
+    }
+
+    /// <summary>
+    /// The height of a welded vertex (its first vertex's).
+    /// </summary>
+    static float Lowest(HumanHead head, int[] weld, int welded) => head.Positions[Array.IndexOf(weld, welded)].Y;
+
+    /// <summary>
+    /// The welded vertices joined to <paramref name="start"/> through <paramref name="edges"/>.
+    /// </summary>
+    static HashSet<int> Loop(List<(int, int)> edges, int start)
+    {
+        var next = edges.SelectMany(e => new[] { (e.Item1, e.Item2), (e.Item2, e.Item1) }).ToLookup(e => e.Item1, e => e.Item2);
+        var seen = new HashSet<int> { start };
+        var stack = new Stack<int>([start]);
+        while (stack.Count > 0)
+            foreach (int n in next[stack.Pop()])
+                if (seen.Add(n)) stack.Push(n);
+
+        return seen;
     }
 
     /// <summary>
