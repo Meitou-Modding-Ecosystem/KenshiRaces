@@ -38,11 +38,13 @@ public static class PartMap
 
     /// <summary>
     /// Writes <paramref name="path"/> for a body of the given fitted positions, uvs and heaviest bones, with the vertices
-    /// <paramref name="membrane"/> marks in <see cref="Membrane"/>; returns how many vertices got a part.
+    /// <paramref name="membrane"/> marks in <see cref="Membrane"/> and those <paramref name="unhidden"/> marks in none (attached parts); twice as
+    /// wide when <paramref name="wide"/> (a body texture with parts beside it, <see cref="Attachments"/>). Returns how many vertices got a part.
     /// </summary>
-    public static int Write(string path, Vector3[] positions, Vector2[] uvs, ushort[] bones, HumanBody human, Rgba humanMap, bool[] membrane)
+    public static int Write(string path, Vector3[] positions, Vector2[] uvs, ushort[] bones, HumanBody human, Rgba humanMap, bool[] membrane,
+        bool[]? unhidden = null, bool wide = false)
     {
-        var map = new Rgba(Side, Side);
+        var map = new Rgba(wide ? 2 * Side : Side, Side);
         var parts = Grown(human, humanMap);
         var byBone = Enumerable.Range(0, human.Positions.Length).GroupBy(v => human.Bones[v]).ToDictionary(g => g.Key, g => g.ToArray());
         var all = Enumerable.Range(0, human.Positions.Length).ToArray();
@@ -50,6 +52,7 @@ public static class PartMap
         for (int v = 0; v < positions.Length; v++)
         {
             if (uvs[v].Y < 0) continue; // the grafted human head's, coloured from the head texture
+            if (unhidden?[v] == true) continue;
 
             int nearest = Nearest(positions[v], byBone.GetValueOrDefault(bones[v]) ?? all, human.Positions);
             uint? part = membrane[v] ? Membrane : parts[nearest];

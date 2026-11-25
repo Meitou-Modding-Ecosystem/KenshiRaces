@@ -7,7 +7,7 @@ map. It reads the rig's skeleton, human body and part map from the game install,
 ## Run it
 
 ```powershell
-dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [skintone] [palms] [rigid]
+dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [skintone] [palms] [rigid] [attach=<part.glb>]...
 ```
 
 - `<Kenshi folder>`: the game folder (`data/` inside it), e.g. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
@@ -26,6 +26,8 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - `skintone`: the skin takes the editor's skin tone with the human head ([Skin tone](#skin-tone)); writes `<stem>_mask.dds`.
 - `palms`: turn the hands palm to thigh ([Hands](#hands)); not for claws or pincers.
 - `rigid`: keep the model's own shape and weights ([Rigid](#rigid)); for mechanical bodies.
+- `attach=<part.glb>`: merge a static part (ears, wings, horns) into the body, placed by `tools/RaceImport/parts/<part>.json`
+  ([Attachments](#attachments)); repeat for more parts, at most 4.
 - Writes `<stem>.mesh`, `<stem>_d.dds`, `<stem>_n.dds` (only when the model has a normal map) and `<stem>_parts.png`; the log line gives the
   vertex count, scale, bounds, how many vertices fall in hideable parts, the wing membrane's vertices and the face poses.
 - Keep the `.glb` outside the repo (tens of MB); commit the four outputs. `.gitignore` lets `*/items/races/*.mesh` and `*.dds` through.
@@ -188,7 +190,30 @@ With `ears` the model's own ears stay (`HeadEars`): on each side, the dropped he
 head's height and within half that across, joined to that point through the model's surface. Their base's middle is mapped from the model's
 skull (its other dropped vertices' box) to the human head's box, snapped to the head's nearest vertex and moved 0.1 inside it, and the ear is
 scaled 1.4 about it, so it stands out of the skull and the hair; every ear vertex is carried by `Bip01 Head` alone. Ears fused with the
-model's hair bring some of it along; hats clip them. A separate ears model bolts on the same way.
+model's hair bring some of it along; hats clip them. A separate ears model is an [attachment](#attachments) instead.
+
+## Attachments
+
+`attach=<part.glb>` merges a static (unskinned) model into the fitted body after the head graft (`Attachment`, `Attachments`). Its spec is
+`tools/RaceImport/parts/<the file's stem>.json`:
+
+| Field | Meaning |
+| --- | --- |
+| `bones` | Bones it rides, top to bottom: a vertex between two joints by height is weighted between them, above or below them wholly on the end one |
+| `height` | The whole model's height once placed, game units |
+| `split` | Two mirrored pieces split at X = 0 (default true); each is placed as the right one and mirrored for the left |
+| `anchor` | The point of each piece placed: shares of its bounds, X inner (0) to outer (1), Y bottom to top, Z back to front |
+| `relativeTo` | `HeadTop` (highest vertex carried most by `Bip01 Head`, centred) or a bone's joint (its X taken as 0) |
+| `at` | The anchor's place from `relativeTo`: outward, up, forward |
+| `roll`, `pitch`, `yaw` | Degrees about the anchor, in that order: top outward, top back, outer edge back |
+| `behind` | Each piece moved front to back until its nearest point is this far behind the body vertices `bones` carry (overrides `at`'s Z) |
+
+A double-sided material's triangles are doubled facing back (the game culls back faces). The part's vertices are no body part in the
+[part map](#part-map) (clothing never hides them) and have no source vertex (-1, like the head's). The body texture becomes an atlas
+twice as wide ([Textures](#textures)): the body's uvs (not the head's) move into its left half, each part's into a 1024² tile of the right
+half, two by two in `attach` order. Parts: `wolfears` (on `Bip01 Head`, at the top sides of the skull, rolled out 15°; hair may clip them)
+and `batwings` (folded, from the shoulder blades to mid thigh, `Spine2` down to `Pelvis`, yawed 45° so the outer edges fold back behind
+the arms, 0.3 behind the back).
 
 ## Skin tone
 
@@ -201,7 +226,8 @@ say skin (engine docs/characters.md "Shading, poses and LOD"). With `skintone` (
 2. The skin triangles' texels (grown 4 px at 2048²) are repainted to the Greenlander heads' bare skin (`SkinTone.HumanSkin`) times their luma
    over the skin's median luma, keeping the model's shading.
 3. `<stem>_mask.dds` (1024², BC1) is white over the final mesh's triangles whose three vertices came from skin (uv 0 to 1 only; the head takes
-   its HEAD's mask), grown a texel.
+   its HEAD's mask), grown a texel; drawn at the final uvs, so with [attachments](#attachments) the skin lies in its left half and the parts
+   stay black.
 
 Head and body then share one base colour and one multiplier, so every slider position tints them alike. The race takes the mask with
 `RaceBody.SkinTone` and the editor limits `kenshiraces_editor_tinted.xml` ([kenshi-races.md](kenshi-races.md#character-editor)).
@@ -217,5 +243,6 @@ human's.
 
 ## Textures
 
-- `_d`: base colour, alpha = gloss = (255 - roughness) / 2 (roughness 200 without a map); 2048², BC3 with mips.
+- `_d`: base colour, alpha = gloss = (255 - roughness) / 2 (roughness 200 without a map); 2048², BC3 with mips; with
+  [attachments](#attachments) 4096 × 2048, the parts in the right half.
 - `_n`: the game's character layout, X in alpha and Y in green, Y flipped from glTF's +Y up; red and blue 0.
