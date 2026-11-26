@@ -35,7 +35,7 @@ public static class Races
         TieflingMaleCharacter = "42-" + FileName,
         BatfolkMaleCharacter = "29-" + FileName, BatfolkFemaleCharacter = "35-" + FileName,
         WolfkinMaleCharacter = "37-" + FileName, WolfkinFemaleCharacter = "38-" + FileName, BeepbotCharacter = "20-" + FileName,
-        OwlkindCharacter = "44-" + FileName;
+        OwlkindFemaleCharacter = "44-" + FileName, OwlkindMaleCharacter = "46-" + FileName;
 
     /// <summary>
     /// The RACE_GROUP ids: the races the character editor lists.
@@ -173,10 +173,11 @@ public static class Races
         BeepbotTraits);
 
     /// <summary>
-    /// Owl women: their own feathered, beaked heads and taloned hands and feet (male fit with a female bust, single gender, as the crab queen);
-    /// a Greenlander's traits.
+    /// Owl people: their own feathered, beaked heads and taloned hands and feet, imported <c>palms</c> so their hands hang palm to thigh; a
+    /// Greenlander's traits.
     /// </summary>
-    public static readonly Subrace Owlkind = new("owlkind", OwlkindRace, Body("owlkind", true), null, [new("owlkind", OwlkindCharacter, false)]);
+    public static readonly Subrace Owlkind = new("owlkind", OwlkindRace, Body("owlkindmale", true), Body("owlkindfemale", true),
+        [new("owlkindmale", OwlkindMaleCharacter, false), new("owlkindfemale", OwlkindFemaleCharacter, true)]);
 
     /// <summary>
     /// The character editor's races.
