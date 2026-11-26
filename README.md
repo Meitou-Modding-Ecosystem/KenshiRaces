@@ -11,6 +11,7 @@ other mods add their own races and subraces with. GPL-3.0-or-later.
   `.claude/skills/kenshi-races-dependent`).
 - The animation library (188 clips for every race on the human skeletons) and how it was made: [docs/animations.md](docs/animations.md).
 - Fitting a rigged `.glb` body (Meshy, Hi3D "3ds Max Biped") onto the game's skeleton: [docs/race-import.md](docs/race-import.md).
+- The whole character pipeline, `.glb` to playable race (hands, chest, clothing, sliders), and how it compares with the Motion Lab: [docs/character-pipeline.md](docs/character-pipeline.md).
 
 - Build and run locally with Visual Studio, VS Code or the terminal (this repo's engine or the installed launcher, deployed to the game): [docs/play.md](docs/play.md).
 - Setting up the repos on your machine: [docs/local-development.md](docs/local-development.md).
