@@ -67,22 +67,26 @@ public static class PartMap
     }
 
     /// <summary>
-    /// Each human vertex's part: its own from the map, else that of the nearest vertex with one within <see cref="Grow"/>.
+    /// Each human vertex's part: its own from the map, else that of the nearest vertex with one, carried by the same bone, within
+    /// <see cref="Grow"/> (a hanging hand or forearm beside the hip band takes none of it).
     /// </summary>
     static uint?[] Grown(HumanBody human, Rgba humanMap)
     {
         var own = human.Uvs.Select(uv => Colour(humanMap, uv)).ToArray();
-        var marked = Enumerable.Range(0, own.Length).Where(i => own[i] is not null).ToArray();
+        var marked = Enumerable.Range(0, own.Length)
+            .Where(i => own[i] is not null)
+            .GroupBy(i => human.Bones[i])
+            .ToDictionary(g => g.Key, g => g.ToArray());
         var grown = new uint?[own.Length];
         for (int v = 0; v < own.Length; v++)
         {
-            if (own[v] is not null || marked.Length == 0)
+            if (own[v] is not null || !marked.TryGetValue(human.Bones[v], out var sameBone))
             {
                 grown[v] = own[v];
                 continue;
             }
 
-            int nearest = Nearest(human.Positions[v], marked, human.Positions);
+            int nearest = Nearest(human.Positions[v], sameBone, human.Positions);
             if (Vector3.Distance(human.Positions[v], human.Positions[nearest]) <= Grow) grown[v] = own[nearest];
         }
 
