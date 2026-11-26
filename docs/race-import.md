@@ -127,7 +127,8 @@ The race's `part map male`/`female` PNG marks which body part each vertex belong
 (engine docs/characters.md "Hidden body parts"). The tool gives each fitted vertex the part of the nearest human body vertex carried by
 the same bone, read from the rig's part map at that vertex's uv, and writes it at the fitted vertex's own uv (1024 × 1024,
 other texels transparent). Each human part is first grown by 0.8 units (a vertex without a part takes that of the nearest marked vertex
-within that distance), since a bulkier body clips over a wider band.
+carried by the same bone within that distance), since a bulkier body clips over a wider band. Growing across bones gave the hanging
+forearms and hands the hip band, which jackets hide (**Observed**, Owlkind woman: holes at the elbows under a jacket).
 
 **Observed** (`MaleMask_Default.png`, 256², sampled at `human_male.mesh` uvs as the game samples them): 642 of 15,504 vertices have a part:
 red the upper chest and shoulder tops, white bands round the upper arms, green the belly front. `hide parts` in the base data (rebirth.mod):
