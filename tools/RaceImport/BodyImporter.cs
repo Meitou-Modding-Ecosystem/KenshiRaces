@@ -57,7 +57,7 @@ public static class BodyImporter
         var max = mesh.Positions.Aggregate(Vector3.Max);
         return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {mesh.Positions.Length} vertices, {mesh.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
             $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {hideable} vertices in hideable parts, {parts.Length} parts attached, " +
-            $"{membrane.Count(m => m)} vertices of wing membrane, {mesh.Poses.Length} face poses, {toned} skin-toned triangles, hands twisted {Twists(fit)}";
+            $"{membrane.Count(m => m)} vertices of wing membrane, {mesh.Poses.Length} face poses, {toned} skin-toned triangles, hands twisted {Twists(fit)}, {fit.WristJoints} wrist joints on the hands";
     }
 
     /// <summary>

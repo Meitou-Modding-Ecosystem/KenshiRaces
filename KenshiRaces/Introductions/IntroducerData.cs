@@ -69,7 +69,8 @@ static class IntroducerData
         [Races.WolfkinMaleCharacter] = "Wolfkin man",
         [Races.WolfkinFemaleCharacter] = "Wolfkin woman",
         [Races.BeepbotCharacter] = "beepbot",
-        [Races.OwlkindCharacter] = "Owlkind woman",
+        [Races.OwlkindMaleCharacter] = "Owlkind man",
+        [Races.OwlkindFemaleCharacter] = "Owlkind woman",
     };
 
     /// <summary>
@@ -300,7 +301,7 @@ static class IntroducerData
         [Races.BatfolkGroup] = "The bat people.",
         [Races.WolfkinGroup] = "The wolf people.",
         [Races.BeepbotGroup] = "The machine.",
-        [Races.OwlkindGroup] = "The owl woman.",
+        [Races.OwlkindGroup] = "The owl people.",
     };
 
     /// <summary>
@@ -323,7 +324,8 @@ static class IntroducerData
         [Races.WolfkinMaleCharacter] = "A Wolfkin man.",
         [Races.WolfkinFemaleCharacter] = "A Wolfkin woman.",
         [Races.BeepbotCharacter] = "Bring the machine.",
-        [Races.OwlkindCharacter] = "Send for her.",
+        [Races.OwlkindMaleCharacter] = "An Owlkind man.",
+        [Races.OwlkindFemaleCharacter] = "An Owlkind woman.",
     };
 
     /// <summary>

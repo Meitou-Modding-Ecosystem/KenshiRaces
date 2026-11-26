@@ -106,8 +106,9 @@ models' weights leave `Spine2` and `Neck` empty, carrying the chest on `Spine1` 
 Waist dragged the chest and Chest did nothing; the Leoma tails are bound to a thigh or a toe. On the surface with uv seams
 welded:
 
-1. Tails (before slimming): a vertex carried by a leg bone, behind depth -0.6 and over 0.8 units from every human vertex, goes to `Bip01 Pelvis`; so do its
-   neighbours carried by the same bone, behind -0.6 and over 0.3 units from the human (the tail's root). Slimming leaves the tail alone and
+1. Tails (before slimming): a vertex carried by a leg bone, behind depth -0.6, over 0.8 units from every human vertex and over 1.5 units from every
+   foot and toe joint (a heel's talon is no tail: the Owlkind man's stretched behind his walk), goes to `Bip01 Pelvis`; so do its neighbours carried by
+   the same bone, behind -0.6, over 0.3 units from the human and away from the feet (the tail's root). Slimming leaves the tail alone and
    fades out within 1.5 units of it, so the back is not pulled in around the tail's root (**Observed**, male Leoma: a notch above the tail).
 2. After the skin conform, each vertex carried by the pelvis, spines, neck, clavicles, upper arms, thighs or the bust bones, or by the head below the game's head
    joint, blends to the human's weights there (the six nearest human torso, neck, head, upper-limb vertices' weights by inverse distance):
@@ -141,8 +142,9 @@ The fit turns each bone onto the game's direction but keeps its twist, so a mode
 them so (the wolves' paws faced forward). The game's hands hang palm to thigh, their breadth running front to back (**Verified** on
 `human_male.mesh` and `human_female.mesh`); the skeleton has no finger bones, so a hand is one rigid shape on `Bip01 L Hand` / `R Hand`. With
 `palms` each hand is turned about its forearm so the breadth of the vertices it carries (fingers included) runs front to back, the forearm taking
-half the turn so neither wrist nor elbow wrings; a turn under about 30 degrees, or a hand without a clear palm, is left alone. The log line gives
-the turns. Crab claws are pincers, not palms: leave the option off for them.
+half the turn so neither wrist nor elbow wrings; a turn under about 30 degrees, or a hand without a clear palm, is left alone. With `palms` a
+helper joint hung off the forearm in its last quarter (Meshy's thumb) follows the hand, so the thumb turns with it in the fit and in play. The
+log line gives the turns and the count of such wrist joints. Crab claws are pincers, not palms: leave the option off for them.
 
 ## Wings
 
