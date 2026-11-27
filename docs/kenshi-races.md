@@ -1,13 +1,14 @@
 # Kenshi Races
 
-Eight new races for the character editor, each with subraces, on the game's human skeletons (`kenshi.races`, no dependencies): every record
+Seven new races for the character editor, each with subraces, and two new subraces of the game's Skeleton (the beepbot and the Kat-Lon), on the game's human skeletons (`kenshi.races`, no dependencies): every record
 added at load, the bodies fitted by the [race import](race-import.md). It also ships an [animation library](animations.md) of 188 clips for
 every race on those skeletons. Mods use the races and clips, add subraces or add their own races:
 [depending-on-kenshi-races.md](depending-on-kenshi-races.md).
 
 ## Races
 
-The editor lists each RACE_GROUP as a race and its RACEs as subraces (engine docs/characters.md "Character editor").
+The editor lists each RACE_GROUP as a race and its RACEs as subraces (engine docs/characters.md "Character editor"). The beepbot and the Kat-Lon
+join the game's own Skeleton RACE_GROUP (an edit adding them to its list), so the editor shows them beside the Skeleton's own subraces.
 
 | Race (RACE_GROUP) | Subrace (RACE) | Genders | CHARACTERs |
 | --- | --- | --- | --- |
@@ -20,7 +21,7 @@ The editor lists each RACE_GROUP as a race and its RACEs as subraces (engine doc
 | Tiefling `33-` | tiefling `26-` | male, female | tieflingmale `42-`, tieflingfemale `27-` |
 | Batfolk `34-` | batfolk `28-` | male, female | batfolkmale `29-`, batfolkfemale `35-` |
 | Wolfkin `39-` | wolfkin `36-` | male, female | wolfkinmale `37-`, wolfkinfemale `38-` |
-| Beepbot `41-` | beepbot `16-` | single | beepbot `20-` |
+| Skeleton (the game's, `42903-rebirth.mod`) | beepbot `16-` | single | beepbot `20-` |
 | | katlon `47-` | single | katlon `48-` |
 | Owlkind `45-` | owlkind `43-` | male, female | owlkindmale `46-`, owlkindfemale `44-` |
 

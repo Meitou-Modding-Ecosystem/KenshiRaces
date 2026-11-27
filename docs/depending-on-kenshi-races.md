@@ -55,7 +55,7 @@ public void EditData(ModDataContext c)
 - CHARACTERs (kitless, recruitable): `LeomaMaleCharacter`, `LeomaFemaleCharacter`, `CrevanMaleCharacter`, `CrevanFemaleCharacter`,
   `CrabmanCharacter`, `CrabQueenCharacter`, `SpidercrabCharacter`, `GhostcrabCharacter`, `TieflingMaleCharacter`, `TieflingFemaleCharacter`, `BatfolkMaleCharacter`, `BatfolkFemaleCharacter`,
   `WolfkinMaleCharacter`, `WolfkinFemaleCharacter`, `BeepbotCharacter`, `KatlonCharacter`, `OwlkindMaleCharacter`, `OwlkindFemaleCharacter`.
-- RACE_GROUPs (the editor's races): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`, `TieflingGroup`, `BatfolkGroup`, `WolfkinGroup`, `BeepbotGroup`, `OwlkindGroup`. `Races.Recruit` is the "Join us." talk.
+- RACE_GROUPs (the editor's races): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`, `TieflingGroup`, `BatfolkGroup`, `WolfkinGroup`, `OwlkindGroup`, and the game's own `SkeletonGroup` (`42903-rebirth.mod`), which the beepbot and the Kat-Lon join. `Races.Recruit` is the "Join us." talk.
 - `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen`, `Spidercrab`, `Ghostcrab`, `Tiefling`, `Batfolk`, `Wolfkin`, `Beepbot`, `Katlon`, `Owlkind` (`Subrace`) and `Races.Groups` describe them. Table:
   [kenshi-races.md "Races"](kenshi-races.md#races).
 

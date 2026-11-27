@@ -1,6 +1,6 @@
 ---
 name: kenshi-races-dependent
-description: Use when making a Meitou code mod depend on Kenshi Races, using the Leoma, Crevan, Crabfolk, Tiefling, Batfolk, Wolfkin, Beepbot (beepbot, Kat-Lon) or Owlkind races, adding a subrace (e.g. a hermit crab), playing its animation library (wave, dance, throw...), or fitting a new rigged .glb body as a race.
+description: Use when making a Meitou code mod depend on Kenshi Races, using the Leoma, Crevan, Crabfolk, Tiefling, Batfolk, Wolfkin or Owlkind races, the Skeleton subraces beepbot and Kat-Lon, adding a subrace (e.g. a hermit crab), playing its animation library (wave, dance, throw...), or fitting a new rigged .glb body as a race.
 ---
 
 # Build on Kenshi Races

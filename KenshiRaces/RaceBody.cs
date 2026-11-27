@@ -91,4 +91,5 @@ public sealed record Subrace(string Name, string RaceId, RaceBody? Male, RaceBod
 /// <param name="Name">The name the editor shows, e.g. <c>Leoma</c>.</param>
 /// <param name="Id">The RACE_GROUP record's string id.</param>
 /// <param name="Subraces">The subraces, in the editor's order.</param>
-public sealed record RaceGroup(string Name, string Id, IReadOnlyList<Subrace> Subraces);
+/// <param name="Existing">Whether the group is the game's own (e.g. the Skeleton): its subraces join it instead of a new RACE_GROUP.</param>
+public sealed record RaceGroup(string Name, string Id, IReadOnlyList<Subrace> Subraces, bool Existing = false);

@@ -142,10 +142,22 @@ public sealed class RaceRecordsTests
     }
 
     [Fact]
-    public void The_Kat_Lon_is_a_Beepbot_subrace()
+    public void The_beepbot_and_the_Kat_Lon_join_the_games_Skeleton_race()
     {
-        Assert.Equal([Races.Beepbot, Races.Katlon], Races.BeepbotRaces.Subraces);
+        Assert.Equal([Races.Beepbot, Races.Katlon], Races.SkeletonRaces.Subraces);
+        Assert.Equal("42903-rebirth.mod", Races.SkeletonRaces.Id);
+        Assert.True(Races.SkeletonRaces.Existing);
+        Assert.All(Races.Groups.Where(g => g != Races.SkeletonRaces), g => Assert.False(g.Existing));
         Assert.Same(Races.BeepbotTraits, Races.Katlon.Traits);
+    }
+
+    [Fact]
+    public void The_subraces_keep_their_record_ids_so_saves_find_them()
+    {
+        Assert.Equal("16-KenshiRaces.mod", Races.BeepbotRace);
+        Assert.Equal("20-KenshiRaces.mod", Races.BeepbotCharacter);
+        Assert.Equal("47-KenshiRaces.mod", Races.KatlonRace);
+        Assert.Equal("48-KenshiRaces.mod", Races.KatlonCharacter);
     }
 
     [Fact]
