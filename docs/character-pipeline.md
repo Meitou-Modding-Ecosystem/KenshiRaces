@@ -81,6 +81,7 @@ dotnet run --project tools\RaceImport -c Release -- "$Models\owlkindmale-rigged.
 | Thumbs left behind when the hand turns or moves | `palms`: a helper joint in the forearm's last quarter (Meshy's thumb) follows the hand | [Hands](race-import.md#hands) |
 | Talons, claws and fingers bend apart from the hand | Joints without a game bone follow their nearest Biped ancestor (the hand: one rigid shape) | [What the model needs](race-import.md#what-the-model-needs) |
 | Body shows through coats, sleeves, trousers, boots | Slimming to the human's extent, then skin conform onto the human's skin | [Slimming](race-import.md#slimming), [Skin conform](race-import.md#skin-conform) |
+| Bulky arms through sleeves; a groin tuft through trousers | Arms pulled onto their own arm's human skin; the front of the crotch onto the pelvis skin | [Skin conform](race-import.md#skin-conform) |
 | Skin drawn through coats and jackets | Part map from the human's, by nearest human vertex on the same bone | [Part map](race-import.md#part-map) |
 | Holes at the elbows under a jacket | Part map grows only within a bone, so hanging forearms don't take the hip band | [Part map](race-import.md#part-map) |
 | Chest and Neck sliders do nothing, Stomach and Waist drag the chest | Human weights copied onto the torso, neck and upper limbs (Meshy leaves `Spine2` and `Neck` empty) | [Human weights](race-import.md#human-weights) |
@@ -97,7 +98,10 @@ Check each body before committing:
 - Without the game window (the cloud): skin `<stem>.mesh` with clips from `KenshiRaces\items\animations\kenshiraces_anims_<gender>.skeleton`
   using the engine's `OgreMeshReader` and `OgreSkeletonReader`, write OBJ and render it (Blender).
 - In game ([kenshi-races.md "Testing in game"](kenshi-races.md#testing-in-game)): F10 **Kenshi Races: spawn race**, then dress the character
-  in a Drifter's Jacket (`hide parts` 1), a Longcoat (3) and Monk Pants (0), and move the editor's sliders.
+  in a Drifter's Jacket (`hide parts` 1), a Longcoat (3), Armoured Rags (0: nothing hidden, so bulky arms and chest show) and Monk Pants
+  (0), and move the editor's sliders.
+- Clothing fit without the game: measure and render against the human body as in
+  [race-import.md "Re-import every race"](race-import.md#re-import-every-race), steps 3 and 4.
 
 ## 7. Make it a race
 
