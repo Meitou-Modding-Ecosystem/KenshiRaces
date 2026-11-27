@@ -41,7 +41,7 @@ feathered heads and talons; imported `palms` ([hands](race-import.md#hands)), th
 thigh, and both models' thumbs, which Meshy hangs off the forearm, follow the hands. Source
 models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
 Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`, `spidercrab.glb`, `ghostcrab.glb` and
-`tiefling-female.glb` (female, `nohair skintone attach=horns.glb`) and `tieflingmale-rigged.glb` (male, `nohair skintone palms attach=horns.glb`: its palms faced forward), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless attach=wolfears.glb attach=batwings.glb`, and
+`tiefling-female.glb` (female, `hairback skintone attach=horns.glb`) and `tieflingmale-rigged.glb` (male, `nohair skintone palms attach=horns.glb`: its palms faced forward), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless attach=wolfears.glb attach=batwings.glb`, and
 `wolfman-rigged.glb` (male, a Mixamo rig) and `wolfwoman-rigged.glb` (female), both `headless palms attach=wolfears.glb`; owlkindmale from `owlkindmale-rigged.glb` (`male palms`) and owlkindfemale from `owlkindfemale-rigged.glb` (`female palms`); beepbot from `beepbot-highpoly.glb` (1M vertices, unrigged), decimated to 40,000
 triangles with its normals baked, carrying the weights of the Meshy rig of the low-poly `beepbot-rigged.glb` (nearest face, same frame after
 that rig's scale 1.711 and lift 0.85 m), `rigid`; katlon from `kittycatlon-rigged.glb` (3,550 vertices, Meshy rig) `male rigid`; chibot from `chibot-rigged.glb`

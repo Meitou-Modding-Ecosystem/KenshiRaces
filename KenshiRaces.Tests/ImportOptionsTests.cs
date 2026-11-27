@@ -46,6 +46,14 @@ public sealed class ImportOptionsTests
     }
 
     [Fact]
+    public void Hairback_is_nohair_that_clears_the_back()
+    {
+        var options = ImportOptions.Parse(["female", "hairback"]);
+
+        Assert.Equal(new ImportOptions(HumanRig.Female, Headless: true, NoHair: true, HairBack: true), options);
+    }
+
+    [Fact]
     public void Parts_are_attached_in_order()
     {
         var options = ImportOptions.Parse(["attach=ears.glb", "wings", "attach=parts/wings.glb"]);
