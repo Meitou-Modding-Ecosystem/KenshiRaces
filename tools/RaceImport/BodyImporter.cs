@@ -50,7 +50,7 @@ public static class BodyImporter
 
         Directory.CreateDirectory(outFolder);
         SkinnedMeshWriter.Write(Path.Combine(outFolder, stem + ".mesh"), mesh, stem, rig.Skeleton);
-        var painted = options.SkinTone && classes is not null ? SkinTone.Repainted(body, classes, TextureSide) : body;
+        var painted = options.SkinTone && classes is not null ? SkinTone.Repainted(body, classes, TextureSide, options.Relief) : body;
         bool normalMap = BodyTextures.Write(painted, parts, outFolder, stem, TextureSide);
         int toned = options.SkinTone && classes is not null ? WriteMask(outFolder, stem, mesh, source, body, classes) : 0;
         bool[] attached = [.. source.Select(v => v == -1)];

@@ -7,12 +7,12 @@ namespace RaceImport;
 /// and whether the hands are turned palm to thigh (<see cref="BodyFit"/>, palms) and whether the model keeps its own weights and shape
 /// (<c>rigid</c>: no slimming, skin conform, tail move or human weights; for mechanical bodies whose parts must not stretch), whether the model's
 /// own hair goes with its head (<c>nohair</c>, <see cref="HeadGraft"/>; <c>hairback</c> also clears what that hair left over its back,
-/// <see cref="HairHolePatch"/>), whether the skin takes the editor's skin tone (<see cref="SkinTone"/>)
-/// and the static part models merged into it (<see cref="Attachments"/>).
+/// <see cref="HairHolePatch"/>), whether the skin takes the editor's skin tone (<see cref="SkinTone"/>), how much of its muscle relief the
+/// skin keeps (<see cref="RaceImport.Relief"/>, with skintone; 1 all) and the static part models merged into it (<see cref="Attachments"/>).
 /// </summary>
 public sealed record ImportOptions(HumanRig Rig, float Slim = 1, HumanRig? Bust = null, float Neck = 1, bool Wings = false, bool Headless = false,
     bool Ears = false, bool Palms = false, bool Rigid = false, bool NoHair = false, bool SkinTone = false,
-    bool HairBack = false)
+    bool HairBack = false, float Relief = 1)
 {
     /// <summary>
     /// The part models (.glb paths) attached, in order; each has its spec in <c>parts/&lt;stem&gt;.json</c>. Empty is the one shared empty array,
@@ -23,7 +23,7 @@ public sealed record ImportOptions(HumanRig Rig, float Slim = 1, HumanRig? Bust 
     /// <summary>
     /// The options from the command line's optional arguments, in any order: <c>male</c> / <c>female</c>, a slimming strength,
     /// <c>bust=male|female</c>, <c>neck=&lt;share&gt;</c>, <c>wings</c>, <c>headless</c>, <c>ears</c> (headless with the model's ears) and
-    /// <c>palms</c>, <c>rigid</c>, <c>nohair</c> (headless without the model's hair), <c>hairback</c> (nohair, clearing the back), <c>skintone</c> and <c>attach=&lt;part.glb&gt;</c>
+    /// <c>palms</c>, <c>rigid</c>, <c>nohair</c> (headless without the model's hair), <c>hairback</c> (nohair, clearing the back), <c>skintone</c>, <c>relief=&lt;0-1&gt;</c> (implies skintone) and <c>attach=&lt;part.glb&gt;</c>
     /// (repeatable); null for anything else.
     /// </summary>
     public static ImportOptions? Parse(IEnumerable<string> arguments)
@@ -58,6 +58,8 @@ public sealed record ImportOptions(HumanRig Rig, float Slim = 1, HumanRig? Bust 
             return options with { Attach = [.. options.Attach, argument[7..]] };
         if (argument.StartsWith("bust=", StringComparison.Ordinal))
             return HumanRig.Named(argument[5..]) is { } bust ? options with { Bust = bust } : null;
+        if (argument.StartsWith("relief=", StringComparison.Ordinal))
+            return Number(argument[7..]) is { } relief ? options with { SkinTone = true, Relief = Math.Clamp(relief, 0, 1) } : null;
         if (argument.StartsWith("neck=", StringComparison.Ordinal))
             return Number(argument[5..]) is { } neck ? options with { Neck = Math.Clamp(neck, 0.2f, 1.5f) } : null;
 

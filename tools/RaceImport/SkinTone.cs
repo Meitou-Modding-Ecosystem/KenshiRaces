@@ -33,15 +33,18 @@ public static class SkinTone
 
     /// <summary>
     /// <paramref name="body"/> with the texels of its <see cref="Texel.Skin"/> triangles repainted to <see cref="HumanSkin"/> times their
-    /// brightness against the skin's median brightness, at <paramref name="side"/> pixels square.
+    /// brightness against the skin's median brightness, at <paramref name="side"/> pixels square. Below 1, <paramref name="relief"/> softens the
+    /// skin's shading and the normal map (<see cref="Relief"/>).
     /// </summary>
-    public static SourceBody Repainted(SourceBody body, Texel[] classes, int side)
+    public static SourceBody Repainted(SourceBody body, Texel[] classes, int side, float relief = 1)
     {
         var image = Rgba.Decode(body.BaseColourImage ?? throw new InvalidDataException("the model has no base colour texture")).Resized(side, side);
         var skin = Grown(Covered(side, body.Uvs, body.Indices, classes), side, Grow);
         float reference = Median(image, skin);
+        float[] brightness = [.. Enumerable.Range(0, skin.Length).Select(i => skin[i] ? Brightness(image.Pixels, 4 * i) : 0)];
+        var softened = Relief.Softened(brightness, skin, side, relief);
         for (int i = 0; i < skin.Length; i++)
-            if (skin[i]) Repaint(image.Pixels, 4 * i, reference);
+            if (skin[i]) Repaint(image.Pixels, 4 * i, softened[i] / reference);
 
         return new SourceBody
         {
@@ -55,7 +58,7 @@ public static class SkinTone
             JointPositions = body.JointPositions,
             BaseColourImage = PartMap.Png(image),
             MetallicRoughnessImage = body.MetallicRoughnessImage,
-            NormalImage = body.NormalImage,
+            NormalImage = Relief.FlattenedNormal(body.NormalImage, relief),
         };
     }
 
@@ -66,11 +69,12 @@ public static class SkinTone
     static readonly float MaxShare = 255 / HumanSkin.X;
 
     /// <summary>
-    /// One texel repainted: <see cref="HumanSkin"/> times its brightness over <paramref name="reference"/>, at most <see cref="MaxShare"/>.
+    /// One texel repainted: <see cref="HumanSkin"/> times <paramref name="share"/> (its brightness over the skin's median), at most
+    /// <see cref="MaxShare"/>.
     /// </summary>
-    static void Repaint(byte[] pixels, int i, float reference)
+    static void Repaint(byte[] pixels, int i, float share)
     {
-        float share = Math.Min(Brightness(pixels, i) / reference, MaxShare);
+        share = Math.Min(share, MaxShare);
         pixels[i] = Byte(HumanSkin.X * share);
         pixels[i + 1] = Byte(HumanSkin.Y * share);
         pixels[i + 2] = Byte(HumanSkin.Z * share);
