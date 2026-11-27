@@ -80,7 +80,7 @@ dotnet run --project tools\RaceImport -c Release -- "$Models\owlkindmale-rigged.
 | Twisted hands (palms forward or down) | `palms`: each hand turned about its forearm, palm to thigh; the forearm takes half the turn | [Hands](race-import.md#hands) |
 | Thumbs left behind when the hand turns or moves | `palms`: a helper joint in the forearm's last quarter (Meshy's thumb) follows the hand | [Hands](race-import.md#hands) |
 | Talons, claws and fingers bend apart from the hand | Joints without a game bone follow their nearest Biped ancestor (the hand: one rigid shape) | [What the model needs](race-import.md#what-the-model-needs) |
-| Body shows through coats, trousers, boots | Slimming to the human's extent, then skin conform onto the human's skin | [Slimming](race-import.md#slimming), [Skin conform](race-import.md#skin-conform) |
+| Body shows through coats, sleeves, trousers, boots | Slimming to the human's extent, then skin conform onto the human's skin | [Slimming](race-import.md#slimming), [Skin conform](race-import.md#skin-conform) |
 | Skin drawn through coats and jackets | Part map from the human's, by nearest human vertex on the same bone | [Part map](race-import.md#part-map) |
 | Holes at the elbows under a jacket | Part map grows only within a bone, so hanging forearms don't take the hip band | [Part map](race-import.md#part-map) |
 | Chest and Neck sliders do nothing, Stomach and Waist drag the chest | Human weights copied onto the torso, neck and upper limbs (Meshy leaves `Spine2` and `Neck` empty) | [Human weights](race-import.md#human-weights) |

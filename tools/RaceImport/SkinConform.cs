@@ -3,9 +3,37 @@ using System.Numerics;
 namespace RaceImport;
 
 /// <summary>
-/// Pulls the torso, hips, legs and feet onto the human body's skin, so the game's trousers, skirts, coats and boots (modelled around the human)
-/// cover them (docs/race-import.md "Skin conform"). Runs after slimming, which only pulls to the human's widest extent per slice: a vertex outside
-/// the human surface by more than a cloth margin moves onto it, unless it is far out (a tail, a claw), carried by the arms or head, or near a tail.
+/// The parts of a body <see cref="SkinConform"/> pulls onto the human skin.
+/// </summary>
+[Flags]
+public enum SkinPull
+{
+    /// <summary>
+    /// The pelvis, spines, bust, legs and feet.
+    /// </summary>
+    Torso = 1,
+
+    /// <summary>
+    /// The clavicles, upper arms and forearms, each onto its own arm's skin.
+    /// </summary>
+    Arms = 2,
+
+    /// <summary>
+    /// The front of the crotch (a fur tuft), onto the human's pelvis skin.
+    /// </summary>
+    Groin = 4,
+
+    /// <summary>
+    /// Everything a full import pulls.
+    /// </summary>
+    All = Torso | Arms | Groin,
+}
+
+/// <summary>
+/// Pulls the torso, hips, legs, feet, arms and the front of the crotch onto the human body's skin, so the game's trousers, skirts, coats, sleeves
+/// and boots (modelled around the human) cover them (docs/race-import.md "Skin conform"). Runs after slimming, which only pulls to the human's
+/// widest extent per slice: a vertex outside the human surface by more than a cloth margin moves onto it, unless it is far out (a tail, a claw),
+/// carried by the hands or head, or near a tail.
 /// </summary>
 public sealed class SkinConform
 {
@@ -19,6 +47,26 @@ public sealed class SkinConform
     ];
 
     /// <summary>
+    /// The arm bones of each side, whose vertices are pulled onto that arm's skin (<see cref="SkinPull.Arms"/>); the hands stay, being covered
+    /// only by gloves.
+    /// </summary>
+    static readonly string[][] ArmBones =
+    [
+        ["Bip01 L Clavicle", "Bip01 L UpperArm", "Bip01 L Forearm"],
+        ["Bip01 R Clavicle", "Bip01 R UpperArm", "Bip01 R Forearm"],
+    ];
+
+    /// <summary>
+    /// The bones of each side's human arm skin: the arm bones and the hand.
+    /// </summary>
+    static readonly string[][] ArmSkinBones = [[.. ArmBones[0], "Bip01 L Hand"], [.. ArmBones[1], "Bip01 R Hand"]];
+
+    /// <summary>
+    /// The bones of the human pelvis skin a groin vertex is pulled onto (<see cref="SkinPull.Groin"/>).
+    /// </summary>
+    static readonly string[] PelvisSkinBones = ["Bip01 Pelvis", "Bip01 Spine"];
+
+    /// <summary>
     /// Room left for tight cloth beyond the human skin (game units, 0.1 m).
     /// </summary>
     const float Margin = 0.05f;
@@ -30,8 +78,9 @@ public sealed class SkinConform
     const float Full = 1.0f, Reach = 1.6f;
 
     /// <summary>
-    /// Half the width of the gap between the legs: a vertex below the pelvis joint and this close to the middle line stays, since the nearest
-    /// skin is an inner thigh and pulling there folds what hangs between the legs (**Observed**, male Crevan: feathers turned inside out).
+    /// Half the width of the gap between the legs: a vertex below the pelvis joint and this close to the middle line is never pulled onto the
+    /// nearest skin, which is an inner thigh, since that folds what hangs between the legs (**Observed**, male Crevan: feathers turned inside out).
+    /// In front of the pelvis joint it is pulled onto the pelvis skin only (<see cref="SkinPull.Groin"/>); behind it, it stays.
     /// </summary>
     const float Crotch = 0.6f;
 
@@ -61,19 +110,34 @@ public sealed class SkinConform
     readonly List<int>[] _around;
 
     /// <summary>
-    /// The pulled bones' handles.
+    /// The parts pulled.
+    /// </summary>
+    readonly SkinPull _pulls;
+
+    /// <summary>
+    /// The torso bones' handles (<see cref="Bones"/>).
     /// </summary>
     readonly HashSet<ushort> _pulled;
 
     /// <summary>
-    /// The height of the pelvis joint (<see cref="Crotch"/>).
+    /// Each side's arm bones' handles (<see cref="ArmBones"/>).
     /// </summary>
-    readonly float _pelvis;
+    readonly HashSet<ushort>[] _arms;
 
     /// <summary>
-    /// Prepares the pull onto <paramref name="human"/> for the bones of <paramref name="kenshi"/>.
+    /// The skins searched: every human vertex, each side's arm vertices and the pelvis vertices (<see cref="Skin"/>).
     /// </summary>
-    public SkinConform(KenshiSkeleton kenshi, HumanBody human)
+    readonly int[][] _skins;
+
+    /// <summary>
+    /// The pelvis joint (<see cref="Crotch"/>).
+    /// </summary>
+    readonly Vector3 _pelvis;
+
+    /// <summary>
+    /// Prepares the pull of <paramref name="pulls"/> onto <paramref name="human"/> for the bones of <paramref name="kenshi"/>.
+    /// </summary>
+    public SkinConform(KenshiSkeleton kenshi, HumanBody human, SkinPull pulls = SkinPull.All)
     {
         _skin = human.Positions;
         _triangles = Outward(human.Positions, human.Indices);
@@ -81,8 +145,38 @@ public sealed class SkinConform
         for (int t = 0; t < _triangles.Length; t += 3)
             for (int k = 0; k < 3; k++) _around[_triangles[t + k]].Add(t);
 
-        _pulled = Bones.Where(kenshi.Has).Select(kenshi.Handle).ToHashSet();
-        _pelvis = kenshi.Position("Bip01 Pelvis").Y;
+        _pulls = pulls;
+        _pulled = Handles(kenshi, Bones);
+        _arms = [.. ArmBones.Select(side => Handles(kenshi, side))];
+        _skins =
+        [
+            [.. Enumerable.Range(0, _skin.Length)],
+            SkinOf(human, Handles(kenshi, ArmSkinBones[0])),
+            SkinOf(human, Handles(kenshi, ArmSkinBones[1])),
+            SkinOf(human, Handles(kenshi, PelvisSkinBones)),
+        ];
+        _pelvis = kenshi.Position("Bip01 Pelvis");
+    }
+
+    /// <summary>
+    /// The handles of those of <paramref name="bones"/> the skeleton has.
+    /// </summary>
+    static HashSet<ushort> Handles(KenshiSkeleton kenshi, IEnumerable<string> bones) => bones.Where(kenshi.Has).Select(kenshi.Handle).ToHashSet();
+
+    /// <summary>
+    /// The human vertices whose heaviest bone is one of <paramref name="bones"/>.
+    /// </summary>
+    static int[] SkinOf(HumanBody human, HashSet<ushort> bones) => [.. Enumerable.Range(0, human.Positions.Length).Where(v => bones.Contains(human.Bones[v]))];
+
+    /// <summary>
+    /// The skins of <see cref="_skins"/>: all, the left arm, the right arm, the pelvis.
+    /// </summary>
+    enum Skin
+    {
+        All,
+        LeftArm,
+        RightArm,
+        Pelvis,
     }
 
     /// <summary>
@@ -91,11 +185,11 @@ public sealed class SkinConform
     /// </summary>
     public (Vector3[] Positions, int Moved) Apply(Vector3[] positions, Dictionary<ushort, float>[] weights, int[] indices, float strength, bool[] kept)
     {
-        var share = weights.Select(w => w.Where(p => _pulled.Contains(p.Key)).Sum(p => p.Value)).ToArray();
+        var targets = positions.Select((p, v) => Target(p, weights[v])).ToArray();
         var current = positions;
         for (int pass = 0; pass < Passes; pass++)
         {
-            var offsets = Pulls(current, share);
+            var offsets = Pulls(current, targets);
             BodyConform.Spare(offsets, current, kept);
             offsets = BodyConform.Smoothed(offsets, current, indices, SmoothingRounds);
             BodyConform.Spare(offsets, current, kept);
@@ -107,35 +201,55 @@ public sealed class SkinConform
     }
 
     /// <summary>
-    /// Each vertex's pull: towards the nearest skin by its distance outside it less the margin, faded by distance and scaled by its weight on the
-    /// pulled bones.
+    /// The skin a vertex at <paramref name="position"/> with <paramref name="weights"/> is pulled onto and its share of the pull (0: none): a
+    /// groin vertex the pelvis skin by its torso weight; one carried more by an arm than the torso its arm's skin by its arm weight; any other
+    /// the whole skin by its torso weight.
     /// </summary>
-    Vector3[] Pulls(Vector3[] positions, float[] share)
+    (Skin Skin, float Share) Target(Vector3 position, Dictionary<ushort, float> weights)
+    {
+        float torso = weights.Where(p => _pulled.Contains(p.Key)).Sum(p => p.Value);
+        if (position.Y < _pelvis.Y && MathF.Abs(position.X) < Crotch)
+            return _pulls.HasFlag(SkinPull.Groin) && position.Z > _pelvis.Z ? (Skin.Pelvis, torso) : (Skin.All, 0);
+
+        float left = weights.Where(p => _arms[0].Contains(p.Key)).Sum(p => p.Value);
+        float right = weights.Where(p => _arms[1].Contains(p.Key)).Sum(p => p.Value);
+        float arm = MathF.Max(left, right);
+        if (_pulls.HasFlag(SkinPull.Arms) && arm > torso) return (left >= right ? Skin.LeftArm : Skin.RightArm, arm);
+
+        return (Skin.All, _pulls.HasFlag(SkinPull.Torso) ? torso : 0);
+    }
+
+    /// <summary>
+    /// Each vertex's pull: towards the nearest point of its target skin by its distance outside it less the margin, faded by distance and scaled
+    /// by its share.
+    /// </summary>
+    Vector3[] Pulls(Vector3[] positions, (Skin Skin, float Share)[] targets)
     {
         var offsets = new Vector3[positions.Length];
         Parallel.For(0, positions.Length, v =>
         {
-            if (share[v] <= 0 || positions[v].Y < _pelvis && MathF.Abs(positions[v].X) < Crotch) return;
+            var (skin, share) = targets[v];
+            if (share <= 0) return;
 
-            var (closest, outside) = Nearest(positions[v]);
+            var (closest, outside) = Nearest(positions[v], _skins[(int)skin]);
             float distance = Vector3.Distance(positions[v], closest);
             if (!outside || distance <= Margin || distance >= Reach) return;
 
             float fade = Math.Clamp((Reach - distance) / (Reach - Full), 0, 1);
-            offsets[v] = (closest - positions[v]) * ((distance - Margin) / distance) * fade * share[v];
+            offsets[v] = (closest - positions[v]) * ((distance - Margin) / distance) * fade * share;
         });
 
         return offsets;
     }
 
     /// <summary>
-    /// The nearest point of the skin to <paramref name="point"/> (on the triangles round its nearest human vertices) and whether the point lies
-    /// outside the skin there.
+    /// The nearest point of the skin to <paramref name="point"/> (on the triangles round its nearest human vertices of <paramref name="skin"/>)
+    /// and whether the point lies outside the skin there.
     /// </summary>
-    (Vector3 Closest, bool Outside) Nearest(Vector3 point)
+    (Vector3 Closest, bool Outside) Nearest(Vector3 point, int[] skin)
     {
         var best = (Point: point, Distance: float.MaxValue, Outside: false);
-        foreach (int vertex in NearestVertices(point))
+        foreach (int vertex in NearestVertices(point, skin))
             foreach (int t in _around[vertex])
             {
                 var (a, b, c) = (_skin[_triangles[t]], _skin[_triangles[t + 1]], _skin[_triangles[t + 2]]);
@@ -150,12 +264,12 @@ public sealed class SkinConform
     }
 
     /// <summary>
-    /// The <see cref="Candidates"/> human vertices nearest <paramref name="point"/>.
+    /// The <see cref="Candidates"/> human vertices of <paramref name="skin"/> nearest <paramref name="point"/>.
     /// </summary>
-    int[] NearestVertices(Vector3 point)
+    int[] NearestVertices(Vector3 point, int[] skin)
     {
         var best = new List<(int Index, float Squared)>(Candidates + 1);
-        for (int v = 0; v < _skin.Length; v++)
+        foreach (int v in skin)
         {
             float d = Vector3.DistanceSquared(point, _skin[v]);
             if (best.Count == Candidates && d >= best[^1].Squared) continue;
