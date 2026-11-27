@@ -286,7 +286,7 @@ static class IntroducerData
         [Races.BatfolkGroup] = "The Batfolk. Faces like yours, wings like nothing you've seen. They sleep all day and see in the dark. A man or a woman?",
         [Races.WolfkinGroup] =
             "The Wolfkin. They hear you coming a mile off, and they run in packs. Loyal to the bone, once you're one of theirs. A man or a woman?",
-        [Races.BeepbotGroup] =
+        [Races.SkeletonGroup] =
             "The machines. Scrap and springs that walk and talk, more or less. Nobody knows who built them, and they don't say. Which one?",
         [Races.OwlkindGroup] = "An Owlkind. She'll see you long before you see her, and she hunts at night. Mind the talons.",
     };
@@ -302,7 +302,7 @@ static class IntroducerData
         [Races.TieflingGroup] = "The woman with horns.",
         [Races.BatfolkGroup] = "The bat people.",
         [Races.WolfkinGroup] = "The wolf people.",
-        [Races.BeepbotGroup] = "The machines.",
+        [Races.SkeletonGroup] = "The machines.",
         [Races.OwlkindGroup] = "The owl people.",
     };
 

@@ -47,13 +47,20 @@ public static class RaceRecords
     internal static readonly string[] KitLists = ["backpack", "clothing", "inventory", "shopping", "weapons"];
 
     /// <summary>
-    /// Adds <paramref name="group"/>'s RACE_GROUP and each of its subraces (<see cref="Add"/>).
+    /// Adds each of <paramref name="group"/>'s subraces (<see cref="Add"/>) and its RACE_GROUP listing them, or, for the game's own group
+    /// (<see cref="RaceGroup.Existing"/>), joins them to it (<see cref="JoinGroup"/>).
     /// </summary>
     public static void AddGroup(ModDataContext c, RaceGroup group, string? talk = Races.Recruit)
     {
+        foreach (var subrace in group.Subraces) Add(c, subrace, talk);
+        if (group.Existing)
+        {
+            foreach (var subrace in group.Subraces) JoinGroup(c, group.Id, subrace.RaceId);
+            return;
+        }
+
         var record = c.Add(group.Id, FcsRecordType.RaceGroup, group.Name);
         record.References["races"] = [.. group.Subraces.Select(s => new FcsReference(s.RaceId, 0, 0, 0))];
-        foreach (var subrace in group.Subraces) Add(c, subrace, talk);
     }
 
     /// <summary>

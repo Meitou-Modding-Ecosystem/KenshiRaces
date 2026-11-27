@@ -3,8 +3,8 @@ using Meitou.Data.Gameplay.Bodies;
 namespace KenshiRaces;
 
 /// <summary>
-/// The races Kenshi Races adds (docs/kenshi-races.md "Races"): eight races of the character editor, Leoma, Crevan, Crabfolk, Tiefling, Batfolk,
-/// Wolfkin, Beepbot and Owlkind, with their subraces. Dependents use the ids in their own records (a CHARACTER's <c>race</c>, a squad's members) and add subraces with
+/// The races Kenshi Races adds (docs/kenshi-races.md "Races"): seven races of the character editor, Leoma, Crevan, Crabfolk, Tiefling, Batfolk,
+/// Wolfkin and Owlkind, with their subraces, and the beepbot and the Kat-Lon as subraces of the game's Skeleton. Dependents use the ids in their own records (a CHARACTER's <c>race</c>, a squad's members) and add subraces with
 /// <see cref="RaceRecords.JoinGroup"/>. Subrace and character names are one lowercase word, so the console's <c>spawn</c> takes them unquoted.
 /// </summary>
 public static class Races
@@ -42,7 +42,12 @@ public static class Races
     /// The RACE_GROUP ids: the races the character editor lists.
     /// </summary>
     public const string LeomaGroup = "30-" + FileName, CrevanGroup = "31-" + FileName, CrabfolkGroup = "32-" + FileName, TieflingGroup = "33-" + FileName,
-        BatfolkGroup = "34-" + FileName, WolfkinGroup = "39-" + FileName, BeepbotGroup = "41-" + FileName, OwlkindGroup = "45-" + FileName;
+        BatfolkGroup = "34-" + FileName, WolfkinGroup = "39-" + FileName, OwlkindGroup = "45-" + FileName;
+
+    /// <summary>
+    /// The game's own Skeleton RACE_GROUP (rebirth.mod), which the beepbot and the Kat-Lon join (<see cref="SkeletonRaces"/>).
+    /// </summary>
+    public const string SkeletonGroup = "42903-rebirth.mod";
 
     /// <summary>
     /// The WEAPON the Crabfolk punch with (<see cref="RaceFists"/>).
@@ -193,14 +198,14 @@ public static class Races
     public static readonly RaceGroup LeomaRaces = new("Leoma", LeomaGroup, [Leoma]), CrevanRaces = new("Crevan", CrevanGroup, [Crevan]),
         Crabfolk = new("Crabfolk", CrabfolkGroup, [Crabman, CrabQueen, Spidercrab, Ghostcrab]),
         TieflingRaces = new("Tiefling", TieflingGroup, [Tiefling]), BatfolkRaces = new("Batfolk", BatfolkGroup, [Batfolk]),
-        WolfkinRaces = new("Wolfkin", WolfkinGroup, [Wolfkin]), BeepbotRaces = new("Beepbot", BeepbotGroup, [Beepbot, Katlon]),
+        WolfkinRaces = new("Wolfkin", WolfkinGroup, [Wolfkin]), SkeletonRaces = new("Skeleton", SkeletonGroup, [Beepbot, Katlon], Existing: true),
         OwlkindRaces = new("Owlkind", OwlkindGroup, [Owlkind]);
 
     /// <summary>
     /// Every race of the mod, in the editor's order.
     /// </summary>
     public static IReadOnlyList<RaceGroup> Groups { get; } = [LeomaRaces, CrevanRaces, Crabfolk, TieflingRaces, BatfolkRaces, WolfkinRaces,
-        BeepbotRaces, OwlkindRaces];
+        SkeletonRaces, OwlkindRaces];
 
     /// <summary>
     /// Every subrace of the mod.
