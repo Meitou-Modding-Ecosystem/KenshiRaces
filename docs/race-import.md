@@ -33,6 +33,21 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - Keep the `.glb` outside the repo (tens of MB); commit the four outputs. `.gitignore` lets `*/items/races/*.mesh` and `*.dds` through.
 - A dependent mod runs it from a KenshiRaces clone with its own output folder (`<Mod>/items/races`) and stem.
 
+## Re-import every race
+
+When a change to the tool alters fitted bodies, re-import every body it affects in the same PR, so the committed bodies match the tool:
+
+1. Prove each body's source and options: build the tool from the commit before your change and import each source with the options in
+   [kenshi-races.md "Races"](kenshi-races.md#races); its `.mesh` must be byte-identical to the committed one (the tool is deterministic). A body
+   that differs was imported by an older tool; diff its vertices to see what else changes (the tiefling man: only the hands, from `palms`'s
+   thumb fix) and say so in the PR.
+2. Import every proved body with the changed tool. `rigid` bodies skip slimming and the skin conform.
+3. Measure the fit before and after: per region (by each vertex's heaviest bone), the share of vertices over 0.15 units outside the human body's
+   skin (the nearest point on the human's triangles, outside by the triangle's outward normal). Record the numbers in the section the change
+   touches (as in [Skin conform](#skin-conform)).
+4. Render the bind pose front and side, before and after, with the human body's outline over it, and check the shapes no clothing covers
+   (tails, manes, claws, wing membranes) are unchanged.
+
 ## What the model needs
 
 - One skinned mesh whose skin has the Biped joints `Bip001 Pelvis`, `Spine`, `Spine1`, `Spine2`, `Neck`, `Head`, both `Clavicle`, `UpperArm`,
