@@ -40,7 +40,7 @@ public sealed class HairHolePatchTests
         var source = Enumerable.Range(0, body.Positions.Length).ToArray();
         var uv = new Vector2(0.25f, 0.5f);
 
-        var (mesh, patchedSource, triangles) = HairHolePatch.Apply(body, source, human, kenshi, uv);
+        var (mesh, patchedSource, triangles, _) = HairHolePatch.Apply(body, source, human, kenshi, uv, null);
 
         Assert.True(triangles > 0);
         var added = Enumerable.Range(body.Positions.Length, mesh.Positions.Length - body.Positions.Length).ToList();
@@ -58,6 +58,66 @@ public sealed class HairHolePatchTests
         fuller = fuller with { Positions = [.. fuller.Positions.Select(p => p with { Z = p.Z * 1.6f })] };
 
         Assert.Empty(HairHolePatch.PatchTriangles(fuller, human, kenshi));
+    }
+
+    [Fact]
+    public void Skin_over_a_groove_beside_a_hole_is_not_copied()
+    {
+        var (kenshi, human) = Human();
+        var body = Body(human, t => !InHole(Centre(human, t)));
+        body = body with { Positions = [.. body.Positions.Select(p => InGroove(p) ? p with { Z = p.Z + 0.4f } : p)] };
+        var overGroove = Enumerable.Range(0, human.Indices.Length / 3).Where(t => InGroove(Centre(human, t))).ToList();
+
+        var patch = HairHolePatch.PatchTriangles(body, human, kenshi);
+        var ungrooved = HairHolePatch.PatchTriangles(body, human, kenshi, grooves: false);
+
+        Assert.NotEmpty(overGroove);
+        Assert.DoesNotContain(patch, overGroove.Contains);
+        Assert.Contains(ungrooved, overGroove.Contains);
+        Assert.Contains(patch, t => InHole(Centre(human, t)));
+    }
+
+    /// <summary>
+    /// Whether a point is in the groove sunk into the body's back beside the hole.
+    /// </summary>
+    static bool InGroove(Vector3 p) => p.Z < -0.9f && p.X > 0.9f && p.X < 1.3f && p.Y > 11.5f && p.Y < 13.5f;
+
+    [Fact]
+    public void Hairback_drops_a_shard_over_the_hole_but_not_skin_or_one_in_front()
+    {
+        var (kenshi, human) = Human();
+        var body = Body(human, t => !InHole(Centre(human, t)));
+        int back = Enumerable.Range(0, human.Indices.Length / 3).First(t => InHole(Centre(human, t)));
+        int front = Enumerable.Range(0, human.Indices.Length / 3).First(t => Centre(human, t) is { Z: > 0.9f, Y: > 12 and < 13 });
+        int first = body.Positions.Length;
+        body = WithCopy(WithCopy(body, human, back, new Vector3(0, 0, -0.1f)), human, front, new Vector3(0, 0, 0.1f));
+        var source = Enumerable.Range(0, body.Positions.Length).ToArray();
+
+        var (mesh, _, _, strays) = HairHolePatch.Apply(body, source, human, kenshi, Vector2.Zero, (a, _, _) => a < first);
+        var (plain, _, _, none) = HairHolePatch.Apply(body, source, human, kenshi, Vector2.Zero, null);
+
+        Assert.Equal(1, strays);
+        Assert.DoesNotContain(first, mesh.Indices);
+        Assert.Contains(first + 3, mesh.Indices);
+        Assert.Equal(0, none);
+        Assert.Contains(first, plain.Indices);
+    }
+
+    /// <summary>
+    /// <paramref name="body"/> with a copy of a human triangle, moved by <paramref name="offset"/>, on three vertices of its own (appended).
+    /// </summary>
+    static SkinnedMesh WithCopy(SkinnedMesh body, HumanBody human, int t, Vector3 offset)
+    {
+        int first = body.Positions.Length;
+        var corners = human.Indices.Skip(3 * t).Take(3).ToArray();
+        return body with
+        {
+            Positions = [.. body.Positions, .. corners.Select(v => human.Positions[v] + offset)],
+            Normals = [.. body.Normals, .. corners.Select(_ => Vector3.UnitY)],
+            Uvs = [.. body.Uvs, .. corners.Select(_ => new Vector2(0.5f))],
+            Indices = [.. body.Indices, first, first + 1, first + 2],
+            Weights = [.. body.Weights, .. corners.Select(v => new Dictionary<ushort, float>(human.Weights[v]))],
+        };
     }
 
     /// <summary>

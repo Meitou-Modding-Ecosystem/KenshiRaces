@@ -32,10 +32,13 @@ public sealed class KenshiRacesMod : IMod, IModDataPhase
     {
         c.AddDebugCommand("Kenshi Races: races", _ => Describe(c));
         c.AddDebugCommand(SpawnRaceRow.Label, SpawnRaceRow.Run, hasField: true);
+        var editor = new EditorQueue();
+        c.AddDebugCommand(TryRacesRow.Label, TryRacesRow.Run);
+        c.AddFrame(_ => editor.Open(c.Interface));
         RaceRules.Register(c);
         c.AddDialogueCondition(IntroducerData.NoneOnTheWay, IntroductionSystem.NoneOnTheWay);
         c.AddDialogueEffect(IntroducerData.Introduce, IntroductionSystem.Introduce);
-        c.AddSystem("introductions", b => new IntroductionSystem(b.Find<PopulationSystem>(), Id, c.Log), SystemAnchor.End);
+        c.AddSystem("introductions", b => new IntroductionSystem(b.Find<PopulationSystem>(), Id, c.Log, editor), SystemAnchor.End);
         if (c.Data.Find(Races.LeomaRace) is null) c.LogError("Kenshi Races' records are missing: the data phase did not add them (see the log).");
     }
 

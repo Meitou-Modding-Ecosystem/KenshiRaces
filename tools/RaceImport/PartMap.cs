@@ -142,7 +142,7 @@ public static class PartMap
     /// <summary>
     /// <paramref name="image"/> encoded as an 8-bit RGBA PNG (<see cref="WritePng"/>).
     /// </summary>
-    internal static byte[] Png(Rgba image)
+    public static byte[] Png(Rgba image)
     {
         using var stream = new MemoryStream();
         stream.Write([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);

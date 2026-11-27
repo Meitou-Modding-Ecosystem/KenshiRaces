@@ -4,8 +4,9 @@ namespace RaceImport;
 
 /// <summary>
 /// Raises a body's bust or chest to a human's height (docs/race-import.md "Bust"): the models sit it well below the human's, so the clothing's
-/// chest and the part map's bust region ride above it. The bust is the most forward point of the chest between the waist
-/// (<c>Spine1</c>) and the shoulders; the front of the torso moves up by the difference, fading out above, below and towards the back.
+/// chest and the part map's bust region ride above it. The bust is the most forward point of the chest between the waist (<c>Spine1</c>) and
+/// the shoulders, leaving out what hangs from the waist; the front of the torso moves up by the difference, fading out above, below and towards
+/// the back.
 /// </summary>
 public static class BustLift
 {
@@ -13,6 +14,13 @@ public static class BustLift
     /// Bones whose vertices move with the bust (the torso's); arm and leg vertices stay.
     /// </summary>
     static readonly string[] TorsoBones = ["Pelvis", "Spine", "Spine1", "Spine2", "Neck", "L Clavicle", "R Clavicle"];
+
+    /// <summary>
+    /// The model's vertices hanging from these (their heaviest bone) don't count for its bust's apex: a sash or belt worn at the waist is
+    /// carried by the pelvis and lowest spine (**Observed**, tiefling man: his sash read as a bust 1.5 units low, and his chest rose that far
+    /// into his shoulders).
+    /// </summary>
+    static readonly string[] WaistBones = ["Pelvis", "Spine", "L Thigh", "R Thigh"];
 
     /// <summary>
     /// How far the chest's sides reach from the middle, in game units (0.1 m): the bust is looked for between these.
@@ -52,7 +60,8 @@ public static class BustLift
         HumanBody human)
     {
         float low = kenshi.Position("Bip01 Spine1").Y, high = kenshi.Position("Bip01 L UpperArm").Y;
-        var bust = Apex(positions, low, high);
+        var waist = WaistBones.Select(b => "Bip01 " + b).Where(kenshi.Has).Select(kenshi.Handle).ToHashSet();
+        var bust = Apex([.. positions.Where((_, v) => !waist.Contains(Heaviest(weights[v])))], low, high);
         float lift = Apex(human.Positions, low, high).Height - bust.Height;
         if (lift <= 0) return (positions, 0);
 
@@ -100,6 +109,11 @@ public static class BustLift
 
         return (low + (best + 0.5f) * Slice, front[best], low + top * Slice);
     }
+
+    /// <summary>
+    /// The bone that carries most of a vertex's weight.
+    /// </summary>
+    static ushort Heaviest(Dictionary<ushort, float> weights) => weights.MaxBy(w => w.Value).Key;
 
     /// <summary>
     /// 0 below <paramref name="from"/>, 1 above <paramref name="to"/>, smooth between.

@@ -34,6 +34,11 @@ public static class HairHolePatch
     const float NearEdge = 0.6f;
 
     /// <summary>
+    /// How deep under a human triangle the body is looked for (<see cref="Sunken"/>), in game units, in steps of <see cref="Bare"/>.
+    /// </summary>
+    const float SunkenDepth = 0.75f;
+
+    /// <summary>
     /// The source value of the patch's vertices in <see cref="Apply"/>'s result (the head's and the parts' are -1).
     /// </summary>
     public const int Patched = -2;
@@ -46,24 +51,60 @@ public static class HairHolePatch
         ["Bip01 Spine", "Bip01 Spine1", "Bip01 Spine2", "Bip01 Neck", "Bip01 Head", "Bip01 L Clavicle", "Bip01 R Clavicle", "Bip01 L UpperArm", "Bip01 R UpperArm"];
 
     /// <summary>
-    /// <paramref name="mesh"/> with the bare human skin under its holes appended (their vertices' source <see cref="Patched"/>, uv
-    /// <paramref name="skinUv"/>), and how many triangles that adds.
+    /// With <c>hairback</c>, the model's triangles that are not its skin are dropped when their centre lies this close to a backward-facing
+    /// patch triangle, in game units: the shaded strands and shards the hair left at the hole's edge, and the garment back they were fused to.
     /// </summary>
-    public static (SkinnedMesh Mesh, int[] Source, int Triangles) Apply(SkinnedMesh mesh, int[] source, HumanBody human, KenshiSkeleton kenshi,
-        Vector2 skinUv)
+    const float StrayReach = 0.5f;
+
+    /// <summary>
+    /// A patch triangle faces backward when its normal's share along +z is below this; skin the patch copies in front lies under a fuller bust
+    /// or garment that stays.
+    /// </summary>
+    const float BackFacing = -0.3f;
+
+    /// <summary>
+    /// The bones a stray's vertices must hang from (each vertex's heaviest): the upper back, shoulders and upper arms, so a waistband stays.
+    /// </summary>
+    static readonly string[] StrayBones =
+        ["Bip01 Spine1", "Bip01 Spine2", "Bip01 Neck", "Bip01 L Clavicle", "Bip01 R Clavicle", "Bip01 L UpperArm", "Bip01 R UpperArm"];
+
+    /// <summary>
+    /// With <c>hairback</c>, after the strays are gone the patch grows one more ring on these bones whether or not the body covers it, so it
+    /// meets a waistband or sleeve that sits inside the skin with no gap.
+    /// </summary>
+    static readonly string[] SealBones =
+        ["Bip01 Spine", "Bip01 Spine1", "Bip01 Spine2", "Bip01 L Clavicle", "Bip01 R Clavicle", "Bip01 L UpperArm", "Bip01 R UpperArm"];
+
+    /// <summary>
+    /// <paramref name="mesh"/> with the bare human skin under its holes appended (their vertices' source <see cref="Patched"/>, uv
+    /// <paramref name="skinUv"/>): how many triangles that adds. With <paramref name="modelSkin"/> (<c>hairback</c>: from a triangle's three
+    /// source vertices, whether it is the model's skin) the strays over the patch are dropped first and the patch is found again around the
+    /// wider hole: how many strays.
+    /// </summary>
+    public static (SkinnedMesh Mesh, int[] Source, int Triangles, int Strays) Apply(SkinnedMesh mesh, int[] source, HumanBody human,
+        KenshiSkeleton kenshi, Vector2 skinUv, Func<int, int, int, bool>? modelSkin)
     {
-        var patch = PatchTriangles(mesh, human, kenshi);
-        if (patch.Count == 0) return (mesh, source, 0);
+        var patch = PatchTriangles(mesh, human, kenshi, grooves: modelSkin is null);
+        if (patch.Count == 0) return (mesh, source, 0, 0);
+
+        int strays = 0;
+        if (modelSkin is not null)
+        {
+            (mesh, strays) = WithoutStrays(mesh, source, human, kenshi, patch, modelSkin);
+            patch.UnionWith(PatchTriangles(mesh, human, kenshi, seal: true, grooves: false));
+        }
 
         var (joined, added) = Joined(mesh, human, patch, skinUv);
-        return (joined, [.. source, .. Enumerable.Repeat(Patched, added)], patch.Count);
+        return (joined, [.. source, .. Enumerable.Repeat(Patched, added)], patch.Count, strays);
     }
 
     /// <summary>
     /// The human's triangles (by index) to copy: the bare ones on <see cref="Bones"/> joined to one near an open edge of the body, grown by
-    /// <see cref="Rings"/>.
+    /// <see cref="Rings"/>, and with <paramref name="seal"/> one ring more on <see cref="SealBones"/>. With <paramref name="grooves"/> skin over a
+    /// groove of the body (<see cref="Sunken"/>) is not bare; <c>hairback</c> skips that test, its strays already cleared.
     /// </summary>
-    public static HashSet<int> PatchTriangles(SkinnedMesh mesh, HumanBody human, KenshiSkeleton kenshi)
+    public static HashSet<int> PatchTriangles(SkinnedMesh mesh, HumanBody human, KenshiSkeleton kenshi, bool seal = false,
+        bool grooves = true)
     {
         var allowed = Bones.Where(kenshi.Has).Select(kenshi.Handle).ToHashSet();
         var grid = new TriangleGrid(mesh.Positions, mesh.Indices, 2 * Bare);
@@ -71,13 +112,82 @@ public static class HairHolePatch
         int triangles = human.Indices.Length / 3;
         var bare = Enumerable.Range(0, triangles)
             .Where(t => Corners(human, t).All(v => allowed.Contains(human.Bones[v])))
-            .Where(t => Points(human, t).Any(p => !grid.Within(p, Bare)))
+            .Where(t => Points(human, t).Any(p => !grid.Within(p, Bare)) && !(grooves && Sunken(human, t, grid)))
             .ToHashSet();
         var neighbours = Neighbours(human);
         var underHoles = Connected(bare.Where(t => edges.Any(e => Vector3.Distance(e, Centre(human, t)) < NearEdge + Bare)), bare, neighbours);
+        var patch = Grown(underHoles, neighbours, t => Corners(human, t).All(v => allowed.Contains(human.Bones[v])) && Covered(human, t, grid));
+        if (!seal) return patch;
 
-        return Grown(underHoles, neighbours, t => Corners(human, t).All(v => allowed.Contains(human.Bones[v])) && Covered(human, t, grid));
+        var sealing = SealBones.Where(kenshi.Has).Select(kenshi.Handle).ToHashSet();
+        patch.UnionWith([.. patch.SelectMany(t => neighbours[t]).Where(t => Corners(human, t).All(v => sealing.Contains(human.Bones[v])))]);
+        return patch;
     }
+
+    /// <summary>
+    /// The mesh without the strays (<see cref="StrayReach"/>, <see cref="StrayBones"/>) over the backward-facing part of
+    /// <paramref name="patch"/>, and how many those are.
+    /// </summary>
+    static (SkinnedMesh Mesh, int Strays) WithoutStrays(SkinnedMesh mesh, int[] source, HumanBody human, KenshiSkeleton kenshi,
+        HashSet<int> patch, Func<int, int, int, bool> modelSkin)
+    {
+        var upper = StrayBones.Where(kenshi.Has).Select(kenshi.Handle).ToHashSet();
+        int[] back = [.. patch.Where(t => FacesBack(human, t)).SelectMany(t => Corners(human, t))];
+        var grid = new TriangleGrid(human.Positions, back, StrayReach);
+        var indices = new List<int>();
+        for (int t = 0; t < mesh.Indices.Length; t += 3)
+        {
+            int[] corners = [mesh.Indices[t], mesh.Indices[t + 1], mesh.Indices[t + 2]];
+            if (!IsStray(mesh, source, corners, upper, grid, modelSkin)) indices.AddRange(corners);
+        }
+
+        return (mesh with { Indices = [.. indices] }, (mesh.Indices.Length - indices.Count) / 3);
+    }
+
+    /// <summary>
+    /// Whether a body triangle is a stray: the model's own, hanging from <paramref name="upper"/>, its centre within <see cref="StrayReach"/>
+    /// of the back patch and not the model's skin.
+    /// </summary>
+    static bool IsStray(SkinnedMesh mesh, int[] source, int[] corners, HashSet<ushort> upper, TriangleGrid grid, Func<int, int, int, bool> modelSkin)
+    {
+        if (corners.Any(v => source[v] < 0 || !upper.Contains(Heaviest(mesh, v)))) return false;
+
+        var centre = (mesh.Positions[corners[0]] + mesh.Positions[corners[1]] + mesh.Positions[corners[2]]) / 3;
+        return grid.Within(centre, StrayReach) && !modelSkin(source[corners[0]], source[corners[1]], source[corners[2]]);
+    }
+
+    /// <summary>
+    /// Whether the body lies under a human triangle, within <see cref="SunkenDepth"/> inside the skin along its normal: a groove deeper than
+    /// <see cref="Bare"/> (the tiefling man's spine), not a hole, where a patch would show over the body.
+    /// </summary>
+    static bool Sunken(HumanBody human, int t, TriangleGrid grid)
+    {
+        var c = Corners(human, t);
+        var normal = Vector3.Cross(human.Positions[c[1]] - human.Positions[c[0]], human.Positions[c[2]] - human.Positions[c[0]]);
+        if (normal == Vector3.Zero) return false;
+
+        var inward = -Vector3.Normalize(normal);
+        var centre = Centre(human, t);
+        for (float depth = Bare; depth <= SunkenDepth + 1e-4f; depth += Bare)
+            if (grid.Within(centre + depth * inward, Bare)) return true;
+
+        return false;
+    }
+
+    /// <summary>
+    /// Whether a human triangle faces backward (<see cref="BackFacing"/>).
+    /// </summary>
+    static bool FacesBack(HumanBody human, int t)
+    {
+        var c = Corners(human, t);
+        var normal = Vector3.Cross(human.Positions[c[1]] - human.Positions[c[0]], human.Positions[c[2]] - human.Positions[c[0]]);
+        return normal != Vector3.Zero && Vector3.Normalize(normal).Z < BackFacing;
+    }
+
+    /// <summary>
+    /// The bone that carries most of a vertex's weight.
+    /// </summary>
+    static ushort Heaviest(SkinnedMesh mesh, int v) => mesh.Weights[v].MaxBy(w => w.Value).Key;
 
     /// <summary>
     /// The positions of the body's open edges (edges of one triangle, along welded vertices) away from the head's neck rim: the head's

@@ -6,7 +6,7 @@ using RaceImport;
 // docs/race-import.md "Run it".
 if (args.Length < 4 || ImportOptions.Parse(args.Skip(4)) is not { } options)
 {
-    Console.Error.WriteLine("Usage: RaceImport <model.glb> <Kenshi folder> <output folder> <stem> [male|female] [slim 0-1] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [skintone] [palms] [rigid] [attach=<part.glb>]...");
+    Console.Error.WriteLine("Usage: RaceImport <model.glb> <Kenshi folder> <output folder> <stem> [male|female] [slim 0-1] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [hairback] [skintone] [palms] [rigid] [attach=<part.glb>]...");
     return 2;
 }
 

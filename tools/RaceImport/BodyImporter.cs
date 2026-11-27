@@ -40,8 +40,9 @@ public static class BodyImporter
         var unheaded = new SkinnedMesh(positions, normals, body.Uvs, [], body.Indices, weights);
         var hair = options.NoHair ? classes : null;
         var (mesh, source) = Headed(unheaded, options, kenshiFolder, human, kenshi, hair);
-        int patched = 0;
-        if (hair is not null) (mesh, source, patched) = HairHolePatch.Apply(mesh, source, human, kenshi, SkinUv(body, hair));
+        int patched = 0, strays = 0;
+        if (hair is not null) (mesh, source, patched, strays) = HairHolePatch.Apply(mesh, source, human, kenshi, SkinUv(body, hair),
+                options.HairBack ? ModelSkin(body, hair) : null);
         var parts = options.Attach.Select(Attachment.Load).ToArray();
         (mesh, source) = Attachments.Apply(mesh, source, parts, kenshi);
         mesh = mesh with { Tangents = Tangents(mesh.Positions, mesh.Normals, mesh.Uvs, mesh.Indices) };
@@ -49,7 +50,7 @@ public static class BodyImporter
 
         Directory.CreateDirectory(outFolder);
         SkinnedMeshWriter.Write(Path.Combine(outFolder, stem + ".mesh"), mesh, stem, rig.Skeleton);
-        var painted = options.SkinTone && classes is not null ? SkinTone.Repainted(body, classes, TextureSide) : body;
+        var painted = options.SkinTone && classes is not null ? SkinTone.Repainted(body, classes, TextureSide, options.Relief) : body;
         bool normalMap = BodyTextures.Write(painted, parts, outFolder, stem, TextureSide);
         int toned = options.SkinTone && classes is not null ? WriteMask(outFolder, stem, mesh, source, body, classes) : 0;
         bool[] attached = [.. source.Select(v => v == -1)];
@@ -59,7 +60,7 @@ public static class BodyImporter
         var max = mesh.Positions.Aggregate(Vector3.Max);
         return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {mesh.Positions.Length} vertices, {mesh.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
             $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {hideable} vertices in hideable parts, {parts.Length} parts attached, " +
-            $"{membrane.Count(m => m)} vertices of wing membrane, {patched} triangles patched under the hair, {mesh.Poses.Length} face poses, {toned} skin-toned triangles, hands twisted {Twists(fit)}, {fit.WristJoints} wrist joints on the hands";
+            $"{membrane.Count(m => m)} vertices of wing membrane, {patched} triangles patched under the hair ({strays} strays over them dropped), {mesh.Poses.Length} face poses, {toned} skin-toned triangles, hands twisted {Twists(fit)}, {fit.WristJoints} wrist joints on the hands";
     }
 
     /// <summary>
@@ -101,6 +102,28 @@ public static class BodyImporter
             .Where(t => classes[t] == Texel.Skin)
             .MaxBy(t => UvArea(uvs[indices[3 * t]], uvs[indices[3 * t + 1]], uvs[indices[3 * t + 2]]));
         return (uvs[indices[3 * widest]] + uvs[indices[3 * widest + 1]] + uvs[indices[3 * widest + 2]]) / 3;
+    }
+
+    /// <summary>
+    /// Whether three model vertices make one of the model's <see cref="Texel.Skin"/> triangles.
+    /// </summary>
+    static Func<int, int, int, bool> ModelSkin(SourceBody body, Texel[] classes)
+    {
+        var skin = new HashSet<(int, int, int)>();
+        for (int t = 0; t < classes.Length; t++)
+            if (classes[t] == Texel.Skin) skin.Add(Sorted(body.Indices[3 * t], body.Indices[3 * t + 1], body.Indices[3 * t + 2]));
+
+        return (a, b, c) => skin.Contains(Sorted(a, b, c));
+    }
+
+    /// <summary>
+    /// Three vertices in rising order.
+    /// </summary>
+    static (int, int, int) Sorted(int a, int b, int c)
+    {
+        int[] sorted = [a, b, c];
+        Array.Sort(sorted);
+        return (sorted[0], sorted[1], sorted[2]);
     }
 
     /// <summary>
