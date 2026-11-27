@@ -7,7 +7,7 @@ map. It reads the rig's skeleton, human body and part map from the game install,
 ## Run it
 
 ```powershell
-dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [skintone] [palms] [rigid] [attach=<part.glb>]...
+dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [hairback] [skintone] [palms] [rigid] [attach=<part.glb>]...
 ```
 
 - `<Kenshi folder>`: the game folder (`data/` inside it), e.g. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
@@ -23,6 +23,7 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - `headless`: replace the model's head with the human head, its face poses and the Greenlander's heads and hair ([Headless](#headless)).
 - `ears`: `headless`, keeping the model's ears on the human head ([Ears](#ears)).
 - `nohair`: `headless`, dropping the model's own hair with its head ([Headless](#headless)).
+- `hairback`: `nohair`, also clearing what the hair left over the back ([Headless](#headless)).
 - `skintone`: the skin takes the editor's skin tone with the human head ([Skin tone](#skin-tone)); writes `<stem>_mask.dds`.
 - `palms`: turn the hands palm to thigh ([Hands](#hands)); not for claws or pincers.
 - `rigid`: keep the model's own shape and weights ([Rigid](#rigid)); for mechanical bodies.
@@ -214,6 +215,13 @@ corner or of the centre. Only bare regions that reach within 0.85 of one of the 
 copied. They grow 3 rings into triangles the body covers from outside, sit 0.04 under the human's skin with its normals and weights, and take
 one skin texel of the body's texture, which the skin-tone mask covers. The body's skin is drawn over them where they overlap. The import log
 counts them ("triangles patched under the hair"); without `nohair` the import is unchanged.
+
+With `hairback` (implies `nohair`; for a model whose hair hung down the back over a garment) the jagged strands, shards and garment back the
+hair leaves around the hole are cleared too (**Observed**, tiefling woman: dark fragments over the patch in game). The model's triangles that
+are not skin, hang from the upper spine, neck, clavicle or upper-arm bones (each vertex's heaviest) and lie within 0.5 of a patch triangle
+facing backward (normal z below -0.3) are dropped. The patch is then found again around the wider hole and grows one ring more on the spine,
+clavicle and upper-arm bones whether or not the body covers it, so it meets the waistband and sleeves with no gap. The log counts the dropped
+triangles ("strays over them dropped"). It is not the default: a model whose back skin is shaded grey (the tiefling man's) would lose it.
 
 The race then keeps the Greenlander's heads, hair and random faces and uses the face editor limits ([kenshi-races.md](kenshi-races.md#character-editor)).
 The head's skin is the HEAD texture's and the body's the model's, so their tones differ at the rim unless the body is imported `skintone`.
