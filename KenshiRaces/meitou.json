@@ -1,6 +1,6 @@
 {
   "id": "kenshi.races",
-  "version": "0.19.2",
+  "version": "0.19.3",
   "apiVersion": 3,
   "gameVersion": ">=0.24.0",
   "assemblies": [

@@ -71,6 +71,9 @@ When a change to the tool alters fitted bodies, re-import every body it affects 
    then moves that share of the way from the carried neck joint. The game's neck rises
    about a unit above its shoulders and these models' barely does: placing the head on the joint stretched their necks to about three times
    their length (**Observed** on the male Leoma, Crabman and the Crab Queen: fitted neck 2.4 units, the models' own 0.8, the game's 1.4).
+   The head turns upright only forward and back when its head top leans more than 10 degrees sideways: the rig puts the head top over the
+   mesh's highest point, which an asymmetric head pulls off the midline (**Observed**, Kat-Lon: 20.5 degrees, his head tilted in game; every
+   other fitted body leans under 4).
 6. Feet keep upright and are squashed so the soles land on the ground (paws and crab feet are taller than the game's foot).
 7. Each vertex is the weighted sum of its joints' fits; its weights go to the game bones its joints follow, the heaviest four kept (then
    [Human weights](#human-weights) replaces those of the torso).

@@ -189,6 +189,7 @@ public sealed class BodyFit
         foreach (var (bone, (sourceChild, kenshiChild)) in Directions)
         {
             var source = Source(sourceChild) - Source(bone);
+            if (bone == "Head") source = Upright(source);
             var kenshi = Kenshi(kenshiChild) - Kenshi(bone);
             var rotation = Matrix4x4.CreateFromQuaternion(Between(Vector3.Normalize(source), Vector3.Normalize(kenshi)));
             turns[bone] = (rotation, Vector3.Normalize(source), kenshi.Length() / (Scale * source.Length()));
@@ -205,6 +206,23 @@ public sealed class BodyFit
 
         return fits;
     }
+
+    /// <summary>
+    /// The model's head direction (head joint to head top) without its sideways lean when that passes <see cref="MaxHeadLean"/>: the rig puts
+    /// the head top over the mesh's highest point, which an asymmetric head (the Kat-Lon's tilted dome and antenna box, 20.5 degrees) pulls off
+    /// the midline, and turning that onto the game's upright head tilted the whole head to one side. Forward lean stays.
+    /// </summary>
+    public static Vector3 Upright(Vector3 direction)
+    {
+        float lean = MathF.Atan2(MathF.Abs(direction.X), direction.Y);
+        return lean > MaxHeadLean ? direction with { X = 0 } : direction;
+    }
+
+    /// <summary>
+    /// The largest sideways lean of a model's head direction (radians) the fit turns away; every fitted body but the Kat-Lon leans under 4
+    /// degrees.
+    /// </summary>
+    const float MaxHeadLean = 10 * MathF.PI / 180;
 
     /// <summary>
     /// One rigid fit (rotation and translation, scale fixed) for the torso bones, onto the game's torso, shoulder and hip joints.
