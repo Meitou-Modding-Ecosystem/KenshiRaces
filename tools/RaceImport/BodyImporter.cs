@@ -40,6 +40,8 @@ public static class BodyImporter
         var unheaded = new SkinnedMesh(positions, normals, body.Uvs, [], body.Indices, weights);
         var hair = options.NoHair ? classes : null;
         var (mesh, source) = Headed(unheaded, options, kenshiFolder, human, kenshi, hair);
+        int patched = 0;
+        if (hair is not null) (mesh, source, patched) = HairHolePatch.Apply(mesh, source, human, kenshi, SkinUv(body, hair));
         var parts = options.Attach.Select(Attachment.Load).ToArray();
         (mesh, source) = Attachments.Apply(mesh, source, parts, kenshi);
         mesh = mesh with { Tangents = Tangents(mesh.Positions, mesh.Normals, mesh.Uvs, mesh.Indices) };
@@ -50,14 +52,14 @@ public static class BodyImporter
         var painted = options.SkinTone && classes is not null ? SkinTone.Repainted(body, classes, TextureSide) : body;
         bool normalMap = BodyTextures.Write(painted, parts, outFolder, stem, TextureSide);
         int toned = options.SkinTone && classes is not null ? WriteMask(outFolder, stem, mesh, source, body, classes) : 0;
-        bool[] attached = [.. source.Select(v => v < 0)];
+        bool[] attached = [.. source.Select(v => v == -1)];
         int hideable = WritePartMap(kenshiFolder, rig, Path.Combine(outFolder, stem + "_parts.png"), mesh, human, sleeved, parts.Length > 0 ? attached : null);
 
         var min = mesh.Positions.Aggregate(Vector3.Min);
         var max = mesh.Positions.Aggregate(Vector3.Max);
         return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {mesh.Positions.Length} vertices, {mesh.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
             $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {hideable} vertices in hideable parts, {parts.Length} parts attached, " +
-            $"{membrane.Count(m => m)} vertices of wing membrane, {mesh.Poses.Length} face poses, {toned} skin-toned triangles, hands twisted {Twists(fit)}, {fit.WristJoints} wrist joints on the hands";
+            $"{membrane.Count(m => m)} vertices of wing membrane, {patched} triangles patched under the hair, {mesh.Poses.Length} face poses, {toned} skin-toned triangles, hands twisted {Twists(fit)}, {fit.WristJoints} wrist joints on the hands";
     }
 
     /// <summary>
@@ -87,6 +89,24 @@ public static class BodyImporter
         ushort? ears = options.Ears ? kenshi.Handle("Bip01 Head") : null;
         return HeadGraft.Apply(mesh, human, HumanHead.Load(kenshiFolder, options.Rig), ears, hair);
     }
+
+    /// <summary>
+    /// A uv inside the model's skin (the centre of its <see cref="Texel.Skin"/> triangle widest in the texture), for skin the import adds.
+    /// </summary>
+    static Vector2 SkinUv(SourceBody body, Texel[] classes)
+    {
+        var uvs = body.Uvs;
+        var indices = body.Indices;
+        int widest = Enumerable.Range(0, classes.Length)
+            .Where(t => classes[t] == Texel.Skin)
+            .MaxBy(t => UvArea(uvs[indices[3 * t]], uvs[indices[3 * t + 1]], uvs[indices[3 * t + 2]]));
+        return (uvs[indices[3 * widest]] + uvs[indices[3 * widest + 1]] + uvs[indices[3 * widest + 2]]) / 3;
+    }
+
+    /// <summary>
+    /// A triangle's area in uv space.
+    /// </summary>
+    static float UvArea(Vector2 a, Vector2 b, Vector2 c) => MathF.Abs((b.X - a.X) * (c.Y - a.Y) - (c.X - a.X) * (b.Y - a.Y)) / 2;
 
     /// <summary>
     /// Writes the skin-tone body mask of the final mesh (<see cref="SkinTone.WriteMask"/>) over the model's skin triangles it kept; returns how

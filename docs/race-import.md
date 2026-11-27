@@ -207,6 +207,14 @@ triangles, weights and the mesh's face poses (target 1, written to the fitted me
 With `nohair` the model's hair goes too: the hair triangles ([Skin tone](#skin-tone) sorts them) reached from the dropped head's through
 other hair triangles, so long hair hanging down the back leaves with the head; a vertex another triangle keeps stays.
 
+Hair holes: Meshy fuses long hair to the body as one shell with no skin under it, so dropping it opens the upper back and shoulders
+(**Observed**, tiefling woman: one open loop of 95 edges from y 12.3 to 17.3, see-through in game). `HairHolePatch` closes them with the human's
+own skin. It takes the human triangles on the torso, neck, clavicle and upper-arm bones that are bare: no body triangle lies within 0.25 of a
+corner or of the centre. Only bare regions that reach within 0.85 of one of the body's open edges count, so skin under a fuller body is not
+copied. They grow 3 rings into triangles the body covers from outside, sit 0.04 under the human's skin with its normals and weights, and take
+one skin texel of the body's texture, which the skin-tone mask covers. The body's skin is drawn over them where they overlap. The import log
+counts them ("triangles patched under the hair"); without `nohair` the import is unchanged.
+
 The race then keeps the Greenlander's heads, hair and random faces and uses the face editor limits ([kenshi-races.md](kenshi-races.md#character-editor)).
 The head's skin is the HEAD texture's and the body's the model's, so their tones differ at the rim unless the body is imported `skintone`.
 

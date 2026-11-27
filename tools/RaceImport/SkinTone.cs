@@ -101,7 +101,8 @@ public static class SkinTone
 
     /// <summary>
     /// Writes the body mask <c>&lt;stem&gt;_mask.dds</c>: white where <paramref name="mesh"/>'s triangles that are the model's
-    /// <see cref="Texel.Skin"/> triangles (by their vertices' <paramref name="source"/>, -1 for vertices not the model's) lie in uv 0 to 1 (the
+    /// <see cref="Texel.Skin"/> triangles (by their vertices' <paramref name="source"/>, -1 for vertices not the model's), or the skin patched
+    /// under its hair (<see cref="HairHolePatch.Patched"/>), lie in uv 0 to 1 (the
     /// body texture; the head's uvs below 0 take the HEAD's own mask), grown a texel, black elsewhere. Returns how many triangles it covers.
     /// </summary>
     public static int WriteMask(string folder, string stem, SkinnedMesh mesh, int[] source, int[] modelIndices, Texel[] modelClasses)
@@ -115,7 +116,8 @@ public static class SkinTone
         {
             int a = mesh.Indices[3 * t], b = mesh.Indices[3 * t + 1], c = mesh.Indices[3 * t + 2];
             bool body = mesh.Uvs[a].Y >= 0 && mesh.Uvs[b].Y >= 0 && mesh.Uvs[c].Y >= 0;
-            classes[t] = body && skinTriangles.Contains(Key(source[a], source[b], source[c])) ? Texel.Skin : Texel.Other;
+            bool patched = source[a] == HairHolePatch.Patched && source[b] == HairHolePatch.Patched && source[c] == HairHolePatch.Patched;
+            classes[t] = body && (patched || skinTriangles.Contains(Key(source[a], source[b], source[c]))) ? Texel.Skin : Texel.Other;
         }
 
         var covered = Grown(Covered(MaskSide, mesh.Uvs, mesh.Indices, classes), MaskSide, 1);

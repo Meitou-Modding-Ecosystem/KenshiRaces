@@ -302,7 +302,7 @@ public sealed class SkinConform
     /// The point of triangle <paramref name="a"/>, <paramref name="b"/>, <paramref name="c"/> nearest <paramref name="p"/> (Ericson, Real-Time
     /// Collision Detection, 5.1.5).
     /// </summary>
-    static Vector3 ClosestOnTriangle(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
+    internal static Vector3 ClosestOnTriangle(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
     {
         Vector3 ab = b - a, ac = c - a, ap = p - a;
         float d1 = Vector3.Dot(ab, ap), d2 = Vector3.Dot(ac, ap);
