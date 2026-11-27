@@ -141,6 +141,6 @@ Kenshi Races stays a framework: one NPC sells introductions, and the debug menu 
 ## Clothing
 
 Armour shares the body's skeleton, so it moves with these bodies, but it is modelled around the human body. The part map hides the skin
-under items with `hide parts` (coats, robes, jackets); slimming and the skin conform pull the torso, hips, legs and feet onto the human's skin
-([race import](race-import.md#slimming), [skin conform](race-import.md#skin-conform)). Shapes far from human (tails, manes, shells, claws) still
-poke through tight armour.
+under items with `hide parts` (coats, robes, jackets); slimming and the skin conform pull the torso, hips, legs, feet, arms and the front of the crotch onto the human's skin
+([race import](race-import.md#slimming), [skin conform](race-import.md#skin-conform)). Shapes far from human (tails, manes, shells, claws) and the
+hands still poke through tight armour and gloves.

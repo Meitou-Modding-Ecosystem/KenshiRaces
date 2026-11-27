@@ -72,18 +72,26 @@ seams welded) so neighbouring vertices move alike. **Observed** (male Leoma): 39
 
 ## Skin conform
 
-Slimming only reaches the human's widest extent per slice, so legs, hips and a bulky waist still poked through trousers, skirts, coats and
-boots. After slimming, each vertex carried by the pelvis, spines, bust bones, thighs, calves, feet or toes is pulled onto the human body's
-skin itself (the nearest point on the triangles round its six nearest human vertices; the human's skinned triangles only): a vertex outside
-the skin by more than 0.05 units (5 mm of cloth) moves by its excess, fully up to 1.0 units out and fading to nothing at 1.6 (beyond: a
-claw, a tail, left alone), scaled by its weight on those bones, so the head, arms and hands stay. A vertex below the pelvis joint within 0.6
-units of the middle line stays: its nearest skin is an inner thigh (**Observed**, male Crevan: pulling there turned the crotch feathers inside
-out). Tails and the vertices near them are spared as in slimming. Three passes, each smoothed (three rounds, uv seams welded) and the next
-taking up what smoothing undid.
+Slimming only reaches the human's widest extent per slice, so legs, hips, arms and a bulky waist still poked through trousers, skirts, coats,
+sleeves and boots. After slimming, each vertex is pulled onto the human body's skin itself (the nearest point on the triangles round its six
+nearest human vertices; the human's skinned triangles only): a vertex outside the skin by more than 0.05 units (5 mm of cloth) moves by its
+excess, fully up to 1.0 units out and fading to nothing at 1.6 (beyond: a claw, a tail, left alone). Which skin, and how much of the pull:
 
-**Observed** (share of a region's vertices over 0.15 units outside the human skin, before → after): Leoma male legs 45 → 13%, feet 30 → 0%;
-Leoma female legs 38 → 0%; Crevan male hips 25 → 2%, legs 38 → 3%; Crevan female legs 60 → 15%, hips 64 → 36%; Crab Queen hips 19 → 1%.
-What stays outside is tails, the manes and neck plumage, and the claws.
+- Carried more by one side's clavicle, upper arm and forearm than by the torso: that arm's skin only (the human vertices carried by its
+  clavicle, upper arm, forearm or hand), scaled by its weight on those arm bones. With the whole skin, the inside of a hanging arm went to
+  the flank beside it.
+- Below the pelvis joint within 0.6 units of the middle line: in front of the pelvis joint, the human's pelvis skin only (its vertices carried by
+  `Pelvis` or `Spine`), scaled by its torso weight; behind it, it stays. Its nearest skin is an inner thigh, and pulling onto that turned the
+  male Crevan's crotch feathers inside out (**Observed**); left alone, the Wolfkin woman's groin tuft stood 0.85 units out of her trousers.
+- Any other vertex: the whole skin, scaled by its weight on the pelvis, spines, bust bones, thighs, calves, feet and toes.
+
+The hands and head stay. Tails and the vertices near them, and wing membranes, are spared as in slimming. Three passes, each smoothed (three
+rounds, uv seams welded) and the next taking up what smoothing undid.
+
+**Observed** (share of a region's vertices over 0.15 units outside the human skin, torso and legs only → with the arms and groin): Wolfkin
+woman upper arms and shoulders 59 → 1%, forearms 46 → 1%, groin front 88 → 7%; Wolfkin man upper arms 49 → 3%; Crevan man upper arms
+87 → 22%; Owlkind man upper arms 53 → 9%, groin front 86 → 5%. The torso pull alone (before → after): Leoma male legs 45 → 13%, feet 30 → 0%; Crevan
+male hips 25 → 2%; Crab Queen hips 19 → 1%. What stays outside is tails, the manes and neck plumage, the hands and the claws.
 
 ## Bust
 
