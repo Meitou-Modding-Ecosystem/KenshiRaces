@@ -41,7 +41,7 @@ public sealed class BodyFileTests
     /// Bodies imported <c>rigid</c> that keep a model rig carrying the chest on <c>Spine1</c> and the neck on the head (docs/race-import.md
     /// "Rigid"), so the editor's Chest and Neck sliders barely move them.
     /// </summary>
-    static readonly string[] RigidChests = ["kenshiraces_katlon"];
+    static readonly string[] RigidChests = ["kenshiraces_katlon", "kenshiraces_chibot"];
 
     public static TheoryData<string> SliderStems => [.. Bodies().Select(b => b.Body.Stem).Except(RigidChests)];
 

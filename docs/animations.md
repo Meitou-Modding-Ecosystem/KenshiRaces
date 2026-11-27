@@ -1,6 +1,6 @@
 # Animations
 
-Kenshi Races ships an animation library: every clip of the races' source models (Meshy's animation library, 188 clips), retargeted onto the
+Kenshi Races ships an animation library: every clip of the races' source models (Meshy's animation library, 190 clips), retargeted onto the
 game's male and female skeletons, so any character on those skeletons can play it, humans, shek, hivers and skeletons as well as the fitted
 races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](depending-on-kenshi-races.md#6-play-its-animations)).
 
@@ -11,8 +11,8 @@ races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](
 - ANIMATION_FILE `40-KenshiRaces.mod` (`AnimationRecords.File`) names both. The data phase links it into the `animation files` of every race
   whose `male mesh` is under `data/character/meshes/` (except the Hive Queen's, which has its own skeleton) or is a fitted body
   (`/items/races/`), and `RaceRecords.FillRace` links it into new subraces, a dependent's too.
-- A disabled COMBAT_TECHNIQUE per clip (`100-` to `199-` and `400-` to `487-KenshiRaces.mod`: the first models' clips in name order, then
-  the spidercrab's, the ghostcrab's, the Batfolk's, the Wolfkin's, then the tieflings', the beepbot's and the Owlkind's; `200-` to `399-`
+- A disabled COMBAT_TECHNIQUE per clip (`100-` to `199-` and `400-` to `489-KenshiRaces.mod`: the first models' clips in name order, then
+  the spidercrab's, the ghostcrab's, the Batfolk's, the Wolfkin's, then the tieflings', the beepbot's and the Owlkind's, then the chibot's; `200-` to `399-`
   are the introducer's and its arrival squads'), `anim name` = the clip: disabled, so no fight picks it;
   a mod plays it as a mod combat move (engine docs/modding.md, "Combat moves").
 
@@ -25,7 +25,7 @@ races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](
    the Mixamo roles the Motion Lab reads (a Mixamo rig such as `wolfman-rigged` already has them). A later model overwrites a clip an earlier one gave; the male Leoma's goes last.
    Source models: male Leoma ("Leonid Bare" and "Leonid" glbs), `leonidfemale`, `corvidmale`, `corvidfemale`, crabman, crabqueen and
    `spidercrab`, `ghostcrab`, `batman-rigged`, `batgirl-rigged`, `wolfman-rigged`, `wolfwoman-rigged`, then `tiefling-female`,
-   `tieflingmale-rigged`, `beepbot-rigged` and `owlkindfemale-rigged` (clips they share with an earlier model, such as Running and Walking,
+   `tieflingmale-rigged`, `beepbot-rigged`, `owlkindfemale-rigged` and `chibot-rigged` (clips they share with an earlier model, such as Running and Walking,
    are not taken).
 2. Per gender, `python -m motionlab rig human_<gender>.mesh --skeleton <gender>_skeleton.skeleton -o <out> --clips idle --reference
    <clip>.glb ...` (every clip): retargets them onto the game's body (a few minutes for 135).
@@ -34,7 +34,7 @@ races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](
 
 Every clip plays in place: where a source clip travelled (the Travel column, metres), the root's ground travel is taken out as a straight
 line, sway and bob kept. All face the game's forward: the root's yaw matches the bind pose's -90°, as the game's own idles do (**Verified**,
-`idle_stand_normal` in `male_skeleton.skeleton`). A new clip also needs its line in `RaceAnimations`, with the next free technique id (488 on), and its row here. New clips can be added
+`idle_stand_normal` in `male_skeleton.skeleton`). A new clip also needs its line in `RaceAnimations`, with the next free technique id (490 on), and its row here. New clips can be added
 without redoing the rest: retarget only them, export them, and append the export's animation chunks (what follows its copy of the game
 skeleton's bones) to the end of each library file.
 
@@ -230,3 +230,5 @@ skeleton's bones) to the end of each library file.
 | `kr_sword_and_shield_alert_turn_right` | `SwordAndShieldAlertTurnRight` | `485-` | Sword_and_Shield_Alert_Turn_Right | 3.30 |  |
 | `kr_talk_with_right_hand_open` | `TalkWithRightHandOpen` | `486-` | Talk_with_Right_Hand_Open | 3.70 |  |
 | `kr_tightrope_walk_inplace` | `TightropeWalkInplace` | `487-` | Tightrope_Walk_inplace | 5.17 |  |
+| `kr_husbandry_training` | `HusbandryTraining` | `488-` | Husbandry_Training | 4.97 |  |
+| `kr_husbandry_training_advanced` | `HusbandryTrainingAdvanced` | `489-` | Husbandry_Training_Advanced | 4.97 |  |

@@ -70,6 +70,7 @@ static class IntroducerData
         [Races.WolfkinFemaleCharacter] = "Wolfkin woman",
         [Races.BeepbotCharacter] = "beepbot",
         [Races.KatlonCharacter] = "Kat-Lon",
+        [Races.ChibotCharacter] = "chibot",
         [Races.OwlkindMaleCharacter] = "Owlkind man",
         [Races.OwlkindFemaleCharacter] = "Owlkind woman",
     };
@@ -327,6 +328,7 @@ static class IntroducerData
         [Races.WolfkinFemaleCharacter] = "A Wolfkin woman.",
         [Races.BeepbotCharacter] = "A beepbot.",
         [Races.KatlonCharacter] = "A Kat-Lon.",
+        [Races.ChibotCharacter] = "A chibot.",
         [Races.OwlkindMaleCharacter] = "An Owlkind man.",
         [Races.OwlkindFemaleCharacter] = "An Owlkind woman.",
     };

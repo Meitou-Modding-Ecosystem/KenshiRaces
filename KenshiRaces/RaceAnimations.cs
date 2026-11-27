@@ -8,7 +8,8 @@ namespace KenshiRaces;
 /// <c>100-</c> to <c>158-KenshiRaces.mod</c> in name order for the first models' 59 clips, then <c>159-</c> to <c>171-</c> for the
 /// spidercrab's 13, <c>172-</c> to <c>187-</c> for the ghostcrab's 16, <c>188-</c> to <c>199-</c> and <c>400-</c> to <c>411-</c> for the
 /// Batfolk's 24, <c>412-</c> to <c>434-</c> for the Wolfkin's 23 (moved off <c>200-</c> to <c>234-</c>, the introducer's records), <c>435-</c>
-/// to <c>487-</c> in name order for the tieflings', the beepbot's and the Owlkind's 53, each new clip taking the next free id.
+/// to <c>487-</c> in name order for the tieflings', the beepbot's and the Owlkind's 53, <c>488-</c> and <c>489-</c> for the chibot's 2, each new
+/// clip taking the next free id.
 /// </summary>
 public static class RaceAnimations
 {
@@ -953,6 +954,17 @@ public static class RaceAnimations
     public static readonly RaceAnimation TightropeWalkInplace = new("kr_tightrope_walk_inplace", "Tightrope_Walk_inplace", 5.167f, Technique(487));
 
     /// <summary>
+    /// Meshy's <c>Husbandry_Training</c>, 4.97 s.
+    /// </summary>
+    public static readonly RaceAnimation HusbandryTraining = new("kr_husbandry_training", "Husbandry_Training", 4.967f, Technique(488));
+
+    /// <summary>
+    /// Meshy's <c>Husbandry_Training_Advanced</c>, 4.97 s.
+    /// </summary>
+    public static readonly RaceAnimation HusbandryTrainingAdvanced = new("kr_husbandry_training_advanced", "Husbandry_Training_Advanced", 4.967f,
+        Technique(489));
+
+    /// <summary>
     /// Every clip, in id order.
     /// </summary>
     public static IReadOnlyList<RaceAnimation> All { get; } =
@@ -981,7 +993,8 @@ public static class RaceAnimations
         Fall2, FemaleBowChargeLeftHand, FemaleBowChargeLeftHandInplace, FemaleCrouchPickFruitBasketStand, FemaleCrouchPickGunPointForward, FemaleCrouchPickThrowForward, FemaleCrouchPickUpPlaceSide, FemaleHeadDownCharge,
         FemaleRunForwardPickUpRight, FemaleStandPickFruitBasket, FemaleThrowingStanceCharge, FemaleThrowingStanceChargeInplace, FemaleWalkPickPutInPocket, RIP, SailorScout, StandUp1,
         Stirring, SwordJudgment, SwordParry, SwordParryBackward, SwordParryBackward1, SwordParryBackward2, SwordParryBackward3, SwordParryBackward4,
-        SwordParryBackward5, SwordAndShieldAlertTurnLeft, SwordAndShieldAlertTurnRight, TalkWithRightHandOpen, TightropeWalkInplace
+        SwordParryBackward5, SwordAndShieldAlertTurnLeft, SwordAndShieldAlertTurnRight, TalkWithRightHandOpen, TightropeWalkInplace,
+        HusbandryTraining, HusbandryTrainingAdvanced
     ];
 
     /// <summary>

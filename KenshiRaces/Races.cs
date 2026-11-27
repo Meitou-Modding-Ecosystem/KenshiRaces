@@ -4,8 +4,8 @@ namespace KenshiRaces;
 
 /// <summary>
 /// The races Kenshi Races adds (docs/kenshi-races.md "Races"): seven races of the character editor, Leoma, Crevan, Crabfolk, Tiefling, Batfolk,
-/// Wolfkin and Owlkind, with their subraces, and the beepbot and the Kat-Lon as subraces of the game's Skeleton. Dependents use the ids in their own records (a CHARACTER's <c>race</c>, a squad's members) and add subraces with
-/// <see cref="RaceRecords.JoinGroup"/>. Subrace and character names are one lowercase word, so the console's <c>spawn</c> takes them unquoted.
+/// Wolfkin and Owlkind, with their subraces, and the beepbot, the Kat-Lon and the chibot as subraces of the game's Skeleton. Dependents use the
+/// ids in their own records (a CHARACTER's <c>race</c>, a squad's members) and add subraces with <see cref="RaceRecords.JoinGroup"/>. Subrace and character names are one lowercase word, so the console's <c>spawn</c> takes them unquoted.
 /// </summary>
 public static class Races
 {
@@ -25,7 +25,7 @@ public static class Races
     public const string LeomaRace = "10-" + FileName, CrabmanRace = "12-" + FileName, CrabQueenRace = "14-" + FileName,
         CrevanRace = "18-" + FileName, SpidercrabRace = "22-" + FileName, GhostcrabRace = "24-" + FileName, TieflingRace = "26-" + FileName,
         BatfolkRace = "28-" + FileName, WolfkinRace = "36-" + FileName, BeepbotRace = "16-" + FileName, OwlkindRace = "43-" + FileName,
-        KatlonRace = "47-" + FileName;
+        KatlonRace = "47-" + FileName, ChibotRace = "49-" + FileName;
 
     /// <summary>
     /// The CHARACTER ids.
@@ -36,7 +36,8 @@ public static class Races
         TieflingMaleCharacter = "42-" + FileName,
         BatfolkMaleCharacter = "29-" + FileName, BatfolkFemaleCharacter = "35-" + FileName,
         WolfkinMaleCharacter = "37-" + FileName, WolfkinFemaleCharacter = "38-" + FileName, BeepbotCharacter = "20-" + FileName,
-        OwlkindFemaleCharacter = "44-" + FileName, OwlkindMaleCharacter = "46-" + FileName, KatlonCharacter = "48-" + FileName;
+        OwlkindFemaleCharacter = "44-" + FileName, OwlkindMaleCharacter = "46-" + FileName, KatlonCharacter = "48-" + FileName,
+        ChibotCharacter = "51-" + FileName;
 
     /// <summary>
     /// The RACE_GROUP ids: the races the character editor lists.
@@ -45,7 +46,7 @@ public static class Races
         BatfolkGroup = "34-" + FileName, WolfkinGroup = "39-" + FileName, OwlkindGroup = "45-" + FileName;
 
     /// <summary>
-    /// The game's own Skeleton RACE_GROUP (rebirth.mod), which the beepbot and the Kat-Lon join (<see cref="SkeletonRaces"/>).
+    /// The game's own Skeleton RACE_GROUP (rebirth.mod), which the beepbot, the Kat-Lon and the chibot join (<see cref="SkeletonRaces"/>).
     /// </summary>
     public const string SkeletonGroup = "42903-rebirth.mod";
 
@@ -186,6 +187,13 @@ public static class Races
         BeepbotTraits);
 
     /// <summary>
+    /// Chibot: slim skeletal robots with a woman's figure and looped braids (male fit, single gender), imported <c>rigid</c> like the beepbot;
+    /// a skeleton subrace (<see cref="BeepbotTraits"/>).
+    /// </summary>
+    public static readonly Subrace Chibot = new("chibot", ChibotRace, Body("chibot", true), null, [new("chibot", ChibotCharacter, false)],
+        BeepbotTraits);
+
+    /// <summary>
     /// Owl people: their own feathered, beaked heads and taloned hands and feet, imported <c>palms</c> so their hands hang palm to thigh; a
     /// Greenlander's traits.
     /// </summary>
@@ -198,7 +206,8 @@ public static class Races
     public static readonly RaceGroup LeomaRaces = new("Leoma", LeomaGroup, [Leoma]), CrevanRaces = new("Crevan", CrevanGroup, [Crevan]),
         Crabfolk = new("Crabfolk", CrabfolkGroup, [Crabman, CrabQueen, Spidercrab, Ghostcrab]),
         TieflingRaces = new("Tiefling", TieflingGroup, [Tiefling]), BatfolkRaces = new("Batfolk", BatfolkGroup, [Batfolk]),
-        WolfkinRaces = new("Wolfkin", WolfkinGroup, [Wolfkin]), SkeletonRaces = new("Skeleton", SkeletonGroup, [Beepbot, Katlon], Existing: true),
+        WolfkinRaces = new("Wolfkin", WolfkinGroup, [Wolfkin]),
+        SkeletonRaces = new("Skeleton", SkeletonGroup, [Beepbot, Katlon, Chibot], Existing: true),
         OwlkindRaces = new("Owlkind", OwlkindGroup, [Owlkind]);
 
     /// <summary>
