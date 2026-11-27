@@ -21,16 +21,18 @@ The editor lists each RACE_GROUP as a race and its RACEs as subraces (engine doc
 | Batfolk `34-` | batfolk `28-` | male, female | batfolkmale `29-`, batfolkfemale `35-` |
 | Wolfkin `39-` | wolfkin `36-` | male, female | wolfkinmale `37-`, wolfkinfemale `38-` |
 | Beepbot `41-` | beepbot `16-` | single | beepbot `20-` |
+| | katlon `47-` | single | katlon `48-` |
 | Owlkind `45-` | owlkind `43-` | male, female | owlkindmale `46-`, owlkindfemale `44-` |
 
 Ids end in `KenshiRaces.mod`. Subrace and CHARACTER names are one lowercase word, so the console's `spawn` takes them without quotes. Each body's
-files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leoma, Crevan, the spider crab, the ghost crab, the tiefling man, the Batfolk man, the Wolfkin and the beepbot). Male bodies are fitted to `male_skeleton`,
+files are `KenshiRaces/items/races/kenshiraces_<character>*` (normal maps on Leoma, Crevan, the spider crab, the ghost crab, the tiefling man, the Batfolk man, the Wolfkin, the beepbot and the Kat-Lon). Male bodies are fitted to `male_skeleton`,
 female ones to `female_skeleton`; the crab bodies are male fits, so the crab queen (a woman, `bust=female`) is single gender with the male
 animations and voice (the game and Meitou make a single-gender race's characters male). The tieflings wear the human head without their own
 hair and their skin takes the editor's skin tone with it (imported `nohair skintone`, [race import](race-import.md#skin-tone)); ram horns ride the head (`attach=horns.glb`, [attachments](race-import.md#attachments)). The Batfolk wear the human head (imported `wings headless`, [race import](race-import.md#headless)): the
 Greenlander's heads, hair and face sliders on their own bodies, their arm-wing membranes spanning arm and flank, opening as the arms rise. The Wolfkin wear it too; both races wear
 wolf ears on the skull, and the Batfolk folded bat wings on their backs ([attachments](race-import.md#attachments)). The beepbot, a skeletal robot, is a male fit imported `rigid`
-([race import](race-import.md#rigid)): its ribs, springs and joints keep their shape and its own weights. The Owlkind keep their own beaked,
+([race import](race-import.md#rigid)): its ribs, springs and joints keep their shape and its own weights. The Kat-Lon, a skeletal robot with a broad
+swept-back helmet head, is imported the same way. The Owlkind keep their own beaked,
 feathered heads and talons; imported `palms` ([hands](race-import.md#hands)), the man's palms, which face forward in his model, hang to the
 thigh, and both models' thumbs, which Meshy hangs off the forearm, follow the hands. Source
 models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
@@ -38,7 +40,7 @@ Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.g
 `tiefling-female.glb` (female, `nohair skintone attach=horns.glb`) and `tieflingmale-rigged.glb` (male, `nohair skintone palms attach=horns.glb`: its palms faced forward), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless attach=wolfears.glb attach=batwings.glb`, and
 `wolfman-rigged.glb` (male, a Mixamo rig) and `wolfwoman-rigged.glb` (female), both `headless palms attach=wolfears.glb`; owlkindmale from `owlkindmale-rigged.glb` (`male palms`) and owlkindfemale from `owlkindfemale-rigged.glb` (`female palms`); beepbot from `beepbot-highpoly.glb` (1M vertices, unrigged), decimated to 40,000
 triangles with its normals baked, carrying the weights of the Meshy rig of the low-poly `beepbot-rigged.glb` (nearest face, same frame after
-that rig's scale 1.711 and lift 0.85 m), `rigid`.
+that rig's scale 1.711 and lift 0.85 m), `rigid`; katlon from `kittycatlon-rigged.glb` (3,550 vertices, Meshy rig) `male rigid`.
 
 ## Records
 
@@ -69,11 +71,11 @@ XP) and `stats bad` (x0.8), `strength` 1.2 for strength, which the game lays ove
 | leoma | strength, sabres, athletics, weapon smith, labouring | armour smith, farming, polearms, heavy weapons, robotics | 100 / 120 / 120 / 120 / 120 | all |
 | crevan | perception, stealth, lockpicking, thieving, assassination, robotics, dodge | the weapons above, farming, labouring | 140 / 100 / 100 / 90 / 90 | `no shoes`; head gear only named `Ashland...` (the Ashland Hat, the Ashlander Stormgoggles) |
 | crabman, crabqueen, spidercrab, ghostcrab | martial arts, strength, toughness, melee attack and defence, swimming, labouring, engineering | dodge, turrets, crossbows, precision shooting, stealth, lockpicking, thieving, assassination, field medic, weapon, armour and crossbow smith | 100 / 200 / 200 / 250 / 120 | `no hats`; no footwear named `Sandals`; no weapons or crossbows |
-| beepbot (Skeleton model) | heavy weapons, turrets, robotics (the Skeleton's) | thieving, stealth, dodge (the Skeleton's) | 200 / 200 / 200 / 200 / 200 (the Skeleton's) | all hats; `no shoes` |
+| beepbot, katlon (Skeleton model) | heavy weapons, turrets, robotics (the Skeleton's) | thieving, stealth, dodge (the Skeleton's) | 200 / 200 / 200 / 200 / 200 (the Skeleton's) | all hats; `no shoes` |
 | tiefling, batfolk, wolfkin, owlkind | (the Greenlander's) | (the Greenlander's) | 100 / 100 / 100 / 100 / 100 | all |
 
 - The spider and ghost crabs share the Crabfolk traits until their own are settled; the tiefling, the Batfolk, the Wolfkin and the Owlkind have none yet.
-- The beepbot keeps the rest of the Skeleton's RACE (base data, `Meitou.Tools record Skeleton`): `is robot`, `hunger rate` 0, `bleed rate`
+- The beepbot and the Kat-Lon keep the rest of the Skeleton's RACE (base data, `Meitou.Tools record Skeleton`): `is robot`, `hunger rate` 0, `bleed rate`
   0.1, `heal stat` 6 (repaired with Robotics), `heal rate` 2, weather immunity, `FISTS- robo`, no swimming, `combat move speed mult` 0.9,
   `vision range mult` 1.25, and no limb replacements or severed limbs; its own body, no head and the animation library are set over them.
 - Gear limits beyond the RACE's slot flags are a wear rule (engine docs/modding.md "Wear rules", `RaceRules`) read from the RACE's own

@@ -119,12 +119,15 @@ public sealed class RaceRecordsTests
         Assert.Equal(0.8f, race.Floats[RaceRecords.DamageTakenField]);
     }
 
-    [Fact]
-    public void A_skeleton_subrace_copies_the_Skeletons_mechanics_with_its_own_body_and_gear_slots()
+    [Theory]
+    [InlineData("beepbot")]
+    [InlineData("katlon")]
+    public void A_skeleton_subrace_copies_the_Skeletons_mechanics_with_its_own_body_and_gear_slots(string name)
     {
-        var race = new FcsRecord { StringId = Races.BeepbotRace, RecordType = FcsRecordType.Race, Name = "beepbot" };
+        var subrace = Races.All.Single(r => r.Name == name);
+        var race = new FcsRecord { StringId = subrace.RaceId, RecordType = FcsRecordType.Race, Name = name };
 
-        RaceRecords.FillRace(race, Game(), Races.Beepbot);
+        RaceRecords.FillRace(race, Game(), subrace);
 
         Assert.True(race.Bools["is robot"]);
         Assert.Equal(0, race.Floats["hunger rate"]);
@@ -135,7 +138,14 @@ public sealed class RaceRecordsTests
         Assert.False(race.Bools["no hats"]);
         Assert.True(race.Bools["no shoes"]);
         Assert.Empty(race.References["heads male"]);
-        Assert.Equal(Races.Beepbot.Body(female: false).Mesh, race.Filenames["male mesh"]);
+        Assert.Equal(subrace.Body(female: false).Mesh, race.Filenames["male mesh"]);
+    }
+
+    [Fact]
+    public void The_Kat_Lon_is_a_Beepbot_subrace()
+    {
+        Assert.Equal([Races.Beepbot, Races.Katlon], Races.BeepbotRaces.Subraces);
+        Assert.Same(Races.BeepbotTraits, Races.Katlon.Traits);
     }
 
     [Fact]

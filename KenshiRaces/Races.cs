@@ -24,7 +24,8 @@ public static class Races
     /// </summary>
     public const string LeomaRace = "10-" + FileName, CrabmanRace = "12-" + FileName, CrabQueenRace = "14-" + FileName,
         CrevanRace = "18-" + FileName, SpidercrabRace = "22-" + FileName, GhostcrabRace = "24-" + FileName, TieflingRace = "26-" + FileName,
-        BatfolkRace = "28-" + FileName, WolfkinRace = "36-" + FileName, BeepbotRace = "16-" + FileName, OwlkindRace = "43-" + FileName;
+        BatfolkRace = "28-" + FileName, WolfkinRace = "36-" + FileName, BeepbotRace = "16-" + FileName, OwlkindRace = "43-" + FileName,
+        KatlonRace = "47-" + FileName;
 
     /// <summary>
     /// The CHARACTER ids.
@@ -35,7 +36,7 @@ public static class Races
         TieflingMaleCharacter = "42-" + FileName,
         BatfolkMaleCharacter = "29-" + FileName, BatfolkFemaleCharacter = "35-" + FileName,
         WolfkinMaleCharacter = "37-" + FileName, WolfkinFemaleCharacter = "38-" + FileName, BeepbotCharacter = "20-" + FileName,
-        OwlkindFemaleCharacter = "44-" + FileName, OwlkindMaleCharacter = "46-" + FileName;
+        OwlkindFemaleCharacter = "44-" + FileName, OwlkindMaleCharacter = "46-" + FileName, KatlonCharacter = "48-" + FileName;
 
     /// <summary>
     /// The RACE_GROUP ids: the races the character editor lists.
@@ -173,6 +174,13 @@ public static class Races
         BeepbotTraits);
 
     /// <summary>
+    /// Kat-Lon: skeletal robots with a broad, swept-back helmet head (male fit, single gender), imported <c>rigid</c> like the beepbot; a
+    /// skeleton subrace (<see cref="BeepbotTraits"/>).
+    /// </summary>
+    public static readonly Subrace Katlon = new("katlon", KatlonRace, Body("katlon", true), null, [new("katlon", KatlonCharacter, false)],
+        BeepbotTraits);
+
+    /// <summary>
     /// Owl people: their own feathered, beaked heads and taloned hands and feet, imported <c>palms</c> so their hands hang palm to thigh; a
     /// Greenlander's traits.
     /// </summary>
@@ -185,7 +193,7 @@ public static class Races
     public static readonly RaceGroup LeomaRaces = new("Leoma", LeomaGroup, [Leoma]), CrevanRaces = new("Crevan", CrevanGroup, [Crevan]),
         Crabfolk = new("Crabfolk", CrabfolkGroup, [Crabman, CrabQueen, Spidercrab, Ghostcrab]),
         TieflingRaces = new("Tiefling", TieflingGroup, [Tiefling]), BatfolkRaces = new("Batfolk", BatfolkGroup, [Batfolk]),
-        WolfkinRaces = new("Wolfkin", WolfkinGroup, [Wolfkin]), BeepbotRaces = new("Beepbot", BeepbotGroup, [Beepbot]),
+        WolfkinRaces = new("Wolfkin", WolfkinGroup, [Wolfkin]), BeepbotRaces = new("Beepbot", BeepbotGroup, [Beepbot, Katlon]),
         OwlkindRaces = new("Owlkind", OwlkindGroup, [Owlkind]);
 
     /// <summary>
