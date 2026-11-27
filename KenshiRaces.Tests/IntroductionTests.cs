@@ -108,6 +108,7 @@ public sealed class IntroductionTests
     [InlineData("crabqueen female", Races.CrabQueenCharacter, false)]
     [InlineData("beepbot hostile", Races.BeepbotCharacter, true)]
     [InlineData("katlon", Races.KatlonCharacter, false)]
+    [InlineData("chibot hostile", Races.ChibotCharacter, true)]
     public void The_spawn_field_names_a_character_or_a_subrace_and_hostile_or_not(string field, string id, bool hostile)
     {
         var parsed = SpawnRaceRow.Parse(field);

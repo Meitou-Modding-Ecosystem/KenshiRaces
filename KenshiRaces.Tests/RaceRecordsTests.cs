@@ -122,6 +122,7 @@ public sealed class RaceRecordsTests
     [Theory]
     [InlineData("beepbot")]
     [InlineData("katlon")]
+    [InlineData("chibot")]
     public void A_skeleton_subrace_copies_the_Skeletons_mechanics_with_its_own_body_and_gear_slots(string name)
     {
         var subrace = Races.All.Single(r => r.Name == name);
@@ -142,13 +143,14 @@ public sealed class RaceRecordsTests
     }
 
     [Fact]
-    public void The_beepbot_and_the_Kat_Lon_join_the_games_Skeleton_race()
+    public void The_beepbot_the_Kat_Lon_and_the_chibot_join_the_games_Skeleton_race()
     {
-        Assert.Equal([Races.Beepbot, Races.Katlon], Races.SkeletonRaces.Subraces);
+        Assert.Equal([Races.Beepbot, Races.Katlon, Races.Chibot], Races.SkeletonRaces.Subraces);
         Assert.Equal("42903-rebirth.mod", Races.SkeletonRaces.Id);
         Assert.True(Races.SkeletonRaces.Existing);
         Assert.All(Races.Groups.Where(g => g != Races.SkeletonRaces), g => Assert.False(g.Existing));
         Assert.Same(Races.BeepbotTraits, Races.Katlon.Traits);
+        Assert.Same(Races.BeepbotTraits, Races.Chibot.Traits);
     }
 
     [Fact]
@@ -158,6 +160,8 @@ public sealed class RaceRecordsTests
         Assert.Equal("20-KenshiRaces.mod", Races.BeepbotCharacter);
         Assert.Equal("47-KenshiRaces.mod", Races.KatlonRace);
         Assert.Equal("48-KenshiRaces.mod", Races.KatlonCharacter);
+        Assert.Equal("49-KenshiRaces.mod", Races.ChibotRace);
+        Assert.Equal("51-KenshiRaces.mod", Races.ChibotCharacter);
     }
 
     [Fact]
