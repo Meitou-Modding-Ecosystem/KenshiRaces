@@ -69,6 +69,7 @@ static class IntroducerData
         [Races.WolfkinMaleCharacter] = "Wolfkin man",
         [Races.WolfkinFemaleCharacter] = "Wolfkin woman",
         [Races.BeepbotCharacter] = "beepbot",
+        [Races.KatlonCharacter] = "Kat-Lon",
         [Races.OwlkindMaleCharacter] = "Owlkind man",
         [Races.OwlkindFemaleCharacter] = "Owlkind woman",
     };
@@ -285,7 +286,8 @@ static class IntroducerData
         [Races.BatfolkGroup] = "The Batfolk. Faces like yours, wings like nothing you've seen. They sleep all day and see in the dark. A man or a woman?",
         [Races.WolfkinGroup] =
             "The Wolfkin. They hear you coming a mile off, and they run in packs. Loyal to the bone, once you're one of theirs. A man or a woman?",
-        [Races.BeepbotGroup] = "A beepbot. Scrap and springs that walks and talks, more or less. Nobody knows who built them, and they don't say.",
+        [Races.BeepbotGroup] =
+            "The machines. Scrap and springs that walk and talk, more or less. Nobody knows who built them, and they don't say. Which one?",
         [Races.OwlkindGroup] = "An Owlkind. She'll see you long before you see her, and she hunts at night. Mind the talons.",
     };
 
@@ -300,7 +302,7 @@ static class IntroducerData
         [Races.TieflingGroup] = "The woman with horns.",
         [Races.BatfolkGroup] = "The bat people.",
         [Races.WolfkinGroup] = "The wolf people.",
-        [Races.BeepbotGroup] = "The machine.",
+        [Races.BeepbotGroup] = "The machines.",
         [Races.OwlkindGroup] = "The owl people.",
     };
 
@@ -323,7 +325,8 @@ static class IntroducerData
         [Races.BatfolkFemaleCharacter] = "A Batfolk woman.",
         [Races.WolfkinMaleCharacter] = "A Wolfkin man.",
         [Races.WolfkinFemaleCharacter] = "A Wolfkin woman.",
-        [Races.BeepbotCharacter] = "Bring the machine.",
+        [Races.BeepbotCharacter] = "A beepbot.",
+        [Races.KatlonCharacter] = "A Kat-Lon.",
         [Races.OwlkindMaleCharacter] = "An Owlkind man.",
         [Races.OwlkindFemaleCharacter] = "An Owlkind woman.",
     };
