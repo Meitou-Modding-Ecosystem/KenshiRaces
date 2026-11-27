@@ -51,12 +51,12 @@ public void EditData(ModDataContext c)
 }
 ```
 
-- RACEs (subraces): `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`, `BatfolkRace`, `WolfkinRace`.
+- RACEs (subraces): `Races.LeomaRace`, `CrevanRace`, `CrabmanRace`, `CrabQueenRace`, `SpidercrabRace`, `GhostcrabRace`, `TieflingRace`, `BatfolkRace`, `WolfkinRace`, `BeepbotRace`, `KatlonRace`, `ChibotRace`, `OwlkindRace`.
 - CHARACTERs (kitless, recruitable): `LeomaMaleCharacter`, `LeomaFemaleCharacter`, `CrevanMaleCharacter`, `CrevanFemaleCharacter`,
-  `CrabmanCharacter`, `CrabQueenCharacter`, `SpidercrabCharacter`, `GhostcrabCharacter`, `TieflingCharacter`, `BatfolkMaleCharacter`, `BatfolkFemaleCharacter`,
-  `WolfkinMaleCharacter`, `WolfkinFemaleCharacter`.
-- RACE_GROUPs (the editor's races): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`, `TieflingGroup`, `BatfolkGroup`, `WolfkinGroup`. `Races.Recruit` is the "Join us." talk.
-- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen`, `Spidercrab`, `Ghostcrab`, `Tiefling`, `Batfolk`, `Wolfkin` (`Subrace`) and `Races.Groups` describe them. Table:
+  `CrabmanCharacter`, `CrabQueenCharacter`, `SpidercrabCharacter`, `GhostcrabCharacter`, `TieflingMaleCharacter`, `TieflingFemaleCharacter`, `BatfolkMaleCharacter`, `BatfolkFemaleCharacter`,
+  `WolfkinMaleCharacter`, `WolfkinFemaleCharacter`, `BeepbotCharacter`, `KatlonCharacter`, `ChibotCharacter`, `OwlkindMaleCharacter`, `OwlkindFemaleCharacter`.
+- RACE_GROUPs (the editor's races): `LeomaGroup`, `CrevanGroup`, `CrabfolkGroup`, `TieflingGroup`, `BatfolkGroup`, `WolfkinGroup`, `OwlkindGroup`, and the game's own `SkeletonGroup` (`42903-rebirth.mod`), which the beepbot, the Kat-Lon and the chibot join. `Races.Recruit` is the "Join us." talk.
+- `Races.Leoma`, `Crevan`, `Crabman`, `CrabQueen`, `Spidercrab`, `Ghostcrab`, `Tiefling`, `Batfolk`, `Wolfkin`, `Beepbot`, `Katlon`, `Chibot`, `Owlkind` (`Subrace`) and `Races.Groups` describe them. Table:
   [kenshi-races.md "Races"](kenshi-races.md#races).
 
 ## 4. Add a subrace or a race
@@ -82,14 +82,19 @@ public void EditData(ModDataContext c)
 - A body imported `headless` (it wears the human head, [race import](race-import.md#headless)) is `new RaceBody(..., HumanHead: true)`: its
   subrace keeps the Greenlander's heads, hair and random faces and gets the face editor limits (`RaceRecords.FaceEditorLimits`: human face
   sliders, chest, bust).
+- A body imported `skintone` as well ([race import](race-import.md#skin-tone)) is `new RaceBody(..., HumanHead: true, SkinTone: true)`: its
+  `<stem>_mask.dds` becomes the RACE's `body mask` and the subrace gets `RaceRecords.TintedEditorLimits`, so one Skin Tone slider tints head
+  and body alike.
 - `RaceRecords.Add(c, subrace, talk)`: `talk` is a DIALOGUE id for the characters, `null` for none.
 - A race of your own: `RaceRecords.AddGroup(c, new RaceGroup("Naga", "32-MyMod.mod", [subraces]))` adds the RACE_GROUP and every subrace.
 - Subraces are `playable` with Kenshi Races' editor limits (`RaceRecords.EditorLimits`); `FillRace` / `FillCharacter` fill records you add
   yourself (`c.Add`) when you want to change more fields after.
 - The ids are yours: records of your own `.mod` file name.
-- Traits: `new Subrace(..., Traits: new RaceTraits(good, bad) { Health = ..., NoHats, NoShoes, HatsOnly, NoFootwear, NoWeapons, Fists,
+- Traits: `new Subrace(..., Traits: new RaceTraits(good, bad) { Model, Health = ..., NoHats, NoShoes, HatsOnly, NoFootwear, NoWeapons, Fists,
   DamageTaken })` sets aptitudes (x1.2 / x0.8), part hit points, gear limits, fists and the share of each blow that lands
-  ([kenshi-races.md](kenshi-races.md#traits)); a hermit crab can reuse `Races.CrabfolkTraits`. Without traits a subrace keeps the Greenlander's.
+  ([kenshi-races.md](kenshi-races.md#traits)); a hermit crab can reuse `Races.CrabfolkTraits`. Without traits a subrace keeps the Greenlander's. `Model = RaceModel.Skeleton`
+  copies the Skeleton's RACE instead (robot health, repairs, no hunger), as `Races.BeepbotTraits` does; empty `good` and `bad` keep the
+  model's aptitudes.
 
 ## 6. Play its animations
 

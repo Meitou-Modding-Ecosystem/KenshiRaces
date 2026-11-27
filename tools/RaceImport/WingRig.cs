@@ -5,9 +5,8 @@ namespace RaceImport;
 /// <summary>
 /// Arm wings (docs/race-import.md "Wings"): Meshy binds a wing's membrane to helper bones and the spine, which pins it to fixed points. Before the
 /// fit, every vertex past the shoulder on an arm's side (above the spine joint) is bound by its place along the arm instead: to the upper arm,
-/// forearm or hand, blended over the elbow and the wrist, so the webbing moves rigidly with the arm. The membrane, what hangs below the arm further
-/// from its bones than the arm's skin above them reaches, is also folded: turned about the arm so that it hangs behind it, and drawn in towards
-/// the arm, since the game's bind pose has the arms down, where a membrane hanging below the arm would pass through the body.
+/// forearm or hand, blended over the elbow and the wrist. The membrane is what hangs below the arm further from its bones than the arm's skin above
+/// them reaches; after the fit <see cref="WingSpread"/> places it and shares its weight with the flank.
 /// </summary>
 public static class WingRig
 {
@@ -29,21 +28,11 @@ public static class WingRig
     /// <summary>
     /// A vertex below the arm is the membrane's past this many times the reach of the arm's skin above it at that point of the chain.
     /// </summary>
-    const float MembraneStart = 1.1f;
+    const float MembraneStart = 0.7f;
 
     /// <summary>
-    /// The fold grows to its full turn over this much further out, as a share of the skin's reach.
-    /// </summary>
-    const float FoldRamp = 0.5f;
-
-    /// <summary>
-    /// How far the folded membrane reaches from the arm, as a share of its reach in the model.
-    /// </summary>
-    const float FoldReach = 0.7f;
-
-    /// <summary>
-    /// Rebinds and folds the arm wings of <paramref name="body"/> in place (its positions, normals and influences); returns which vertices are the
-    /// membrane's and which of those a sleeve covers (up to the wrist). The model faces +Z (glTF's front), so behind is -Z.
+    /// Rebinds the arm wings of <paramref name="body"/> in place (its influences); returns which vertices are the membrane's and which of those a
+    /// sleeve covers (up to the wrist). The model faces +Z (glTF's front), so behind is -Z.
     /// </summary>
     public static (bool[] Membrane, bool[] Sleeved) Apply(SourceBody body)
     {
@@ -61,11 +50,10 @@ public static class WingRig
     }
 
     /// <summary>
-    /// One arm: each of its <paramref name="vertices"/> is bound along the arm, and folded when it is the membrane's.
+    /// One arm: each of its <paramref name="vertices"/> is bound along the arm, and marked when it is the membrane's.
     /// </summary>
     static void ApplySide(SourceBody body, Arm arm, int[] vertices, bool[] membrane, bool[] sleeved)
     {
-        var fold = arm.Fold();
         var below = arm.Below();
         foreach (int v in vertices)
         {
@@ -77,11 +65,6 @@ public static class WingRig
             float start = skin * MembraneStart;
             if (distance <= start || Vector3.Dot(p - closest, below) <= 0) continue;
 
-            float share = Math.Clamp((distance - start) / (skin * FoldRamp), 0, 1);
-            var turn = Quaternion.Slerp(Quaternion.Identity, fold, share);
-            float reach = 1 + (FoldReach - 1) * share;
-            body.Positions[v] = closest + Vector3.Transform(p - closest, turn) * reach;
-            body.Normals[v] = Vector3.Normalize(Vector3.Transform(body.Normals[v], turn));
             membrane[v] = true;
             sleeved[v] = along < arm.ToWrist;
         }
@@ -211,20 +194,7 @@ public static class WingRig
             return [.. all.Where(p => p.Weight > 1e-4f)];
         }
 
-        /// <summary>
-        /// The turn about the arm that takes the direction below it to the direction behind it.
-        /// </summary>
-        public Quaternion Fold()
-        {
-            var axis = Axis;
-            var below = Below();
-            var behind = Vector3.Normalize(Flatten(-Vector3.UnitZ, axis));
-            float angle = MathF.Acos(Math.Clamp(Vector3.Dot(below, behind), -1, 1));
-            var cross = Vector3.Cross(below, behind);
-            return Quaternion.CreateFromAxisAngle(Vector3.Dot(cross, axis) < 0 ? -axis : axis, angle);
-        }
-
-        /// <summary>
+            /// <summary>
         /// A direction with its part along <paramref name="axis"/> removed.
         /// </summary>
         static Vector3 Flatten(Vector3 direction, Vector3 axis) => direction - axis * Vector3.Dot(direction, axis);

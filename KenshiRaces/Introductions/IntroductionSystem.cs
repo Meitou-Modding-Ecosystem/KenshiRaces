@@ -51,9 +51,10 @@ sealed class IntroductionSystem : ITickSystem, IStateHashed, IModSaveData
     /// <summary>
     /// Made for each world, with the world's population (null in a world without one: then it does nothing).
     /// </summary>
-    public IntroductionSystem(PopulationSystem? population, string modId, Action<string> log)
+    public IntroductionSystem(PopulationSystem? population, string modId, Action<string> log, EditorQueue editor)
     {
         _population = population;
+        _editor = editor;
         _modId = modId;
         _introducer = population is null ? null : new Introducer(population, modId, log);
     }
@@ -97,6 +98,7 @@ sealed class IntroductionSystem : ITickSystem, IStateHashed, IModSaveData
     {
         ByWorld.AddOrUpdate(world, this);
         foreach (var command in commands.OfType<SpawnRaceCommand>()) Spawn(world, command);
+        foreach (var command in commands.OfType<TryRacesCommand>()) TryRaces(world, command);
     }
 
     /// <summary>
@@ -290,14 +292,14 @@ sealed class IntroductionSystem : ITickSystem, IStateHashed, IModSaveData
         if (_population is null || IntroducerData.Of(command.Number) is not { } character) return;
 
         var at = new Vector2(command.At.X, command.At.Z);
-        bool done = command.Hostile ? SpawnHostile(world, character, at) : SpawnRecruit(world, character, at, command.Selected);
+        bool done = command.Hostile ? SpawnHostile(world, character, at) : !SpawnRecruit(world, character, at, command.Selected).IsNone;
         if (!done) world.Post($"Kenshi Races: could not spawn a {Label(character)} there (pick a walkable spot near your squad).");
     }
 
     /// <summary>
     /// A race character in a player squad.
     /// </summary>
-    bool SpawnRecruit(World world, RaceCharacter character, Vector2 at, IReadOnlyList<CharacterId> selected)
+    CharacterId SpawnRecruit(World world, RaceCharacter character, Vector2 at, IReadOnlyList<CharacterId> selected)
     {
         var table = world.Characters;
         int squad = selected
@@ -305,7 +307,38 @@ sealed class IntroductionSystem : ITickSystem, IStateHashed, IModSaveData
             .FirstOrDefault(c => c is { IsPlayer: true })?.SquadId
             ?? SquadManagement.PlayerSquads(world).FirstOrDefault()?.Id
             ?? -1;
-        return !_population!.SpawnIntoPlayerSquad(world, squad, character.Id, at).IsNone;
+        return _population!.SpawnIntoPlayerSquad(world, squad, character.Id, at);
+    }
+
+    /// <summary>
+    /// The characters the editor opens on next (<see cref="TryRaces"/>).
+    /// </summary>
+    readonly EditorQueue _editor;
+
+    /// <summary>
+    /// How far apart round the camera target the race characters of <see cref="TryRaces"/> stand.
+    /// </summary>
+    const float TryRing = 25;
+
+    /// <summary>
+    /// One recruit of every race character in a ring round the camera target, handed to the character editor (<see cref="TryRacesRow"/>).
+    /// </summary>
+    void TryRaces(World world, TryRacesCommand command)
+    {
+        if (_population is null) return;
+
+        var characters = Races.All.SelectMany(s => s.Characters).ToList();
+        var made = new List<CharacterId>();
+        for (int i = 0; i < characters.Count; i++)
+        {
+            float angle = 2 * MathF.PI * i / characters.Count;
+            var at = new Vector2(command.At.X + TryRing * MathF.Cos(angle), command.At.Z + TryRing * MathF.Sin(angle));
+            var id = SpawnRecruit(world, characters[i], at, command.Selected);
+            if (!id.IsNone) made.Add(id);
+        }
+
+        if (made.Count < characters.Count) world.Post($"Kenshi Races: {characters.Count - made.Count} race characters could not be placed there.");
+        if (made.Count > 0) _editor.Offer(made);
     }
 
     /// <summary>

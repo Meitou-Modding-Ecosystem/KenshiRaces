@@ -83,13 +83,15 @@ public sealed class IntroductionTests
     }
 
     [Fact]
-    public void The_records_take_no_id_twice_nor_one_of_the_races()
+    public void The_records_take_no_id_twice_nor_one_of_the_races_or_the_animation_library()
     {
         var ids = IntroducerData.Build(Game()).Select(r => r.StringId).ToList();
         var races = Races.All.SelectMany(s => s.Characters.Select(c => c.Id).Append(s.RaceId)).ToHashSet();
+        var techniques = RaceAnimations.All.Select(a => a.TechniqueId).ToHashSet();
 
         Assert.Equal(ids.Count, ids.Distinct().Count());
         Assert.DoesNotContain(ids, races.Contains);
+        Assert.DoesNotContain(ids, techniques.Contains);
     }
 
     #endregion
@@ -101,8 +103,12 @@ public sealed class IntroductionTests
     [InlineData("leomafemale hostile", Races.LeomaFemaleCharacter, true)]
     [InlineData("Leoma Female", Races.LeomaFemaleCharacter, false)]
     [InlineData("hostile crevan", Races.CrevanMaleCharacter, true)]
-    [InlineData("tiefling join", Races.TieflingCharacter, false)]
+    [InlineData("tiefling join", Races.TieflingMaleCharacter, false)]
+    [InlineData("tieflingfemale", Races.TieflingFemaleCharacter, false)]
     [InlineData("crabqueen female", Races.CrabQueenCharacter, false)]
+    [InlineData("beepbot hostile", Races.BeepbotCharacter, true)]
+    [InlineData("katlon", Races.KatlonCharacter, false)]
+    [InlineData("chibot hostile", Races.ChibotCharacter, true)]
     public void The_spawn_field_names_a_character_or_a_subrace_and_hostile_or_not(string field, string id, bool hostile)
     {
         var parsed = SpawnRaceRow.Parse(field);

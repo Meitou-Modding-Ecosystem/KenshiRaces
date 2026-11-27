@@ -51,6 +51,30 @@ public sealed class RaceRecordsTests
     }
 
     [Fact]
+    public void A_skin_toned_subrace_takes_its_bodies_masks_and_the_tinted_editor_limits()
+    {
+        var race = new FcsRecord { StringId = Races.TieflingRace, RecordType = FcsRecordType.Race, Name = "tiefling" };
+
+        RaceRecords.FillRace(race, Game(), Races.Tiefling);
+
+        Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_tieflingmale_mask.dds", race.Filenames["body mask male"]);
+        Assert.Equal(@".\mods\KenshiRaces\items\races\kenshiraces_tieflingfemale_mask.dds", race.Filenames["body mask female"]);
+        Assert.Equal(RaceRecords.TintedEditorLimits, race.Filenames["editor limits"]);
+        Assert.Equal("1-heads.mod", Assert.Single(race.References["heads male"]).TargetStringId);
+        Assert.False(race.Bools["single gender"]);
+    }
+
+    [Fact]
+    public void A_subrace_without_a_skin_tone_has_no_body_mask()
+    {
+        var race = new FcsRecord { StringId = Races.BatfolkRace, RecordType = FcsRecordType.Race, Name = "batfolk" };
+
+        RaceRecords.FillRace(race, Game(), Races.Batfolk);
+
+        Assert.Equal("", race.Filenames["body mask male"]);
+    }
+
+    [Fact]
     public void A_subrace_with_its_own_head_has_no_heads_hair_or_random_faces()
     {
         var race = new FcsRecord { StringId = Races.LeomaRace, RecordType = FcsRecordType.Race, Name = "leoma" };
@@ -93,6 +117,51 @@ public sealed class RaceRecordsTests
         Assert.Equal(Races.CrabFists, Assert.Single(race.References["fists lv1"]).TargetStringId);
         Assert.True(race.Bools[RaceRecords.NoWeaponsField]);
         Assert.Equal(0.8f, race.Floats[RaceRecords.DamageTakenField]);
+    }
+
+    [Theory]
+    [InlineData("beepbot")]
+    [InlineData("katlon")]
+    [InlineData("chibot")]
+    public void A_skeleton_subrace_copies_the_Skeletons_mechanics_with_its_own_body_and_gear_slots(string name)
+    {
+        var subrace = Races.All.Single(r => r.Name == name);
+        var race = new FcsRecord { StringId = subrace.RaceId, RecordType = FcsRecordType.Race, Name = name };
+
+        RaceRecords.FillRace(race, Game(), subrace);
+
+        Assert.True(race.Bools["is robot"]);
+        Assert.Equal(0, race.Floats["hunger rate"]);
+        Assert.Equal(6, race.Ints["heal stat"]);
+        Assert.Equal([28, 11], race.Ints.Where(p => p.Key.StartsWith("stats good")).Select(p => p.Value));
+        Assert.Equal(200, Assert.Single(race.References["combat anatomy"]).Value1);
+        Assert.Equal("robo-fists.mod", Assert.Single(race.References["fists lv1"]).TargetStringId);
+        Assert.False(race.Bools["no hats"]);
+        Assert.True(race.Bools["no shoes"]);
+        Assert.Empty(race.References["heads male"]);
+        Assert.Equal(subrace.Body(female: false).Mesh, race.Filenames["male mesh"]);
+    }
+
+    [Fact]
+    public void The_beepbot_the_Kat_Lon_and_the_chibot_join_the_games_Skeleton_race()
+    {
+        Assert.Equal([Races.Beepbot, Races.Katlon, Races.Chibot], Races.SkeletonRaces.Subraces);
+        Assert.Equal("42903-rebirth.mod", Races.SkeletonRaces.Id);
+        Assert.True(Races.SkeletonRaces.Existing);
+        Assert.All(Races.Groups.Where(g => g != Races.SkeletonRaces), g => Assert.False(g.Existing));
+        Assert.Same(Races.BeepbotTraits, Races.Katlon.Traits);
+        Assert.Same(Races.BeepbotTraits, Races.Chibot.Traits);
+    }
+
+    [Fact]
+    public void The_subraces_keep_their_record_ids_so_saves_find_them()
+    {
+        Assert.Equal("16-KenshiRaces.mod", Races.BeepbotRace);
+        Assert.Equal("20-KenshiRaces.mod", Races.BeepbotCharacter);
+        Assert.Equal("47-KenshiRaces.mod", Races.KatlonRace);
+        Assert.Equal("48-KenshiRaces.mod", Races.KatlonCharacter);
+        Assert.Equal("49-KenshiRaces.mod", Races.ChibotRace);
+        Assert.Equal("51-KenshiRaces.mod", Races.ChibotCharacter);
     }
 
     [Fact]
@@ -144,7 +213,7 @@ public sealed class RaceRecordsTests
     }
 
     /// <summary>
-    /// A database holding a Greenlander and a Drifter (with a sword in its kit), from a data file written to a temporary folder.
+    /// A database holding a Greenlander, a Skeleton and a Drifter (with a sword in its kit), from a data file written to a temporary folder.
     /// </summary>
     static GameDatabase Game()
     {
@@ -164,6 +233,17 @@ public sealed class RaceRecordsTests
         [
             Part("32-test.mod", "Head"), Part("29-test.mod", "Right Arm"), Part("101-test.mod", "Chest"), Part("31-test.mod", "Right Leg"),
         ];
+        var skeleton = new FcsRecord { StringId = RaceModel.Skeleton.Id, RecordType = FcsRecordType.Race, Name = "Skeleton" };
+        skeleton.Bools["is robot"] = true;
+        skeleton.Bools["no hats"] = true;
+        skeleton.Bools["no shoes"] = true;
+        skeleton.Floats["hunger rate"] = 0;
+        skeleton.Ints["heal stat"] = 6;
+        skeleton.Ints["stats good0"] = 28;
+        skeleton.Ints["stats good1"] = 11;
+        skeleton.References["combat anatomy"] = [new("32-test.mod", 80, 200, 0)];
+        skeleton.References["heads male"] = [new("4-heads.mod", 100, 0, 0)];
+        skeleton.References["fists lv1"] = [new("robo-fists.mod", 0, 0, 0)];
         var drifter = new FcsRecord { StringId = RaceRecords.Drifter, RecordType = FcsRecordType.Character, Name = "Drifter" };
         drifter.Ints["strength"] = 7;
         drifter.Ints["female chance"] = 50;
@@ -171,7 +251,7 @@ public sealed class RaceRecordsTests
         var sword = new FcsRecord { StringId = "9-test.mod", RecordType = FcsRecordType.Weapon, Name = "Sword" };
 
         string path = Path.Combine(Directory.CreateTempSubdirectory("kenshiraces").FullName, "test.mod");
-        return Load([greenlander, drifter, sword, .. parts]);
+        return Load([greenlander, skeleton, drifter, sword, .. parts]);
     }
 
     /// <summary>

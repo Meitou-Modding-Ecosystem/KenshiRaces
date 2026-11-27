@@ -23,19 +23,110 @@ public static class HeadGraft
 
     /// <summary>
     /// The fitted body with the head grafted on, and for each of its vertices the body vertex it was (-1 for the head's). With
-    /// <paramref name="earBone"/> the model's ears stay (<see cref="HeadEars"/>), carried by that bone.
+    /// <paramref name="earBone"/> the model's ears stay (<see cref="HeadEars"/>), carried by that bone. With <paramref name="classes"/> (by triangle,
+    /// <see cref="TextureClasses"/>) the model's hair joined to the dropped head goes too (<see cref="DropHair"/>).
     /// </summary>
-    public static (SkinnedMesh Mesh, int[] Source) Apply(SkinnedMesh body, HumanBody human, HumanHead head, ushort? earBone = null)
+    public static (SkinnedMesh Mesh, int[] Source) Apply(SkinnedMesh body, HumanBody human, HumanHead head, ushort? earBone = null,
+        Texel[]? classes = null)
     {
         var rim = Rim(head);
         var near = Enumerable.Range(0, body.Positions.Length).Where(v => Distance(body.Positions[v], rim) < Band).ToHashSet();
         var dropped = Dropped(body.Positions, near, human);
         var sunk = Sunk(body, near, human);
         if (earBone is { } bone) sunk = KeepEars(sunk, dropped, head, bone);
+        if (classes is not null) DropHair(body, dropped, classes);
         var source = Enumerable.Range(0, body.Positions.Length).Where(v => !dropped[v]).ToArray();
         var mesh = Joined(sunk, source, head);
         return (mesh, [.. source, .. Enumerable.Repeat(-1, head.Positions.Length)]);
     }
+
+    /// <summary>
+    /// How many rounds <see cref="DropHair"/> fills the hair's holes.
+    /// </summary>
+    const int HairHoleRounds = 8;
+
+    /// <summary>
+    /// Drops the model's hair (docs/race-import.md "Headless"): the <see cref="Texel.Hair"/> triangles reached from the dropped head's through
+    /// others of them (along welded vertices), then, round by round, the triangles not skin with at least two edges on dropped hair (the hair's
+    /// shaded strands, too dark to sort as hair, inside it; the clothing it lies on meets it along one edge at most), with each vertex no
+    /// triangle but those carries, so long hair hanging down the back goes with the head while clothing apart from it stays.
+    /// </summary>
+    static void DropHair(SkinnedMesh body, bool[] dropped, Texel[] classes)
+    {
+        var weld = Surface.Weld(body.Positions);
+        int triangles = body.Indices.Length / 3;
+        var byWelded = new Dictionary<int, List<int>>();
+        for (int t = 0; t < triangles; t++)
+            foreach (int v in Corners(body, t))
+                (byWelded.TryGetValue(weld[v], out var list) ? list : byWelded[weld[v]] = []).Add(t);
+
+        var reached = HairReached(body, dropped, classes, weld, byWelded);
+        FillHairHoles(body, classes, weld, reached);
+
+        var kept = new bool[dropped.Length];
+        for (int t = 0; t < triangles; t++)
+            if (!reached.Contains(t))
+                foreach (int v in Corners(body, t)) kept[v] = true;
+
+        foreach (int t in reached)
+            foreach (int v in Corners(body, t))
+                if (!kept[v]) dropped[v] = true;
+    }
+
+    /// <summary>
+    /// The hair triangles reached from the dropped head's vertices through others of them.
+    /// </summary>
+    static HashSet<int> HairReached(SkinnedMesh body, bool[] dropped, Texel[] classes, int[] weld, Dictionary<int, List<int>> byWelded)
+    {
+        var droppedWelded = Enumerable.Range(0, dropped.Length).Where(v => dropped[v]).Select(v => weld[v]).ToHashSet();
+        var reached = Enumerable.Range(0, classes.Length)
+            .Where(t => classes[t] == Texel.Hair && Corners(body, t).Any(v => droppedWelded.Contains(weld[v])))
+            .ToHashSet();
+        var queue = new Queue<int>(reached);
+        while (queue.TryDequeue(out int t))
+            foreach (int v in Corners(body, t))
+                foreach (int n in byWelded[weld[v]])
+                    if (classes[n] == Texel.Hair && reached.Add(n)) queue.Enqueue(n);
+
+        return reached;
+    }
+
+    /// <summary>
+    /// Adds to <paramref name="reached"/>, for <see cref="HairHoleRounds"/> rounds, the triangles not skin with two or three welded edges
+    /// shared with reached ones.
+    /// </summary>
+    static void FillHairHoles(SkinnedMesh body, Texel[] classes, int[] weld, HashSet<int> reached)
+    {
+        var byEdge = new Dictionary<(int, int), List<int>>();
+        for (int t = 0; t < classes.Length; t++)
+            foreach (var edge in Edges(body, weld, t))
+                (byEdge.TryGetValue(edge, out var list) ? list : byEdge[edge] = []).Add(t);
+
+        for (int round = 0; round < HairHoleRounds; round++)
+        {
+            var added = Enumerable.Range(0, classes.Length)
+                .Where(t => classes[t] != Texel.Skin && !reached.Contains(t))
+                .Where(t => Edges(body, weld, t).Count(e => byEdge[e].Any(n => n != t && reached.Contains(n))) >= 2)
+                .ToList();
+            if (added.Count == 0) return;
+
+            reached.UnionWith(added);
+        }
+    }
+
+    /// <summary>
+    /// A triangle's three edges as pairs of welded vertices, the lower first.
+    /// </summary>
+    static (int, int)[] Edges(SkinnedMesh mesh, int[] weld, int t)
+    {
+        var c = Corners(mesh, t);
+        return [.. Enumerable.Range(0, 3).Select(k => (weld[c[k]], weld[c[(k + 1) % 3]])).Select(e => (Math.Min(e.Item1, e.Item2), Math.Max(e.Item1, e.Item2)))];
+    }
+
+    /// <summary>
+    /// A triangle's three vertices.
+    /// </summary>
+    static int[] Corners(SkinnedMesh mesh, int t) => [mesh.Indices[3 * t], mesh.Indices[3 * t + 1], mesh.Indices[3 * t + 2]];
 
     /// <summary>
     /// The body with its ears placed on the human head (<see cref="HeadEars"/>), no longer <paramref name="dropped"/>, carried by
