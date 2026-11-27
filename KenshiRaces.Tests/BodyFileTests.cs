@@ -21,6 +21,7 @@ public sealed class BodyFileTests
         Assert.True(File.Exists(Path.Combine(Folder(), stem + "_d.dds")));
         Assert.True(File.Exists(Path.Combine(Folder(), stem + "_parts.png")));
         Assert.Equal(body.NormalMap, File.Exists(Path.Combine(Folder(), stem + "_n.dds")));
+        Assert.Equal(body.SkinTone, File.Exists(Path.Combine(Folder(), stem + "_mask.dds")));
     }
 
     [Theory]
@@ -36,8 +37,16 @@ public sealed class BodyFileTests
         Assert.True(sub.BoneAssignments.GroupBy(a => a.VertexIndex).All(g => g.Count() <= 4));
     }
 
+    /// <summary>
+    /// Bodies imported <c>rigid</c> that keep a model rig carrying the chest on <c>Spine1</c> and the neck on the head (docs/race-import.md
+    /// "Rigid"), so the editor's Chest and Neck sliders barely move them.
+    /// </summary>
+    static readonly string[] RigidChests = ["kenshiraces_katlon", "kenshiraces_chibot"];
+
+    public static TheoryData<string> SliderStems => [.. Bodies().Select(b => b.Body.Stem).Except(RigidChests)];
+
     [Theory]
-    [MemberData(nameof(Stems))]
+    [MemberData(nameof(SliderStems))]
     public void The_chest_and_neck_ride_the_bones_the_editor_sliders_scale(string stem)
     {
         bool female = Bodies().Single(b => b.Body.Stem == stem).Female;

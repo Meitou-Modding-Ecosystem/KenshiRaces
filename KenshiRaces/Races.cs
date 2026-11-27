@@ -3,9 +3,9 @@ using Meitou.Data.Gameplay.Bodies;
 namespace KenshiRaces;
 
 /// <summary>
-/// The races Kenshi Races adds (docs/kenshi-races.md "Races"): six races of the character editor, Leoma, Crevan, Crabfolk, Tiefling, Batfolk and
-/// Wolfkin, with their subraces. Dependents use the ids in their own records (a CHARACTER's <c>race</c>, a squad's members) and add subraces with
-/// <see cref="RaceRecords.JoinGroup"/>. Subrace and character names are one lowercase word, so the console's <c>spawn</c> takes them unquoted.
+/// The races Kenshi Races adds (docs/kenshi-races.md "Races"): seven races of the character editor, Leoma, Crevan, Crabfolk, Tiefling, Batfolk,
+/// Wolfkin and Owlkind, with their subraces, and the beepbot, the Kat-Lon and the chibot as subraces of the game's Skeleton. Dependents use the
+/// ids in their own records (a CHARACTER's <c>race</c>, a squad's members) and add subraces with <see cref="RaceRecords.JoinGroup"/>. Subrace and character names are one lowercase word, so the console's <c>spawn</c> takes them unquoted.
 /// </summary>
 public static class Races
 {
@@ -24,27 +24,46 @@ public static class Races
     /// </summary>
     public const string LeomaRace = "10-" + FileName, CrabmanRace = "12-" + FileName, CrabQueenRace = "14-" + FileName,
         CrevanRace = "18-" + FileName, SpidercrabRace = "22-" + FileName, GhostcrabRace = "24-" + FileName, TieflingRace = "26-" + FileName,
-        BatfolkRace = "28-" + FileName, WolfkinRace = "36-" + FileName;
+        BatfolkRace = "28-" + FileName, WolfkinRace = "36-" + FileName, BeepbotRace = "16-" + FileName, OwlkindRace = "43-" + FileName,
+        KatlonRace = "47-" + FileName, ChibotRace = "49-" + FileName;
 
     /// <summary>
     /// The CHARACTER ids.
     /// </summary>
     public const string LeomaMaleCharacter = "11-" + FileName, CrabmanCharacter = "13-" + FileName, CrabQueenCharacter = "15-" + FileName,
         LeomaFemaleCharacter = "17-" + FileName, CrevanMaleCharacter = "19-" + FileName, CrevanFemaleCharacter = "21-" + FileName,
-        SpidercrabCharacter = "23-" + FileName, GhostcrabCharacter = "25-" + FileName, TieflingCharacter = "27-" + FileName,
+        SpidercrabCharacter = "23-" + FileName, GhostcrabCharacter = "25-" + FileName, TieflingFemaleCharacter = "27-" + FileName,
+        TieflingMaleCharacter = "42-" + FileName,
         BatfolkMaleCharacter = "29-" + FileName, BatfolkFemaleCharacter = "35-" + FileName,
-        WolfkinMaleCharacter = "37-" + FileName, WolfkinFemaleCharacter = "38-" + FileName;
+        WolfkinMaleCharacter = "37-" + FileName, WolfkinFemaleCharacter = "38-" + FileName, BeepbotCharacter = "20-" + FileName,
+        OwlkindFemaleCharacter = "44-" + FileName, OwlkindMaleCharacter = "46-" + FileName, KatlonCharacter = "48-" + FileName,
+        ChibotCharacter = "51-" + FileName;
 
     /// <summary>
     /// The RACE_GROUP ids: the races the character editor lists.
     /// </summary>
     public const string LeomaGroup = "30-" + FileName, CrevanGroup = "31-" + FileName, CrabfolkGroup = "32-" + FileName, TieflingGroup = "33-" + FileName,
-        BatfolkGroup = "34-" + FileName, WolfkinGroup = "39-" + FileName;
+        BatfolkGroup = "34-" + FileName, WolfkinGroup = "39-" + FileName, OwlkindGroup = "45-" + FileName;
+
+    /// <summary>
+    /// The game's own Skeleton RACE_GROUP (rebirth.mod), which the beepbot, the Kat-Lon and the chibot join (<see cref="SkeletonRaces"/>).
+    /// </summary>
+    public const string SkeletonGroup = "42903-rebirth.mod";
 
     /// <summary>
     /// The WEAPON the Crabfolk punch with (<see cref="RaceFists"/>).
     /// </summary>
     public const string CrabFists = "50-" + FileName;
+
+    /// <summary>
+    /// A Skeleton's mechanics (no hunger, robot health and repairs, the Skeleton's aptitudes and fists), but every hat and no boots.
+    /// </summary>
+    public static readonly RaceTraits BeepbotTraits = new([], [])
+    {
+        Model = RaceModel.Skeleton,
+        NoHats = false,
+        NoShoes = true,
+    };
 
     /// <summary>
     /// Strong, sword-loving lions: tougher all over, bad at armour, farming, polearms, heavy weapons and robotics.
@@ -133,10 +152,11 @@ public static class Races
         [new("ghostcrab", GhostcrabCharacter, false)], CrabfolkTraits);
 
     /// <summary>
-    /// The tieflings: a woman's body fitted to the male skeleton with a woman's bust (single gender, like the crab queen), a Greenlander's traits.
+    /// The tieflings: a human head and face (the Greenlander's heads, hair and face sliders) with ram horns, on horned-tailed bodies whose skin
+    /// takes the editor's skin tone with the head (<see cref="RaceBody.SkinTone"/>); a Greenlander's traits.
     /// </summary>
-    public static readonly Subrace Tiefling = new("tiefling", TieflingRace, Body("tiefling", false), null,
-        [new("tiefling", TieflingCharacter, false)]);
+    public static readonly Subrace Tiefling = new("tiefling", TieflingRace, TonedBody("tieflingmale", true), TonedBody("tieflingfemale", false),
+        [new("tieflingmale", TieflingMaleCharacter, false), new("tieflingfemale", TieflingFemaleCharacter, true)]);
 
     /// <summary>
     /// Bat people: a human head and face (the Greenlander's heads, hair and face sliders) on a furred body with wing membranes along the arms,
@@ -153,17 +173,48 @@ public static class Races
         [new("wolfkinmale", WolfkinMaleCharacter, false), new("wolfkinfemale", WolfkinFemaleCharacter, true)]);
 
     /// <summary>
+    /// Scrap-built skeletal robots in a rag skirt (male fit, single gender), imported <c>rigid</c> so their ribs and joints keep their shape;
+    /// a skeleton subrace (<see cref="BeepbotTraits"/>).
+    /// </summary>
+    public static readonly Subrace Beepbot = new("beepbot", BeepbotRace, Body("beepbot", true), null, [new("beepbot", BeepbotCharacter, false)],
+        BeepbotTraits);
+
+    /// <summary>
+    /// Kat-Lon: skeletal robots with a broad, swept-back helmet head (male fit, single gender), imported <c>rigid</c> like the beepbot; a
+    /// skeleton subrace (<see cref="BeepbotTraits"/>).
+    /// </summary>
+    public static readonly Subrace Katlon = new("katlon", KatlonRace, Body("katlon", true), null, [new("katlon", KatlonCharacter, false)],
+        BeepbotTraits);
+
+    /// <summary>
+    /// Chibot: slim skeletal robots with a woman's figure and looped braids (male fit, single gender), imported <c>rigid</c> like the beepbot;
+    /// a skeleton subrace (<see cref="BeepbotTraits"/>).
+    /// </summary>
+    public static readonly Subrace Chibot = new("chibot", ChibotRace, Body("chibot", true), null, [new("chibot", ChibotCharacter, false)],
+        BeepbotTraits);
+
+    /// <summary>
+    /// Owl people: their own feathered, beaked heads and taloned hands and feet, imported <c>palms</c> so their hands hang palm to thigh; a
+    /// Greenlander's traits.
+    /// </summary>
+    public static readonly Subrace Owlkind = new("owlkind", OwlkindRace, Body("owlkindmale", true), Body("owlkindfemale", true),
+        [new("owlkindmale", OwlkindMaleCharacter, false), new("owlkindfemale", OwlkindFemaleCharacter, true)]);
+
+    /// <summary>
     /// The character editor's races.
     /// </summary>
     public static readonly RaceGroup LeomaRaces = new("Leoma", LeomaGroup, [Leoma]), CrevanRaces = new("Crevan", CrevanGroup, [Crevan]),
         Crabfolk = new("Crabfolk", CrabfolkGroup, [Crabman, CrabQueen, Spidercrab, Ghostcrab]),
         TieflingRaces = new("Tiefling", TieflingGroup, [Tiefling]), BatfolkRaces = new("Batfolk", BatfolkGroup, [Batfolk]),
-        WolfkinRaces = new("Wolfkin", WolfkinGroup, [Wolfkin]);
+        WolfkinRaces = new("Wolfkin", WolfkinGroup, [Wolfkin]),
+        SkeletonRaces = new("Skeleton", SkeletonGroup, [Beepbot, Katlon, Chibot], Existing: true),
+        OwlkindRaces = new("Owlkind", OwlkindGroup, [Owlkind]);
 
     /// <summary>
     /// Every race of the mod, in the editor's order.
     /// </summary>
-    public static IReadOnlyList<RaceGroup> Groups { get; } = [LeomaRaces, CrevanRaces, Crabfolk, TieflingRaces, BatfolkRaces, WolfkinRaces];
+    public static IReadOnlyList<RaceGroup> Groups { get; } = [LeomaRaces, CrevanRaces, Crabfolk, TieflingRaces, BatfolkRaces, WolfkinRaces,
+        SkeletonRaces, OwlkindRaces];
 
     /// <summary>
     /// Every subrace of the mod.
@@ -179,4 +230,9 @@ public static class Races
     /// One of the mod's bodies wearing the human head (<see cref="RaceBody.HumanHead"/>).
     /// </summary>
     static RaceBody HeadedBody(string name, bool normalMap) => Body(name, normalMap) with { HumanHead = true };
+
+    /// <summary>
+    /// One of the mod's bodies wearing the human head whose skin takes the editor's skin tone (<see cref="RaceBody.SkinTone"/>).
+    /// </summary>
+    static RaceBody TonedBody(string name, bool normalMap) => HeadedBody(name, normalMap) with { SkinTone = true };
 }

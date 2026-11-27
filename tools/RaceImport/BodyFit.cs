@@ -96,6 +96,12 @@ public sealed class BodyFit
     /// </summary>
     const float ForearmTwistShare = 0.5f;
 
+    /// <summary>
+    /// How far along the forearm (0 at the elbow, 1 at the wrist) a helper joint hung off the forearm must sit to follow the hand instead: Meshy
+    /// hangs the thumb off the forearm at the wrist, which would leave it behind when the hand turns.
+    /// </summary>
+    const float WristJointReach = 0.75f;
+
     #endregion
 
     #region Fit
@@ -139,6 +145,11 @@ public sealed class BodyFit
     /// The turn given to each twisted hand (<c>L</c>, <c>R</c>) about its forearm, radians (<see cref="TwistHands"/>).
     /// </summary>
     public Dictionary<string, float> HandTwists { get; } = [];
+
+    /// <summary>
+    /// The model's helper joints hung off a forearm at the wrist (thumbs) that carry vertices and follow the hand (<see cref="WristJointReach"/>).
+    /// </summary>
+    public int WristJoints { get; private set; }
 
     /// <summary>
     /// Works out the fits of <paramref name="body"/> onto <paramref name="kenshi"/>, the neck <paramref name="neck"/> times its fitted length,
@@ -294,10 +305,33 @@ public sealed class BodyFit
     /// <summary>
     /// The fitted bone a model joint follows: its own, or its nearest fitted ancestor's; null for none.
     /// </summary>
-    string? FollowedBone(Dictionary<string, BoneFit> fits, int joint)
+    string? FollowedBone(IReadOnlyDictionary<string, BoneFit> fits, int joint) =>
+        NearestFitted(fits, joint) is { } followed && AtWrist(fits, followed, joint) ? followed.Replace("Forearm", "Hand") : NearestFitted(fits, joint);
+
+    /// <summary>
+    /// A model joint's own fitted bone, or its nearest fitted ancestor's; null for none.
+    /// </summary>
+    string? NearestFitted(IReadOnlyDictionary<string, BoneFit> fits, int joint)
     {
         while (joint >= 0 && !(Short(_body.JointNames[joint]) is { } bone && fits.ContainsKey(bone))) joint = _body.JointParents[joint];
         return joint < 0 ? null : Short(_body.JointNames[joint]);
+    }
+
+    /// <summary>
+    /// Whether a helper joint following <paramref name="followed"/> is a forearm's joint at the wrist (<see cref="WristJointReach"/>), which
+    /// follows the hand: with <c>palms</c> only, as a claw's parts are left as they were.
+    /// </summary>
+    bool AtWrist(IReadOnlyDictionary<string, BoneFit> fits, string followed, int joint)
+    {
+        if (!_palms || !followed.EndsWith(" Forearm") || Short(_body.JointNames[joint]) == followed) return false;
+
+        string hand = followed.Replace("Forearm", "Hand");
+        if (!fits.ContainsKey(hand) || !_source.ContainsKey(hand)) return false;
+
+        var elbow = Source(followed);
+        var wrist = Source(hand) - elbow;
+        float along = Vector3.Dot(_body.JointPositions[joint] - elbow, wrist) / wrist.LengthSquared();
+        return along >= WristJointReach;
     }
 
     /// <summary>
@@ -380,14 +414,15 @@ public sealed class BodyFit
     (string Bone, BoneFit Fit)[] FollowedFits()
     {
         var follow = new (string, BoneFit)[_body.JointNames.Length];
+        WristJoints = 0;
         for (int i = 0; i < follow.Length; i++)
         {
-            int j = i;
-            while (j >= 0 && !(Short(_body.JointNames[j]) is { } bone && Fits.ContainsKey(bone))) j = _body.JointParents[j];
-            if (j < 0 && Carries(i)) throw new InvalidDataException($"joint {_body.JointNames[i]} has no fitted ancestor");
+            string? followed = FollowedBone(Fits, i);
+            if (followed is null && Carries(i)) throw new InvalidDataException($"joint {_body.JointNames[i]} has no fitted ancestor");
 
-            string name = j < 0 ? "Pelvis" : Short(_body.JointNames[j])!;
+            string name = followed ?? "Pelvis";
             follow[i] = (name, Fits[name]);
+            if (followed != NearestFitted(Fits, i) && Carries(i)) WristJoints++;
         }
 
         return follow;

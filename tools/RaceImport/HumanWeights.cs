@@ -83,6 +83,16 @@ public static class HumanWeights
     ];
 
     /// <summary>
+    /// The foot joints (<see cref="FootReach"/>).
+    /// </summary>
+    static readonly string[] Feet = ["Bip01 L Foot", "Bip01 R Foot", "Bip01 L Toe0", "Bip01 R Toe0"];
+
+    /// <summary>
+    /// How near a foot joint (units) a vertex is part of the foot rather than a tail.
+    /// </summary>
+    const float FootReach = 1.5f;
+
+    /// <summary>
     /// Bones a tail may be bound to.
     /// </summary>
     static readonly string[] Legs =
@@ -147,20 +157,23 @@ public static class HumanWeights
     }
 
     /// <summary>
-    /// The welded vertices of a tail: leg-carried, behind the body and far from the human; then, spreading from them, their root's.
+    /// The welded vertices of a tail: leg-carried, behind the body, far from the human and not at a foot (<see cref="FootReach"/>: a heel's spur
+    /// or talon is not a tail); then, spreading from them, their root's.
     /// </summary>
     static HashSet<int> Tail(Vector3[] points, Dictionary<ushort, float>[] own, float[] gaps, HashSet<int>[] neighbours, KenshiSkeleton kenshi)
     {
         var legs = Legs.Select(kenshi.Handle).ToHashSet();
+        Vector3[] feet = [.. Feet.Select(kenshi.Position)];
         var tail = new HashSet<int>();
         for (int v = 0; v < points.Length; v++)
-            if (legs.Contains(Heaviest(own[v])) && points[v].Z < Behind && gaps[v] > TailGap) tail.Add(v);
+            if (legs.Contains(Heaviest(own[v])) && points[v].Z < Behind && gaps[v] > TailGap && !AtFoot(points[v], feet)) tail.Add(v);
 
         var queue = new Queue<int>(tail);
         while (queue.TryDequeue(out int v))
             foreach (int n in neighbours[v])
             {
                 if (tail.Contains(n) || Heaviest(own[n]) != Heaviest(own[v]) || points[n].Z >= Behind || gaps[n] < TailRootGap) continue;
+                if (AtFoot(points[n], feet)) continue;
 
                 tail.Add(n);
                 queue.Enqueue(n);
@@ -168,6 +181,11 @@ public static class HumanWeights
 
         return tail;
     }
+
+    /// <summary>
+    /// Whether a point lies within <see cref="FootReach"/> of a foot joint.
+    /// </summary>
+    static bool AtFoot(Vector3 point, Vector3[] feet) => feet.Any(f => Vector3.Distance(point, f) < FootReach);
 
     /// <summary>
     /// Each taker vertex near the human (not a tail's) blended towards the human's weights there, fully within <see cref="Near"/>, from the

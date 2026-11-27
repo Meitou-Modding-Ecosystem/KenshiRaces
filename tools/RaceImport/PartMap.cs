@@ -38,11 +38,13 @@ public static class PartMap
 
     /// <summary>
     /// Writes <paramref name="path"/> for a body of the given fitted positions, uvs and heaviest bones, with the vertices
-    /// <paramref name="membrane"/> marks in <see cref="Membrane"/>; returns how many vertices got a part.
+    /// <paramref name="membrane"/> marks in <see cref="Membrane"/> and those <paramref name="unhidden"/> marks in none (attached parts); twice as
+    /// wide when <paramref name="wide"/> (a body texture with parts beside it, <see cref="Attachments"/>). Returns how many vertices got a part.
     /// </summary>
-    public static int Write(string path, Vector3[] positions, Vector2[] uvs, ushort[] bones, HumanBody human, Rgba humanMap, bool[] membrane)
+    public static int Write(string path, Vector3[] positions, Vector2[] uvs, ushort[] bones, HumanBody human, Rgba humanMap, bool[] membrane,
+        bool[]? unhidden = null, bool wide = false)
     {
-        var map = new Rgba(Side, Side);
+        var map = new Rgba(wide ? 2 * Side : Side, Side);
         var parts = Grown(human, humanMap);
         var byBone = Enumerable.Range(0, human.Positions.Length).GroupBy(v => human.Bones[v]).ToDictionary(g => g.Key, g => g.ToArray());
         var all = Enumerable.Range(0, human.Positions.Length).ToArray();
@@ -50,6 +52,7 @@ public static class PartMap
         for (int v = 0; v < positions.Length; v++)
         {
             if (uvs[v].Y < 0) continue; // the grafted human head's, coloured from the head texture
+            if (unhidden?[v] == true) continue;
 
             int nearest = Nearest(positions[v], byBone.GetValueOrDefault(bones[v]) ?? all, human.Positions);
             uint? part = membrane[v] ? Membrane : parts[nearest];
@@ -64,22 +67,26 @@ public static class PartMap
     }
 
     /// <summary>
-    /// Each human vertex's part: its own from the map, else that of the nearest vertex with one within <see cref="Grow"/>.
+    /// Each human vertex's part: its own from the map, else that of the nearest vertex with one, carried by the same bone, within
+    /// <see cref="Grow"/> (a hanging hand or forearm beside the hip band takes none of it).
     /// </summary>
     static uint?[] Grown(HumanBody human, Rgba humanMap)
     {
         var own = human.Uvs.Select(uv => Colour(humanMap, uv)).ToArray();
-        var marked = Enumerable.Range(0, own.Length).Where(i => own[i] is not null).ToArray();
+        var marked = Enumerable.Range(0, own.Length)
+            .Where(i => own[i] is not null)
+            .GroupBy(i => human.Bones[i])
+            .ToDictionary(g => g.Key, g => g.ToArray());
         var grown = new uint?[own.Length];
         for (int v = 0; v < own.Length; v++)
         {
-            if (own[v] is not null || marked.Length == 0)
+            if (own[v] is not null || !marked.TryGetValue(human.Bones[v], out var sameBone))
             {
                 grown[v] = own[v];
                 continue;
             }
 
-            int nearest = Nearest(human.Positions[v], marked, human.Positions);
+            int nearest = Nearest(human.Positions[v], sameBone, human.Positions);
             if (Vector3.Distance(human.Positions[v], human.Positions[nearest]) <= Grow) grown[v] = own[nearest];
         }
 
@@ -130,9 +137,14 @@ public static class PartMap
     /// <summary>
     /// An 8-bit RGBA PNG: signature, header, one zlib-compressed data chunk, end.
     /// </summary>
-    static void WritePng(string path, Rgba image)
+    static void WritePng(string path, Rgba image) => File.WriteAllBytes(path, Png(image));
+
+    /// <summary>
+    /// <paramref name="image"/> encoded as an 8-bit RGBA PNG (<see cref="WritePng"/>).
+    /// </summary>
+    internal static byte[] Png(Rgba image)
     {
-        using var stream = File.Create(path);
+        using var stream = new MemoryStream();
         stream.Write([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);
 
         var header = new byte[13];
@@ -143,6 +155,7 @@ public static class PartMap
         WriteChunk(stream, "IHDR", header);
         WriteChunk(stream, "IDAT", Compressed(image));
         WriteChunk(stream, "IEND", []);
+        return stream.ToArray();
     }
 
     /// <summary>

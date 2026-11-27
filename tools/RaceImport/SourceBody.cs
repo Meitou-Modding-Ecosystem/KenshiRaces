@@ -138,7 +138,7 @@ public sealed class SourceBody
     /// <summary>
     /// The encoded image of a channel's texture, null when it has none.
     /// </summary>
-    static byte[]? Image(MaterialChannel? channel) =>
+    internal static byte[]? Image(MaterialChannel? channel) =>
         channel?.Texture?.PrimaryImage?.Content is { IsEmpty: false } image ? image.Content.ToArray() : null;
 
     /// <summary>

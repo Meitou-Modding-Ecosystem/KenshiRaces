@@ -62,11 +62,17 @@ static class IntroducerData
         [Races.CrabQueenCharacter] = "crab queen",
         [Races.SpidercrabCharacter] = "spider crab",
         [Races.GhostcrabCharacter] = "ghost crab",
-        [Races.TieflingCharacter] = "tiefling",
+        [Races.TieflingMaleCharacter] = "tiefling man",
+        [Races.TieflingFemaleCharacter] = "tiefling woman",
         [Races.BatfolkMaleCharacter] = "Batfolk man",
         [Races.BatfolkFemaleCharacter] = "Batfolk woman",
         [Races.WolfkinMaleCharacter] = "Wolfkin man",
         [Races.WolfkinFemaleCharacter] = "Wolfkin woman",
+        [Races.BeepbotCharacter] = "beepbot",
+        [Races.KatlonCharacter] = "Kat-Lon",
+        [Races.ChibotCharacter] = "chibot",
+        [Races.OwlkindMaleCharacter] = "Owlkind man",
+        [Races.OwlkindFemaleCharacter] = "Owlkind woman",
     };
 
     /// <summary>
@@ -172,10 +178,11 @@ static class IntroducerData
         Busy = 219, Bye = 220, Decline = 221, Shrug = 222, Deal = 223;
 
     /// <summary>
-    /// The first line number of each race group's pair (the player's pick, then his answer listing its characters), two per group from 230; the
-    /// player's pick of a character is 260 + its record number.
+    /// The first line number of each race group's pair (the player's pick, then his answer listing its characters), two per group from 600; the
+    /// player's pick of a character is 700 + its record number: clear of the animation library's techniques (from 100) and the arrival squads
+    /// (300 + a character's number).
     /// </summary>
-    const int FirstGroupLine = 230, FirstCharacterLine = 260;
+    const int FirstGroupLine = 600, FirstCharacterLine = 700;
 
     /// <summary>
     /// The speakers: him, then the player.
@@ -280,6 +287,9 @@ static class IntroducerData
         [Races.BatfolkGroup] = "The Batfolk. Faces like yours, wings like nothing you've seen. They sleep all day and see in the dark. A man or a woman?",
         [Races.WolfkinGroup] =
             "The Wolfkin. They hear you coming a mile off, and they run in packs. Loyal to the bone, once you're one of theirs. A man or a woman?",
+        [Races.SkeletonGroup] =
+            "The machines. Scrap and springs that walk and talk, more or less. Nobody knows who built them, and they don't say. Which one?",
+        [Races.OwlkindGroup] = "An Owlkind. She'll see you long before you see her, and she hunts at night. Mind the talons.",
     };
 
     /// <summary>
@@ -293,6 +303,8 @@ static class IntroducerData
         [Races.TieflingGroup] = "The woman with horns.",
         [Races.BatfolkGroup] = "The bat people.",
         [Races.WolfkinGroup] = "The wolf people.",
+        [Races.SkeletonGroup] = "The machines.",
+        [Races.OwlkindGroup] = "The owl people.",
     };
 
     /// <summary>
@@ -308,11 +320,17 @@ static class IntroducerData
         [Races.CrabQueenCharacter] = "A crab queen.",
         [Races.SpidercrabCharacter] = "A spider crab.",
         [Races.GhostcrabCharacter] = "A ghost crab.",
-        [Races.TieflingCharacter] = "Bring her.",
+        [Races.TieflingMaleCharacter] = "A tiefling man.",
+        [Races.TieflingFemaleCharacter] = "A tiefling woman.",
         [Races.BatfolkMaleCharacter] = "A Batfolk man.",
         [Races.BatfolkFemaleCharacter] = "A Batfolk woman.",
         [Races.WolfkinMaleCharacter] = "A Wolfkin man.",
         [Races.WolfkinFemaleCharacter] = "A Wolfkin woman.",
+        [Races.BeepbotCharacter] = "A beepbot.",
+        [Races.KatlonCharacter] = "A Kat-Lon.",
+        [Races.ChibotCharacter] = "A chibot.",
+        [Races.OwlkindMaleCharacter] = "An Owlkind man.",
+        [Races.OwlkindFemaleCharacter] = "An Owlkind woman.",
     };
 
     /// <summary>

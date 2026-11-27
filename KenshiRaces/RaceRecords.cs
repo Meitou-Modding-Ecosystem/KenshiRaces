@@ -36,18 +36,31 @@ public static class RaceRecords
     public const string FaceEditorLimits = $@".\mods\{Races.Folder}\items\races\kenshiraces_editor_faces.xml";
 
     /// <summary>
+    /// The character editor's limits for the races whose skin takes the skin tone (<see cref="RaceBody.SkinTone"/>): <see cref="FaceEditorLimits"/>
+    /// with a skin tone slider from human tones through red and purple to blue-grey (docs/kenshi-races.md "Character editor").
+    /// </summary>
+    public const string TintedEditorLimits = $@".\mods\{Races.Folder}\items\races\kenshiraces_editor_tinted.xml";
+
+    /// <summary>
     /// The CHARACTER's lists emptied: no kit, no money to spend.
     /// </summary>
     internal static readonly string[] KitLists = ["backpack", "clothing", "inventory", "shopping", "weapons"];
 
     /// <summary>
-    /// Adds <paramref name="group"/>'s RACE_GROUP and each of its subraces (<see cref="Add"/>).
+    /// Adds each of <paramref name="group"/>'s subraces (<see cref="Add"/>) and its RACE_GROUP listing them, or, for the game's own group
+    /// (<see cref="RaceGroup.Existing"/>), joins them to it (<see cref="JoinGroup"/>).
     /// </summary>
     public static void AddGroup(ModDataContext c, RaceGroup group, string? talk = Races.Recruit)
     {
+        foreach (var subrace in group.Subraces) Add(c, subrace, talk);
+        if (group.Existing)
+        {
+            foreach (var subrace in group.Subraces) JoinGroup(c, group.Id, subrace.RaceId);
+            return;
+        }
+
         var record = c.Add(group.Id, FcsRecordType.RaceGroup, group.Name);
         record.References["races"] = [.. group.Subraces.Select(s => new FcsReference(s.RaceId, 0, 0, 0))];
-        foreach (var subrace in group.Subraces) Add(c, subrace, talk);
     }
 
     /// <summary>
@@ -73,18 +86,19 @@ public static class RaceRecords
     }
 
     /// <summary>
-    /// Fills a new RACE: Greenlander's fields and lists, then each gender's body files (a single-gender race wears its one body for both), no
+    /// Fills a new RACE: its model's fields and lists (<see cref="RaceTraits.Model"/>, else the Greenlander's), then each gender's body files (a single-gender race wears its one body for both), no
     /// heads, hair or random faces (the body has its own head) unless it wears the human head, no shirts (they paint the human body's uv layout),
     /// playable in the character editor with <see cref="EditorLimits"/> (<see cref="FaceEditorLimits"/> with the human head), the animation
     /// library linked (<see cref="AnimationRecords"/>) and the subrace's traits.
     /// </summary>
     public static void FillRace(FcsRecord race, GameDatabase game, Subrace subrace)
     {
-        CopyFrom(Model(game, FcsRecordType.Race, Greenlander, GreenlanderName), race);
+        var model = subrace.Traits?.Model ?? RaceModel.Greenlander;
+        CopyFrom(Model(game, FcsRecordType.Race, model.Id, model.Name), race);
         race.Bools["single gender"] = subrace.SingleGender;
         race.Bools["no shirts"] = true;
         race.Bools["playable"] = true;
-        race.Filenames["editor limits"] = subrace.HumanHead ? FaceEditorLimits : EditorLimits;
+        race.Filenames["editor limits"] = EditorLimitsOf(subrace);
         SetBody(race, "male", subrace.Body(female: false));
         SetBody(race, "female", subrace.Body(female: true));
 
@@ -94,18 +108,25 @@ public static class RaceRecords
     }
 
     /// <summary>
+    /// The editor limits a subrace's RACE uses: tinted with a skin tone, with faces with the human head, else the fitted bodies'.
+    /// </summary>
+    static string EditorLimitsOf(Subrace subrace) =>
+        (subrace.Male ?? subrace.Female)?.SkinTone == true ? TintedEditorLimits : subrace.HumanHead ? FaceEditorLimits : EditorLimits;
+
+    /// <summary>
     /// The RACE fields <see cref="RaceRules"/> reads back: head gear allowed by name, footwear refused by name, no weapons, damage taken.
     /// </summary>
     public const string HatsOnlyField = "kenshi races hats only", NoFootwearField = "kenshi races no footwear",
         NoWeaponsField = "kenshi races no weapons", DamageTakenField = "kenshi races damage taken";
 
     /// <summary>
-    /// Writes <paramref name="traits"/> into a new RACE (docs/kenshi-races.md "Traits"): the aptitude lists (replacing the Greenlander's), part
+    /// Writes <paramref name="traits"/> into a new RACE (docs/kenshi-races.md "Traits"): the aptitude lists (replacing the model's unless both are
+    /// empty), part
     /// health, the slot flags, the fists and the fields <see cref="RaceRules"/> reads.
     /// </summary>
     static void SetTraits(FcsRecord race, GameDatabase game, RaceTraits traits)
     {
-        SetAptitudes(race, traits);
+        if (traits.Good.Count + traits.Bad.Count > 0) SetAptitudes(race, traits);
         if (traits.Health is { } health) SetHealth(race, game, health);
         race.Bools["no hats"] = traits.NoHats;
         race.Bools["no shoes"] = traits.NoShoes;
@@ -185,7 +206,8 @@ public static class RaceRecords
     }
 
     /// <summary>
-    /// One gender's body files: the mesh, colour texture, normal map and part map; the human body mask and strength normal maps cleared.
+    /// One gender's body files: the mesh, colour texture, normal map, part map and skin-tone mask (the human body mask without one); the strength
+    /// normal maps cleared.
     /// </summary>
     static void SetBody(FcsRecord race, string gender, RaceBody body)
     {
@@ -194,7 +216,7 @@ public static class RaceRecords
         race.Filenames[$"nm {gender}"] = body.Normals;
         race.Filenames[$"nm {gender} skinny"] = "";
         race.Filenames[$"nm {gender} strong"] = "";
-        race.Filenames[$"body mask {gender}"] = "";
+        race.Filenames[$"body mask {gender}"] = body.Mask;
         race.Filenames[$"part map {gender}"] = body.PartMap;
     }
 

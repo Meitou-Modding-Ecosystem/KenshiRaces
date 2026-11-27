@@ -38,6 +38,24 @@ public sealed class ImportOptionsTests
     }
 
     [Fact]
+    public void Nohair_keeps_the_head_human_and_skintone_is_a_flag()
+    {
+        var options = ImportOptions.Parse(["female", "nohair", "skintone"]);
+
+        Assert.Equal(new ImportOptions(HumanRig.Female, Headless: true, NoHair: true, SkinTone: true), options);
+    }
+
+    [Fact]
+    public void Parts_are_attached_in_order()
+    {
+        var options = ImportOptions.Parse(["attach=ears.glb", "wings", "attach=parts/wings.glb"]);
+
+        Assert.NotNull(options);
+        Assert.Equal(["ears.glb", "parts/wings.glb"], options.Attach);
+        Assert.Equal(new ImportOptions(HumanRig.Male, Wings: true), options with { Attach = Array.Empty<string>() });
+    }
+
+    [Fact]
     public void Palms_is_a_flag()
     {
         var options = ImportOptions.Parse(["palms", "female"]);
@@ -47,6 +65,7 @@ public sealed class ImportOptionsTests
 
     [Theory]
     [InlineData("bust=crab")]
+    [InlineData("attach=")]
     [InlineData("neck=short")]
     [InlineData("tall")]
     public void An_unknown_option_is_refused(string option)
