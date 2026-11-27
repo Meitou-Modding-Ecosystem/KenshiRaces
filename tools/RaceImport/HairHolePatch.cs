@@ -34,6 +34,11 @@ public static class HairHolePatch
     const float NearEdge = 0.6f;
 
     /// <summary>
+    /// How deep under a human triangle the body is looked for (<see cref="Sunken"/>), in game units, in steps of <see cref="Bare"/>.
+    /// </summary>
+    const float SunkenDepth = 0.75f;
+
+    /// <summary>
     /// The source value of the patch's vertices in <see cref="Apply"/>'s result (the head's and the parts' are -1).
     /// </summary>
     public const int Patched = -2;
@@ -79,14 +84,14 @@ public static class HairHolePatch
     public static (SkinnedMesh Mesh, int[] Source, int Triangles, int Strays) Apply(SkinnedMesh mesh, int[] source, HumanBody human,
         KenshiSkeleton kenshi, Vector2 skinUv, Func<int, int, int, bool>? modelSkin)
     {
-        var patch = PatchTriangles(mesh, human, kenshi);
+        var patch = PatchTriangles(mesh, human, kenshi, grooves: modelSkin is null);
         if (patch.Count == 0) return (mesh, source, 0, 0);
 
         int strays = 0;
         if (modelSkin is not null)
         {
             (mesh, strays) = WithoutStrays(mesh, source, human, kenshi, patch, modelSkin);
-            patch.UnionWith(PatchTriangles(mesh, human, kenshi, seal: true));
+            patch.UnionWith(PatchTriangles(mesh, human, kenshi, seal: true, grooves: false));
         }
 
         var (joined, added) = Joined(mesh, human, patch, skinUv);
@@ -95,9 +100,11 @@ public static class HairHolePatch
 
     /// <summary>
     /// The human's triangles (by index) to copy: the bare ones on <see cref="Bones"/> joined to one near an open edge of the body, grown by
-    /// <see cref="Rings"/>, and with <paramref name="seal"/> one ring more on <see cref="SealBones"/>.
+    /// <see cref="Rings"/>, and with <paramref name="seal"/> one ring more on <see cref="SealBones"/>. With <paramref name="grooves"/> skin over a
+    /// groove of the body (<see cref="Sunken"/>) is not bare; <c>hairback</c> skips that test, its strays already cleared.
     /// </summary>
-    public static HashSet<int> PatchTriangles(SkinnedMesh mesh, HumanBody human, KenshiSkeleton kenshi, bool seal = false)
+    public static HashSet<int> PatchTriangles(SkinnedMesh mesh, HumanBody human, KenshiSkeleton kenshi, bool seal = false,
+        bool grooves = true)
     {
         var allowed = Bones.Where(kenshi.Has).Select(kenshi.Handle).ToHashSet();
         var grid = new TriangleGrid(mesh.Positions, mesh.Indices, 2 * Bare);
@@ -105,7 +112,7 @@ public static class HairHolePatch
         int triangles = human.Indices.Length / 3;
         var bare = Enumerable.Range(0, triangles)
             .Where(t => Corners(human, t).All(v => allowed.Contains(human.Bones[v])))
-            .Where(t => Points(human, t).Any(p => !grid.Within(p, Bare)))
+            .Where(t => Points(human, t).Any(p => !grid.Within(p, Bare)) && !(grooves && Sunken(human, t, grid)))
             .ToHashSet();
         var neighbours = Neighbours(human);
         var underHoles = Connected(bare.Where(t => edges.Any(e => Vector3.Distance(e, Centre(human, t)) < NearEdge + Bare)), bare, neighbours);
@@ -147,6 +154,24 @@ public static class HairHolePatch
 
         var centre = (mesh.Positions[corners[0]] + mesh.Positions[corners[1]] + mesh.Positions[corners[2]]) / 3;
         return grid.Within(centre, StrayReach) && !modelSkin(source[corners[0]], source[corners[1]], source[corners[2]]);
+    }
+
+    /// <summary>
+    /// Whether the body lies under a human triangle, within <see cref="SunkenDepth"/> inside the skin along its normal: a groove deeper than
+    /// <see cref="Bare"/> (the tiefling man's spine), not a hole, where a patch would show over the body.
+    /// </summary>
+    static bool Sunken(HumanBody human, int t, TriangleGrid grid)
+    {
+        var c = Corners(human, t);
+        var normal = Vector3.Cross(human.Positions[c[1]] - human.Positions[c[0]], human.Positions[c[2]] - human.Positions[c[0]]);
+        if (normal == Vector3.Zero) return false;
+
+        var inward = -Vector3.Normalize(normal);
+        var centre = Centre(human, t);
+        for (float depth = Bare; depth <= SunkenDepth + 1e-4f; depth += Bare)
+            if (grid.Within(centre + depth * inward, Bare)) return true;
+
+        return false;
     }
 
     /// <summary>

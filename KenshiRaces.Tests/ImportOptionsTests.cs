@@ -54,6 +54,14 @@ public sealed class ImportOptionsTests
     }
 
     [Fact]
+    public void Relief_takes_a_share_and_implies_skintone()
+    {
+        Assert.Equal(new ImportOptions(HumanRig.Male, SkinTone: true, Relief: 0.4f), ImportOptions.Parse(["relief=0.4"]));
+        Assert.Equal(0, ImportOptions.Parse(["relief=-2"])!.Relief);
+        Assert.Null(ImportOptions.Parse(["relief=soft"]));
+    }
+
+    [Fact]
     public void Parts_are_attached_in_order()
     {
         var options = ImportOptions.Parse(["attach=ears.glb", "wings", "attach=parts/wings.glb"]);

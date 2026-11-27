@@ -61,6 +61,28 @@ public sealed class HairHolePatchTests
     }
 
     [Fact]
+    public void Skin_over_a_groove_beside_a_hole_is_not_copied()
+    {
+        var (kenshi, human) = Human();
+        var body = Body(human, t => !InHole(Centre(human, t)));
+        body = body with { Positions = [.. body.Positions.Select(p => InGroove(p) ? p with { Z = p.Z + 0.4f } : p)] };
+        var overGroove = Enumerable.Range(0, human.Indices.Length / 3).Where(t => InGroove(Centre(human, t))).ToList();
+
+        var patch = HairHolePatch.PatchTriangles(body, human, kenshi);
+        var ungrooved = HairHolePatch.PatchTriangles(body, human, kenshi, grooves: false);
+
+        Assert.NotEmpty(overGroove);
+        Assert.DoesNotContain(patch, overGroove.Contains);
+        Assert.Contains(ungrooved, overGroove.Contains);
+        Assert.Contains(patch, t => InHole(Centre(human, t)));
+    }
+
+    /// <summary>
+    /// Whether a point is in the groove sunk into the body's back beside the hole.
+    /// </summary>
+    static bool InGroove(Vector3 p) => p.Z < -0.9f && p.X > 0.9f && p.X < 1.3f && p.Y > 11.5f && p.Y < 13.5f;
+
+    [Fact]
     public void Hairback_drops_a_shard_over_the_hole_but_not_skin_or_one_in_front()
     {
         var (kenshi, human) = Human();

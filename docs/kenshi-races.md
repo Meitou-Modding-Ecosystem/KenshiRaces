@@ -41,7 +41,7 @@ feathered heads and talons; imported `palms` ([hands](race-import.md#hands)), th
 thigh, and both models' thumbs, which Meshy hangs off the forearm, follow the hands. Source
 models (Meshy exports, slim 1): leomamale "Leonid Bare - 3ds Max Biped.glb", crabman (`neck=0.7`) and crabqueen (`bust=female`) "... - 3ds
 Max Biped.glb", the others `leonidfemale.glb`, `corvidmale.glb`, `corvidfemale.glb`, `spidercrab.glb`, `ghostcrab.glb` and
-`tiefling-female.glb` (female, `hairback skintone attach=horns.glb`) and `tieflingmale-rigged.glb` (male, `nohair skintone palms attach=horns.glb`: its palms faced forward), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless attach=wolfears.glb attach=batwings.glb`, and
+`tiefling-female.glb` (female, `hairback skintone attach=horns.glb`) and `tieflingmale-rigged.glb` (male, `nohair palms relief=0.4 attach=horns.glb`: its palms faced forward, its muscles too defined), `batman-rigged.glb` (male) and `batgirl-rigged.glb` (female), both `wings headless attach=wolfears.glb attach=batwings.glb`, and
 `wolfman-rigged.glb` (male, a Mixamo rig) and `wolfwoman-rigged.glb` (female), both `headless palms attach=wolfears.glb`; owlkindmale from `owlkindmale-rigged.glb` (`male palms`) and owlkindfemale from `owlkindfemale-rigged.glb` (`female palms`); beepbot from `beepbot-highpoly.glb` (1M vertices, unrigged), decimated to 40,000
 triangles with its normals baked, carrying the weights of the Meshy rig of the low-poly `beepbot-rigged.glb` (nearest face, same frame after
 that rig's scale 1.711 and lift 0.85 m), `rigid`; katlon from `kittycatlon-rigged.glb` (3,550 vertices, Meshy rig) `male rigid`; chibot from `chibot-rigged.glb`
@@ -134,6 +134,9 @@ Kenshi Races stays a framework: one NPC sells introductions, and the debug menu 
 - **F10 Kenshi Races: spawn race**: the field takes a character's or subrace's name from the [table](#races) (`crabman`, `leomafemale`,
   `leoma female`) and `join` (default: into the selected character's squad, else the first player squad) or `hostile` (alone, as a Dust
   Bandit, `200-gamedata.base`, held where it stands); it spawns at the camera target.
+- **F10 Kenshi Races: try every race in the character editor**: one recruit of every race character joins the selected character's squad
+  (else the first player squad) in a ring 25 units round the camera target, and the character editor opens on all of them as a recruit's
+  edit, so each race's sliders can be tried; the editor keeps each character's race and gender. Dismiss the ones you don't keep.
 - The pending introduction is saved in the mod's save data (system `introductions`).
 
 ## Testing in game
@@ -141,9 +144,10 @@ Kenshi Races stays a framework: one NPC sells introductions, and the debug menu 
 1. Enable Kenshi Races in the launcher (or `data/mods.cfg`).
 2. F10 **Kenshi Races: spawn race** with `leomafemale` (or `crabman hostile`) spawns at the camera target; the console's `spawn leomafemale`
    also works (talk to recruit).
-3. F10 **Kenshi Races: races** lists every fitted race loaded (this mod's and dependents').
-4. New game: the editor's race arrows reach Leoma, Crevan and Crabfolk.
-5. Black Scratch's bar: Marlo sells an introduction for 10,000 cats; it arrives at your outpost three game days later.
+3. F10 **Kenshi Races: try every race in the character editor** adds one of each and opens the editor on them.
+4. F10 **Kenshi Races: races** lists every fitted race loaded (this mod's and dependents').
+5. New game: the editor's race arrows reach Leoma, Crevan and Crabfolk.
+6. Black Scratch's bar: Marlo sells an introduction for 10,000 cats; it arrives at your outpost three game days later.
 
 ## Clothing
 

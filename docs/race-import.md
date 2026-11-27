@@ -7,7 +7,7 @@ map. It reads the rig's skeleton, human body and part map from the game install,
 ## Run it
 
 ```powershell
-dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [hairback] [skintone] [palms] [rigid] [attach=<part.glb>]...
+dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [hairback] [skintone] [relief=<0-1>] [palms] [rigid] [attach=<part.glb>]...
 ```
 
 - `<Kenshi folder>`: the game folder (`data/` inside it), e.g. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
@@ -25,6 +25,7 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - `nohair`: `headless`, dropping the model's own hair with its head ([Headless](#headless)).
 - `hairback`: `nohair`, also clearing what the hair left over the back ([Headless](#headless)).
 - `skintone`: the skin takes the editor's skin tone with the human head ([Skin tone](#skin-tone)); writes `<stem>_mask.dds`.
+- `relief=<0-1>`: `skintone`, keeping only that share of the skin's muscle definition ([Relief](#relief)).
 - `palms`: turn the hands palm to thigh ([Hands](#hands)); not for claws or pincers.
 - `rigid`: keep the model's own shape and weights ([Rigid](#rigid)); for mechanical bodies.
 - `attach=<part.glb>`: merge a static part (ears, wings, horns) into the body, placed by `tools/RaceImport/parts/<part>.json`
@@ -122,6 +123,8 @@ the collar's. The front of the torso from 0.8 below the bust to its top (at leas
 its shape. Below, the rise falls off by a smoothstep over twice the lift (at least 1.5 units); above, almost linearly up to 0.4 above the
 clavicles' joint (at least 1.4 times the lift), so the upper chest is squashed evenly and the bust's top slopes down from the collar. The rise
 is scaled by the vertex's torso-bone weight and a smoothstep from the spine's depth (0) to the bust's (1), so the back, arms and legs stay.
+The model's vertices whose heaviest bone is the pelvis, `Spine` or a thigh don't count for its bust (**Observed**, tiefling man: his sash at
+the waist read as a bust 1.5 units low and his chest rose that far into his shoulders; no other body's lift changed).
 **Observed**: a narrow Gaussian folded the chest above a 2-unit lift and stretched the bust into a cone; a smoothstep fade reaching into the
 neck (whose vertices ride the head) left a ledge above the bust. Then slimming runs.
 
@@ -217,7 +220,9 @@ own skin. It takes the human triangles on the torso, neck, clavicle and upper-ar
 corner or of the centre. Only bare regions that reach within 0.85 of one of the body's open edges count, so skin under a fuller body is not
 copied. They grow 3 rings into triangles the body covers from outside, sit 0.04 under the human's skin with its normals and weights, and take
 one skin texel of the body's texture, which the skin-tone mask covers. The body's skin is drawn over them where they overlap. The import log
-counts them ("triangles patched under the hair"); without `nohair` the import is unchanged.
+counts them ("triangles patched under the hair"); without `nohair` the import is unchanged. Without `hairback` a bare triangle also needs no body
+within 0.75 inside the skin along its normal (tested every 0.25): the body sunk into a groove under it is not a hole (**Observed**, tiefling
+man: a patch strip showed over his spine's groove).
 
 With `hairback` (implies `nohair`; for a model whose hair hung down the back over a garment) the jagged strands, shards and garment back the
 hair leaves around the hole are cleared too (**Observed**, tiefling woman: dark fragments over the patch in game). The model's triangles that
@@ -277,6 +282,13 @@ say skin (engine docs/characters.md "Shading, poses and LOD"). With `skintone` (
 
 Head and body then share one base colour and one multiplier, so every slider position tints them alike. The race takes the mask with
 `RaceBody.SkinTone` and the editor limits `kenshiraces_editor_tinted.xml` ([kenshi-races.md](kenshi-races.md#character-editor)).
+
+## Relief
+
+With `relief=<share>` (`Relief`) the skin keeps only that share of its muscle definition (**Observed**, tiefling man: abs, pecs and arm
+muscles painted into his texture and normal map read as overly muscular in game; imported at 0.4). In step 2 of [Skin tone](#skin-tone) each
+skin texel's luma becomes the mean luma of the skin in the 97 px square round it (at 2048²) plus the share of its difference from that mean, so
+the broad shading stays and the fine detail fades. The normal map's X and Y move towards flat (128) by the share.
 
 ## Rigid
 
