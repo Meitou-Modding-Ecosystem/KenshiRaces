@@ -33,7 +33,6 @@ public sealed class KenshiRacesMod : IMod, IModDataPhase
         c.AddDebugCommand("Kenshi Races: races", _ => Describe(c));
         c.AddDebugCommand(SpawnRaceRow.Label, SpawnRaceRow.Run, hasField: true);
         var editor = new EditorQueue();
-        c.AddDebugCommand(TryRacesRow.Label, TryRacesRow.Run);
         c.AddFrame(_ => editor.Open(c.Interface));
         RaceRules.Register(c);
         c.AddDialogueCondition(IntroducerData.NoneOnTheWay, IntroductionSystem.NoneOnTheWay);

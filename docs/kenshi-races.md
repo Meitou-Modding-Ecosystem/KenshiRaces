@@ -133,21 +133,18 @@ Kenshi Races stays a framework: one NPC sells introductions, and the debug menu 
   The introduction ends when the friend joins, dies or leaves the world; until then Marlo refuses another. Messages tell the player each step.
 - **F10 Kenshi Races: spawn race**: the field takes a character's or subrace's name from the [table](#races) (`crabman`, `leomafemale`,
   `leoma female`) and `join` (default: into the selected character's squad, else the first player squad) or `hostile` (alone, as a Dust
-  Bandit, `200-gamedata.base`, held where it stands); it spawns at the camera target.
-- **F10 Kenshi Races: try every race in the character editor**: one recruit of every race character joins the selected character's squad
-  (else the first player squad) in a ring 25 units round the camera target, and the character editor opens on all of them as a recruit's
-  edit, so each race's sliders can be tried; the editor keeps each character's race and gender. Dismiss the ones you don't keep.
+  Bandit, `200-gamedata.base`, held where it stands); it spawns at the camera target. A joining character puts on a Standard (quality 40)
+  Dustcoat (`3061-gamedata.base`) to show the clothing's fit, and the character editor opens on it as a recruit's edit (race and gender kept).
 - The pending introduction is saved in the mod's save data (system `introductions`).
 
 ## Testing in game
 
 1. Enable Kenshi Races in the launcher (or `data/mods.cfg`).
-2. F10 **Kenshi Races: spawn race** with `leomafemale` (or `crabman hostile`) spawns at the camera target; the console's `spawn leomafemale`
-   also works (talk to recruit).
-3. F10 **Kenshi Races: try every race in the character editor** adds one of each and opens the editor on them.
-4. F10 **Kenshi Races: races** lists every fitted race loaded (this mod's and dependents').
-5. New game: the editor's race arrows reach Leoma, Crevan and Crabfolk.
-6. Black Scratch's bar: Marlo sells an introduction for 10,000 cats; it arrives at your outpost three game days later.
+2. F10 **Kenshi Races: spawn race** with `leomafemale` spawns her at the camera target in a Dustcoat and opens the editor on her (`crabman
+   hostile` spawns a hostile one); the console's `spawn leomafemale` also works (talk to recruit).
+3. F10 **Kenshi Races: races** lists every fitted race loaded (this mod's and dependents').
+4. New game: the editor's race arrows reach Leoma, Crevan and Crabfolk.
+5. Black Scratch's bar: Marlo sells an introduction for 10,000 cats; it arrives at your outpost three game days later.
 
 ## Clothing
 
