@@ -7,7 +7,7 @@ map. It reads the rig's skeleton, human body and part map from the game install,
 ## Run it
 
 ```powershell
-dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [hairback] [skintone] [relief=<0-1>] [palms] [rigid] [attach=<part.glb>]...
+dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> KenshiRaces/items/races kenshiraces_<character> [male|female] [slim] [bust=male|female] [neck=<share>] [wings] [headless] [ears] [nohair] [hairback] [skintone] [relief=<0-1>] [armfill] [palms] [rigid] [attach=<part.glb>]...
 ```
 
 - `<Kenshi folder>`: the game folder (`data/` inside it), e.g. `"C:\Program Files (x86)\Steam\steamapps\common\Kenshi"`.
@@ -26,6 +26,7 @@ dotnet run --project tools/RaceImport -c Release -- <model.glb> <Kenshi folder> 
 - `hairback`: `nohair`, also clearing what the hair left over the back ([Headless](#headless)).
 - `skintone`: the skin takes the editor's skin tone with the human head ([Skin tone](#skin-tone)); writes `<stem>_mask.dds`.
 - `relief=<0-1>`: `skintone`, keeping only that share of the skin's muscle definition ([Relief](#relief)).
+- `armfill`: arms thinner from side to side than the human's are widened ([Arm fill](#arm-fill)).
 - `palms`: turn the hands palm to thigh ([Hands](#hands)); not for claws or pincers.
 - `rigid`: keep the model's own shape and weights ([Rigid](#rigid)); for mechanical bodies.
 - `attach=<part.glb>`: merge a static part (ears, wings, horns) into the body, placed by `tools/RaceImport/parts/<part>.json`
@@ -89,6 +90,15 @@ turn around it; a fitted vertex beyond that extent plus 0.15 units (1.5 cm of cl
 bone weights. The correction fades out between 1.5 and 2.5 times the limit (beyond: an appendage such as a claw, left alone), is zero for a
 vertex outside the bone's slices (a tail hanging below the pelvis), and is smoothed over the surface (12 rounds of neighbour averaging, uv
 seams welded) so neighbouring vertices move alike. **Observed** (male Leoma): 39% of vertices move, by 1.3 cm on average and 9.5 cm at most.
+
+## Arm fill
+
+With `armfill` (`ArmFill`, after the bust lift, before slimming) each upper arm and forearm is measured per sixth of the bone: the side-to-side
+(X) spread of the vertices it carries most, against the human's. Where the arm is narrower, its vertices move away from the slice's middle up
+to the human's spread (at most twice), and the middle moves onto the human's (fully from a widening of 1.25), so the skin conform, which pulls
+what pokes out of the human arm back, keeps the width; blended by each vertex's weight on the bone, linear between slice centres. Wing
+membranes stay. **Observed** (Batfolk man): the arms sat 0.5 to 0.6 units wide against the human's 0.9 to 1.1, their inner side flat
+against the flank, and read as squashed from side to side in game; both Batfolk are imported with it.
 
 ## Skin conform
 
@@ -263,8 +273,8 @@ A double-sided material's triangles are doubled facing back (the game culls back
 twice as wide ([Textures](#textures)): the body's uvs (not the head's) move into its left half, each part's into a 1024² tile of the right
 half, two by two in `attach` order. Parts: `wolfears` (on `Bip01 Head`, at the top sides of the skull, rolled out 15°; hair may clip them),
 `horns` (the tieflings' ram horns on `Bip01 Head`, rooted in the scalp's top sides from their inner end, rolled out 25° and tipped back 10°)
-and `batwings` (folded, from the shoulder blades to mid thigh, `Spine2` down to `Pelvis`, yawed 45° so the outer edges fold back behind
-the arms, 0.3 behind the back).
+and `batwings` (folded, from the shoulder blades to the knees, 9 units tall, `Spine2` down to `Pelvis`, tipped back 10° and yawed 15° so
+they hang flat over the back, 0.05 behind it: further out they read as a gap in game).
 
 ## Skin tone
 
