@@ -62,6 +62,12 @@ public sealed class ImportOptionsTests
     }
 
     [Fact]
+    public void Armfill_is_a_flag()
+    {
+        Assert.Equal(new ImportOptions(HumanRig.Female, ArmFill: true), ImportOptions.Parse(["female", "armfill"]));
+    }
+
+    [Fact]
     public void Parts_are_attached_in_order()
     {
         var options = ImportOptions.Parse(["attach=ears.glb", "wings", "attach=parts/wings.glb"]);

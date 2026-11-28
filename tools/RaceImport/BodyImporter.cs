@@ -31,7 +31,8 @@ public static class BodyImporter
         var fit = new BodyFit(body, kenshi, options.Neck, options.Palms);
         var (fitted, normals, weights) = fit.Repose();
         if (options.Wings) new WingSpread(fit, kenshi).Apply(body, membrane, fitted, normals, weights);
-        var (lifted, lift) = BustLift.Apply(fitted, weights, kenshi, bustHuman);
+        var (bustLifted, lift) = BustLift.Apply(fitted, weights, kenshi, bustHuman);
+        var (lifted, fill) = options.ArmFill ? ArmFill.Apply(bustLifted, weights, kenshi, human, membrane) : (bustLifted, 1f);
         var wingWeights = Kept(weights, membrane);
         var (positions, conformed, copied, tail) = options.Rigid
             ? (lifted, 0, 0, new bool[lifted.Length])
@@ -59,7 +60,7 @@ public static class BodyImporter
         var min = mesh.Positions.Aggregate(Vector3.Min);
         var max = mesh.Positions.Aggregate(Vector3.Max);
         return $"Race body {stem} ({rig.Skeleton}, neck x{options.Neck:0.00}): {mesh.Positions.Length} vertices, {mesh.Indices.Length / 3} triangles, scale {fit.Scale:0.00}, " +
-            $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {hideable} vertices in hideable parts, {parts.Length} parts attached, " +
+            $"bounds {min:0.0} to {max:0.0}, bust lifted {lift:0.00}, arms widened x{fill:0.00}, {conformed} vertices pulled onto the skin, human weights on {copied} and tail on the pelvis for {tail.Count(t => t)} vertices, normal map {(normalMap ? "yes" : "no")}, {hideable} vertices in hideable parts, {parts.Length} parts attached, " +
             $"{membrane.Count(m => m)} vertices of wing membrane, {patched} triangles patched under the hair ({strays} strays over them dropped), {mesh.Poses.Length} face poses, {toned} skin-toned triangles, hands twisted {Twists(fit)}, {fit.WristJoints} wrist joints on the hands";
     }
 
