@@ -6,6 +6,9 @@ New races for [MeitouClient](https://github.com/Meitou-Modding-Ecosystem/MeitouC
 editor: Leoma and Crevan (male and female), the Crabfolk (crabman, crabqueen, spidercrab, ghostcrab), the Tiefling, the Batfolk and the Wolfkin (male and female, with human faces), the beepbot, the Kat-Lon and the chibot (skeletal robots, subraces of the game's Skeleton), the Owlkind (male and female), an animation library of 190 clips for every human-skeleton race, and the framework
 other mods add their own races and subraces with. GPL-3.0-or-later.
 
+- **Mod order:** a mod that adds races goes above every mod that links animations to races (Kenshi Races, Husbandry, ...) in the mod list.
+  Those mods link their clips in their data phase, which only sees the races of mods loaded before them
+  ([docs/animations.md](docs/animations.md#mod-order)).
 - The races, their records and testing them in game: [docs/kenshi-races.md](docs/kenshi-races.md).
 - Using these races or adding your own from another mod: [docs/depending-on-kenshi-races.md](docs/depending-on-kenshi-races.md) (agent skill
   `.claude/skills/kenshi-races-dependent`).

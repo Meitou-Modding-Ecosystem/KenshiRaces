@@ -30,7 +30,8 @@ with its helper; it never copies its records or files. Read `docs/depending-on-k
    (or `AddGroup` for a race of your own). Give it `Traits:` (`RaceTraits`: `Model` (`RaceModel.Skeleton` for a robot, e.g. `Races.BeepbotTraits`), aptitudes, `Health`, gear limits, `Fists`, `DamageTaken`), e.g.
    `Races.CrabfolkTraits` for a crab. A `headless` body (human head, face sliders, hair) is `RaceBody(..., HumanHead: true)`, plus `SkinTone: true` when imported `skintone` (one Skin Tone slider tints head and body); `wings` binds
    arm-wing membranes between arm and flank; `attach=<part.glb>` merges a static part (ears, back wings, horns) placed by
-   `tools/RaceImport/parts/<part>.json` (race-import.md "Attachments").
+   `tools/RaceImport/parts/<part>.json` (race-import.md "Attachments"). Tell the user the race mod goes above every other animation mod
+   (Husbandry...) in the mod list (animations.md "Mod order").
 5. **Animations**: pick a clip from `docs/animations.md`, get its technique with `AnimationRecords.Technique(c.Data, RaceAnimations.X)` in
    `Initialize`, and answer `c.AddCombatMove` with `new CombatMove(technique, progress)` (progress 0 to 1, your own state, thread-safe).
 6. **Docs**: list the mod's races in its own docs; a change to `RaceBody`, `Subrace`, `RaceTraits`, `RaceCharacter`, `RaceGroup`, `RaceRecords`, `Races`, `RaceAnimation(s)` or `AnimationRecords` updates

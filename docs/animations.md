@@ -16,6 +16,13 @@ races. Mods play them through Kenshi Races' API ([depending-on-kenshi-races.md](
   are the introducer's and its arrival squads'), `anim name` = the clip: disabled, so no fight picks it;
   a mod plays it as a mod combat move (engine docs/modding.md, "Combat moves").
 
+## Mod order
+
+A mod links an animation file to races in its data phase, which runs in mod list order and sees only the races of mods loaded before it
+(engine docs/modding.md, "Data phase"). So a mod that adds races goes above every mod that links animations to races: above Kenshi Races for
+races it adds itself (`c.Add`), and above any other animation mod (Husbandry links its throw and drill clips the same way). Kenshi Races' own
+races, and subraces a dependent adds with `RaceRecords.Add`, get this library from `FillRace` whatever the order.
+
 ## Making them
 
 `tools/AnimationExport` with a [Motion Lab](https://github.com/Meitou-Modding-Ecosystem/PZAKenshiMotionLab) clone (`MOTIONLAB`, default
