@@ -6,7 +6,7 @@ using Meitou.Simulation;
 namespace KenshiRaces.Tests;
 
 /// <summary>
-/// The F10 row "Kenshi Races: try every race in the character editor": it queues the spawns, and the editor opens once on the characters made.
+/// The F10 row "Kenshi Races: try every race in the character editor": it queues the spawns, each puts on a Standard dustcoat, and the editor opens once on the characters made.
 /// </summary>
 public sealed class TryRacesTests
 {
@@ -41,5 +41,16 @@ public sealed class TryRacesTests
         editor.Open(c => { opened.Add(c); return true; });
 
         Assert.Equal(made, Assert.Single(opened));
+    }
+
+    [Fact]
+    public void Each_race_character_wears_a_standard_dustcoat_the_next_tick()
+    {
+        var world = new World(new WorldSettings { Seed = 1, PublishSnapshots = false }, new OpenGroundWalkability((_, _) => 0));
+        var id = new CharacterId(7, 1);
+
+        var coat = IntroductionSystem.Coat(world, id);
+
+        Assert.Equal(new DebugGiveItem(id, "3061-gamedata.base", 1, 40) { Tick = world.Tick + 1, Equip = true }, coat);
     }
 }

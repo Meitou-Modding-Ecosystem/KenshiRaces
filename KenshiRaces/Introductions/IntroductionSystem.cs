@@ -321,7 +321,19 @@ sealed class IntroductionSystem : ITickSystem, IStateHashed, IModSaveData
     const float TryRing = 25;
 
     /// <summary>
-    /// One recruit of every race character in a ring round the camera target, handed to the character editor (<see cref="TryRacesRow"/>).
+    /// What every race character of <see cref="TryRaces"/> wears, so the clothing's fit can be judged on each: the Dustcoat
+    /// (<c>3061-gamedata.base</c>) at quality 40, Standard, the debug items window's Medium band.
+    /// </summary>
+    const string TryCoat = "3061-gamedata.base";
+
+    /// <summary>
+    /// The quality of <see cref="TryCoat"/> (armour grades 5 / 20 / 40 / 60 / 80 / 95, Prototype to Masterwork).
+    /// </summary>
+    const int TryCoatQuality = 40;
+
+    /// <summary>
+    /// One recruit of every race character in a ring round the camera target, each given a <see cref="TryCoat"/> to wear the next tick, handed
+    /// to the character editor (<see cref="TryRacesRow"/>).
     /// </summary>
     void TryRaces(World world, TryRacesCommand command)
     {
@@ -337,9 +349,17 @@ sealed class IntroductionSystem : ITickSystem, IStateHashed, IModSaveData
             if (!id.IsNone) made.Add(id);
         }
 
+        foreach (var id in made) world.Commands.Enqueue(Coat(world, id));
+
         if (made.Count < characters.Count) world.Post($"Kenshi Races: {characters.Count - made.Count} race characters could not be placed there.");
         if (made.Count > 0) _editor.Offer(made);
     }
+
+    /// <summary>
+    /// The order that puts on <paramref name="id"/>'s <see cref="TryCoat"/> the next tick, in place of anything worn there.
+    /// </summary>
+    internal static DebugGiveItem Coat(World world, CharacterId id) =>
+        new(id, TryCoat, 1, TryCoatQuality) { Tick = world.Tick + 1, Equip = true };
 
     /// <summary>
     /// A race character alone in a Dust Bandit squad held where it stands, which fights the player's on sight.
