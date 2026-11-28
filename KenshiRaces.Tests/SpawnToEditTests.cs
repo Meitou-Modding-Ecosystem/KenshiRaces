@@ -1,4 +1,3 @@
-using System.Numerics;
 using KenshiRaces.Introductions;
 using Meitou.Modding;
 using Meitou.Simulation;
@@ -6,25 +5,10 @@ using Meitou.Simulation;
 namespace KenshiRaces.Tests;
 
 /// <summary>
-/// The F10 row "Kenshi Races: try every race in the character editor": it queues the spawns, each puts on a Standard dustcoat, and the editor opens once on the characters made.
+/// A joining "spawn race" debug spawn: it puts on a Standard dustcoat, and the character editor opens once on it.
 /// </summary>
-public sealed class TryRacesTests
+public sealed class SpawnToEditTests
 {
-    [Fact]
-    public void The_row_queues_one_spawn_at_the_camera_target_for_the_selected_squad()
-    {
-        var queued = new List<SimCommand>();
-        CharacterId[] selected = [new(3, 1)];
-        var target = new Vector3(10, 0, 20);
-
-        string said = TryRacesRow.Run(new DebugCommandContext("", selected, target, 42, queued.Add));
-
-        var command = Assert.IsType<TryRacesCommand>(Assert.Single(queued));
-        Assert.Equal((target, 42L), (command.At, command.Tick));
-        Assert.Equal(selected, command.Selected);
-        Assert.Contains(Races.All.Sum(s => s.Characters.Count).ToString(), said);
-    }
-
     [Fact]
     public void The_editor_opens_once_on_the_offered_characters_after_refusals()
     {
@@ -44,7 +28,7 @@ public sealed class TryRacesTests
     }
 
     [Fact]
-    public void Each_race_character_wears_a_standard_dustcoat_the_next_tick()
+    public void A_joining_spawn_wears_a_standard_dustcoat_the_next_tick()
     {
         var world = new World(new WorldSettings { Seed = 1, PublishSnapshots = false }, new OpenGroundWalkability((_, _) => 0));
         var id = new CharacterId(7, 1);

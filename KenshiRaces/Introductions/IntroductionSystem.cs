@@ -98,7 +98,6 @@ sealed class IntroductionSystem : ITickSystem, IStateHashed, IModSaveData
     {
         ByWorld.AddOrUpdate(world, this);
         foreach (var command in commands.OfType<SpawnRaceCommand>()) Spawn(world, command);
-        foreach (var command in commands.OfType<TryRacesCommand>()) TryRaces(world, command);
     }
 
     /// <summary>
@@ -292,8 +291,22 @@ sealed class IntroductionSystem : ITickSystem, IStateHashed, IModSaveData
         if (_population is null || IntroducerData.Of(command.Number) is not { } character) return;
 
         var at = new Vector2(command.At.X, command.At.Z);
-        bool done = command.Hostile ? SpawnHostile(world, character, at) : !SpawnRecruit(world, character, at, command.Selected).IsNone;
+        bool done = command.Hostile ? SpawnHostile(world, character, at) : SpawnToEdit(world, character, at, command.Selected);
         if (!done) world.Post($"Kenshi Races: could not spawn a {Label(character)} there (pick a walkable spot near your squad).");
+    }
+
+    /// <summary>
+    /// A race character joining a player squad, given a <see cref="SpawnCoat"/> and handed to the character editor; false when it could not be
+    /// placed.
+    /// </summary>
+    bool SpawnToEdit(World world, RaceCharacter character, Vector2 at, IReadOnlyList<CharacterId> selected)
+    {
+        var id = SpawnRecruit(world, character, at, selected);
+        if (id.IsNone) return false;
+
+        world.Commands.Enqueue(Coat(world, id));
+        _editor.Offer([id]);
+        return true;
     }
 
     /// <summary>
@@ -311,55 +324,26 @@ sealed class IntroductionSystem : ITickSystem, IStateHashed, IModSaveData
     }
 
     /// <summary>
-    /// The characters the editor opens on next (<see cref="TryRaces"/>).
+    /// The character the editor opens on next (a joining debug spawn, <see cref="Spawn"/>).
     /// </summary>
     readonly EditorQueue _editor;
 
     /// <summary>
-    /// How far apart round the camera target the race characters of <see cref="TryRaces"/> stand.
-    /// </summary>
-    const float TryRing = 25;
-
-    /// <summary>
-    /// What every race character of <see cref="TryRaces"/> wears, so the clothing's fit can be judged on each: the Dustcoat
+    /// What a joining debug spawn wears, so the clothing's fit can be judged on its race: the Dustcoat
     /// (<c>3061-gamedata.base</c>) at quality 40, Standard, the debug items window's Medium band.
     /// </summary>
-    const string TryCoat = "3061-gamedata.base";
+    const string SpawnCoat = "3061-gamedata.base";
 
     /// <summary>
-    /// The quality of <see cref="TryCoat"/> (armour grades 5 / 20 / 40 / 60 / 80 / 95, Prototype to Masterwork).
+    /// The quality of <see cref="SpawnCoat"/> (armour grades 5 / 20 / 40 / 60 / 80 / 95, Prototype to Masterwork).
     /// </summary>
-    const int TryCoatQuality = 40;
+    const int SpawnCoatQuality = 40;
 
     /// <summary>
-    /// One recruit of every race character in a ring round the camera target, each given a <see cref="TryCoat"/> to wear the next tick, handed
-    /// to the character editor (<see cref="TryRacesRow"/>).
-    /// </summary>
-    void TryRaces(World world, TryRacesCommand command)
-    {
-        if (_population is null) return;
-
-        var characters = Races.All.SelectMany(s => s.Characters).ToList();
-        var made = new List<CharacterId>();
-        for (int i = 0; i < characters.Count; i++)
-        {
-            float angle = 2 * MathF.PI * i / characters.Count;
-            var at = new Vector2(command.At.X + TryRing * MathF.Cos(angle), command.At.Z + TryRing * MathF.Sin(angle));
-            var id = SpawnRecruit(world, characters[i], at, command.Selected);
-            if (!id.IsNone) made.Add(id);
-        }
-
-        foreach (var id in made) world.Commands.Enqueue(Coat(world, id));
-
-        if (made.Count < characters.Count) world.Post($"Kenshi Races: {characters.Count - made.Count} race characters could not be placed there.");
-        if (made.Count > 0) _editor.Offer(made);
-    }
-
-    /// <summary>
-    /// The order that puts on <paramref name="id"/>'s <see cref="TryCoat"/> the next tick, in place of anything worn there.
+    /// The order that puts on <paramref name="id"/>'s <see cref="SpawnCoat"/> the next tick, in place of anything worn there.
     /// </summary>
     internal static DebugGiveItem Coat(World world, CharacterId id) =>
-        new(id, TryCoat, 1, TryCoatQuality) { Tick = world.Tick + 1, Equip = true };
+        new(id, SpawnCoat, 1, SpawnCoatQuality) { Tick = world.Tick + 1, Equip = true };
 
     /// <summary>
     /// A race character alone in a Dust Bandit squad held where it stands, which fights the player's on sight.
